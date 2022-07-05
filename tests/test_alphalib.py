@@ -1,6 +1,4 @@
 import json
-import os
-import sys
 import time
 import unittest
 import unittest.mock
@@ -9,9 +7,6 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 import pandas as pd
-
-# Set the library path
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from alphalib.data_sources import (get_stock_countries, get_stock_dividends,
                                    get_stock_info, get_stocks,

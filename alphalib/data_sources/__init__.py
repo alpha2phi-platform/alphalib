@@ -121,23 +121,3 @@ def update_stocks(stocks):
     with stocks_table.batch_writer() as batch:
         for _, row in stocks.iterrows():
             batch.put_item(json.loads(row.to_json(), parse_float=Decimal))
-
-
-# stocks.apply(update_stock, axis=1)
-
-# def update_stock(row):
-#     """Update stock table
-#
-#     Args:
-#         row : Stock.
-#     """
-#     item = {
-#         "country": row[0],
-#         "symbol": row[5],
-#         "name": row[1],
-#         "full_name": row[2],
-#         "isin": row[3],
-#         "currency": row[4],
-#     }
-#     print(item)
-#     stocks_table.put_item(Item=item)

@@ -1,0 +1,9 @@
+backtrader
+boto3
+botocore
+investpy
+matplotlib
+pandas
+pydantic
+scipy
+yfinance
