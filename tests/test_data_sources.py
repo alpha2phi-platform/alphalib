@@ -4,20 +4,8 @@ import unittest.mock
 from alphalib.utils import logger
 
 
-class TestFundamental(unittest.TestCase):
-    """Test out the different indicators.
-
-    - EPS
-    - P/E
-    - PEG
-    - FCF
-    - P/B
-    - ROE
-    - DPR
-    - P/S
-    - DYR
-    - DE
-
+class TestDataSources(unittest.TestCase):
+    """Test out the different data sources.
     """
 
     def setUp(self):
