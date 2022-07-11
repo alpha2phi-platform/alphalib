@@ -5,7 +5,7 @@ from alphalib.utils import logger
 
 
 class TestFundamental(unittest.TestCase):
-    """Test out the different indicators.
+    """Test out the fundamental indicator.
 
     - EPS
     - P/E
