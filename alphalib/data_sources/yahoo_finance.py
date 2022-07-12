@@ -1,14 +1,6 @@
+import pandas as pd
 import yfinance as yf
 
-from ..utils import logger
 
-
-def get_stock_countries() -> list[str]:
-    """Get stock countries.
-
-    Get supported countries.
-
-    Returns:
-        list[str]: A list of countries.
-    """
-    return yfinance.
+def get_stock_info(_, symbol):
+    return pd.DataFrame([yf.Ticker(symbol).info])

@@ -14,4 +14,12 @@ def get_stock_countries() -> list[str]:
 
 
 def get_stocks(country: str) -> pd.DataFrame:
+    """Get stocks for a country.
+
+    Args:
+        country (str): Country.
+
+    Returns:
+        A Pandas data frame.
+    """
     return investpy.stocks.get_stocks(country)
