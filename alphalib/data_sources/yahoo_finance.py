@@ -1,5 +1,4 @@
-import pandas as pd
-import yfinance
+import yfinance as yf
 
 from ..utils import logger
 

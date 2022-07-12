@@ -3,7 +3,8 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.data_sources import investpy
+import alphalib.data_sources as ds
+from alphalib.data_sources import investing
 from alphalib.utils import logger
 
 COUNTRY = "united states"
@@ -21,14 +22,14 @@ class TestDataSources(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
-    def test_investpy_get_stocks(self):
-        self.stocks = investpy.get_stocks(COUNTRY)
+    def test_investing_get_stocks(self):
+        self.stocks = ds.get_stocks(COUNTRY)
         logger.info(self.stocks.head(10))
 
-    def test_investpy_get_stock_info(self):
-        stock_info = investpy.get_stock_info(COUNTRY, "AAPL")
+    def test_investing_get_stock_info(self):
+        stock_info = investing.get_stock_info(COUNTRY, "AAPL")
         logger.info(stock_info.head(10).T)
 
-    def test_investpy_get_stock_dividends(self):
-        stock_dividends = investpy.get_stock_dividends(COUNTRY, "AAPL")
+    def test_investing_get_stock_dividends(self):
+        stock_dividends = investing.get_stock_dividends(COUNTRY, "AAPL")
         logger.info(stock_dividends.head(10))
