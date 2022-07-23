@@ -11,8 +11,7 @@ COUNTRY = "united states"
 
 
 class TestDataSources(unittest.TestCase):
-    """Test out the different data sources.
-    """
+    """Test out the different data sources."""
 
     stocks: pd.DataFrame
 
@@ -21,6 +20,10 @@ class TestDataSources(unittest.TestCase):
 
     def tearDown(self):
         logger.info("Tear down")
+
+    def test_get_countries(self):
+        self.countries = ds.get_stock_countries()
+        logger.info(self.countries)
 
     def test_get_stocks(self):
         self.stocks = ds.get_stocks(COUNTRY)
@@ -36,5 +39,7 @@ class TestDataSources(unittest.TestCase):
 
     def test_yf_get_stock_info(self):
         """Get stock info."""
-        stock_info = yahoo_finance.get_stock_info(COUNTRY, "BAC")
-        logger.info(stock_info.head(10).T)
+        stock = yahoo_finance.get_stock("AAPL")
+        print(stock.info)
+        # for k, v in stock.info.items():
+        #     print(k, ":", v)

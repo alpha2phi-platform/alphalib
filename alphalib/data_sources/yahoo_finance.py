@@ -1,6 +1,7 @@
 import pandas as pd
 import yfinance as yf
+from yfinance import Ticker
 
 
-def get_stock_info(_, symbol):
-    return pd.DataFrame([yf.Ticker(symbol).info])
+def get_stock(symbol) -> Ticker:
+    return yf.Ticker(symbol)

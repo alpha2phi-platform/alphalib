@@ -1,8 +1,8 @@
 investpy
 matplotlib
 pandas
+prompt_toolkit
 pydantic
+rich
 scipy
 yfinance
-rich
-prompt_toolkit
