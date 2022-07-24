@@ -1,5 +1,6 @@
 investpy
 matplotlib
+mplfinance
 pandas
 prompt_toolkit
 pydantic

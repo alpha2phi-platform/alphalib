@@ -39,17 +39,13 @@ def json_encoder(cls):
 @json_encoder
 class Stock:
     """
-    Stock class
+    Stock class.
     """
-
-    symbol: str
     name: str
-    full_name: str
-    currency: str
+    symbol: str
+    sector: str
     country: str
-    isin: str
-    update_datetime: Decimal
-    update_datetime_isoformat: str
+    eps: float
+    trailing_pe: float
+    forward_pe: float
 
-    info_update_datetime: Decimal = Decimal(dateutils.to_epoch_time(datetime.min))
-    info_update_datetime_isoformat: str = dateutils.to_isoformat(datetime.min)

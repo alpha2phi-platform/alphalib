@@ -39,7 +39,6 @@ class TestDataSources(unittest.TestCase):
 
     def test_yf_get_stock_info(self):
         """Get stock info."""
-        stock = yahoo_finance.get_stock("AAPL")
-        print(stock.info)
-        # for k, v in stock.info.items():
-        #     print(k, ":", v)
+        stock = yahoo_finance.get_stock("BAC")
+        stock_info = pd.DataFrame([stock.info])
+        logger.info(stock_info.head(10).T)
