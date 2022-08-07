@@ -40,19 +40,17 @@ class TestFundamental(unittest.TestCase):
     def test_get_stock_info(self):
         stock_info = self.fa.get_info()
         self.assertGreater(len(stock_info), 0)
-        # records = stock_info.iloc[[0]].to_dict()
-        records = stock_info.to_dict("records")
-        print(records)
-        # stock = Stock(**stock_info.to_dict())
-        # print(stock)
-        # for col in stock_info.columns:
-        #     print(col)
-        # logger.debug(stock_info.columns)
+        cols = ["yield", "forwardEps", "forwardPE", "trailingEps", "trailingPE", "pegRatio", "trailingPegRatio"]
+        indicators = stock_info[cols]
+        print(indicators)
+        
+        # records = stock_info.to_dict("records")
+        # print(records)
         # logger.debug(stock_info.T)
 
     def test_get_stocks_financials(self):
         financials = self.fa.get_financials()
-        logger.info(type(financials))
+        logger.info(financials.head(10))
 
     def test_save_analysis(self):
         self.ma.save()

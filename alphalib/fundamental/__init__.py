@@ -73,10 +73,11 @@ class FundamentalAnalysis:
         self.symbol = symbol
         self.stock = yf.Ticker(symbol)
 
-    def get_financials(self):
+    def get_financials(self)-> pd.DataFrame:
         """Financial info."""
-        return self.stock.financials
+        return pd.DataFrame(self.stock.financials)
 
     def get_info(self) -> pd.DataFrame:
         """Stock info."""
+        # logger.info(self.stock.info)
         return pd.DataFrame([self.stock.info])

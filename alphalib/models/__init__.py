@@ -1,11 +1,8 @@
 import dataclasses
 import json
 from dataclasses import asdict, dataclass
-from datetime import datetime
 from decimal import Decimal
 from typing import Any, List, Tuple
-
-from ..utils import dateutils
 
 
 def json_encoder(cls):
@@ -41,6 +38,7 @@ class Stock:
     """
     Stock class.
     """
+
     name: str
     symbol: str
     sector: str
@@ -48,4 +46,3 @@ class Stock:
     eps: float
     trailing_pe: float
     forward_pe: float
-
