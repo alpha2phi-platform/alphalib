@@ -2,12 +2,14 @@ import os
 import pathlib
 import sqlite3
 from dataclasses import dataclass, field
+from sqlite3 import dbapi2
 
 import pandas as pd
 import yfinance as yf
 from yfinance import Ticker
 
 from alphalib.data_sources import get_stock_countries, get_stocks
+from alphalib.utils import logger
 
 
 @dataclass
@@ -58,6 +60,8 @@ class MarketAnalysis:
         pathlib.Path(__file__).parent.parent.absolute(), "alphalib.db"
     )
 
+    db: dbapi2.Connection = field(init=False)
+
     # Default to US
     country: str = "united states"
 
@@ -65,29 +69,33 @@ class MarketAnalysis:
     indicators: list[FundamentalIndicator] = field(default_factory=list)
 
     # Fundamamental analysis
-    fa: FundamentalAnalysis = field(init=False)
+    # fa: FundamentalAnalysis = field(init=False)
 
     def __post_init__(self):
-        pass
+        self.db = sqlite3.connect(self.db_name)
+
+    def __del__(self):
+        self.db.close()
 
     @staticmethod
     def get_countries() -> list[str]:
         """Get a list of countries."""
         return get_stock_countries()
 
+    @staticmethod
+    def get_stock_fundamentals(stock: pd.Series) -> None:
+        # country, name, full_name, isin, currency, symbol
+        fa = FundamentalAnalysis(stock.country, stock.symbol)
+        flds = stock.keys().to_list()
+        stock_info = fa.get_info()
+        stock_info[flds] = stock[flds]
+        
+        
+
     def get_stocks(self) -> pd.DataFrame:
         """Retrieve all stocks."""
         return get_stocks(self.country)
 
-    def get_fundamentals(self) -> None:
+    def download_fundamentals(self) -> None:
         stocks = self.get_stocks()
-        # self.fa = FundamentalAnalysis(self.country, symbol)
-        # print(self.fa.get_info())
-
-    # def load(self):
-    #     """Load existing analysis."""
-    #     db = sqlite3.connect(self.db_name)
-
-    # def save(self):
-    #     """Save analysis to db."""
-    #     db = sqlite3.connect(self.db_name)  # Create the db if does not exist
+        stocks.head(1).apply(MarketAnalysis.get_stock_fundamentals, axis=1)

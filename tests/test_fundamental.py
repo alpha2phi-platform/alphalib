@@ -65,4 +65,4 @@ class TestFundamental(unittest.TestCase):
         logger.info(dividends.head(10))
 
     def test_get_fundamentals(self):
-        self.ma.get_fundamentals()
+        self.ma.download_fundamentals()
