@@ -55,12 +55,12 @@ class FundamentalAnalysis:
 class MarketAnalysis:
     """Analyse a market."""
 
-    # sqlite db name
-    db_name = os.path.join(
-        pathlib.Path(__file__).parent.parent.absolute(), "alphalib.db"
+    # Excel file name
+    file_name = os.path.join(
+        pathlib.Path(__file__).parent.parent.absolute(), "alphalib.xlsx"
     )
 
-    db: dbapi2.Connection = field(init=False)
+    # db: dbapi2.Connection = field(init=False)
 
     # Default to US
     country: str = "united states"
@@ -72,7 +72,7 @@ class MarketAnalysis:
     # fa: FundamentalAnalysis = field(init=False)
 
     def __post_init__(self):
-        self.db = sqlite3.connect(self.db_name)
+        self.db = sqlite3.connect(self.file_name)
 
     def __del__(self):
         self.db.close()
@@ -82,15 +82,13 @@ class MarketAnalysis:
         """Get a list of countries."""
         return get_stock_countries()
 
-    @staticmethod
-    def get_stock_fundamentals(stock: pd.Series) -> None:
+    def get_stock_fundamentals(self, stock: pd.Series) -> None:
         # country, name, full_name, isin, currency, symbol
         fa = FundamentalAnalysis(stock.country, stock.symbol)
         flds = stock.keys().to_list()
         stock_info = fa.get_info()
         stock_info[flds] = stock[flds]
-        
-        
+        stock_info.to_sql("stock_info", self.db, if_exists="replace")
 
     def get_stocks(self) -> pd.DataFrame:
         """Retrieve all stocks."""
@@ -98,4 +96,4 @@ class MarketAnalysis:
 
     def download_fundamentals(self) -> None:
         stocks = self.get_stocks()
-        stocks.head(1).apply(MarketAnalysis.get_stock_fundamentals, axis=1)
+        stocks.head(1).apply(self.get_stock_fundamentals, axis=1)
