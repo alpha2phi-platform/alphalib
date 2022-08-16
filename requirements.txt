@@ -7,3 +7,4 @@ pydantic
 rich
 scipy
 yfinance
+openpyxl
