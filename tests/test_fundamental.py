@@ -4,8 +4,7 @@ import unittest.mock
 import investpy
 import pandas as pd
 
-from alphalib.fundamental import Downloader
-from alphalib.models import Stock
+from alphalib.dataset import Dataset
 from alphalib.utils import logger
 
 COUNTRY = "united states"
@@ -22,8 +21,7 @@ pd.set_option("display.max_rows", None)
 class TestFundamental(unittest.TestCase):
     """Test out the fundamental indicator."""
 
-    ma = Downloader(country=COUNTRY)
-    fa = FundamentalAnalysis(country=COUNTRY, symbol=SYMBOL)
+    dataset = Dataset(country=COUNTRY)
 
     # All stock countries
     countries: list[str]
@@ -31,45 +29,12 @@ class TestFundamental(unittest.TestCase):
     # Stocks for a country
     stocks: pd.DataFrame
 
-    # Info for a stock
-    stock: Stock
-
     def setUp(self):
-        self.countries = Downloader.get_countries()
-        self.stocks = self.ma.get_stocks()
+        self.countries = Dataset.get_countries()
+        self.stocks = self.dataset.get_stocks()
 
     def tearDown(self):
         logger.info("Tear down")
 
-    def test_get_stock_info(self):
-        stock_info = self.fa.get_info()
-        self.assertGreater(len(stock_info), 0)
-        cols = [
-            "yield",
-            "forwardEps",
-            "forwardPE",
-            "pegRatio",
-            "trailingEps",
-            "trailingPE",
-            "trailingPegRatio",
-            "freeCashflow",
-        ]
-        indicators = stock_info[cols]
-        logger.info(indicators.T)
-
-    def test_investpy_get_info(self):
-        stock_info = investpy.get_stock_information(SYMBOL, COUNTRY)
-        logger.info(stock_info.T)
-
-    def test_get_stocks_financials(self):
-        financials = self.fa.get_financials()
-        self.assertGreater(len(financials), 0)
-        logger.info(financials)
-
-    def test_get_dividends(self):
-        dividends = self.fa.get_dividends()
-        self.assertGreater(len(dividends), 0)
-        logger.info(dividends.head(10))
-
     def test_get_fundamentals(self):
-        self.ma.download()
+        self.dataset.download()

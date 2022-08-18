@@ -16,40 +16,6 @@ class Storage(Enum):
 
 
 @dataclass
-class FundamentalAnalysis:
-    """Perform fundamental analysis for stocks."""
-
-    # Country
-    country: str
-
-    # Symbol
-    symbol: str
-
-    # Stock
-    stock: Ticker
-
-    def __init__(self, country: str, symbol: str):
-        """Constructor.
-
-        Args:
-            country (str): Country
-            symbol (str): Stock symbol
-        """
-        self.country = country
-        self.symbol = symbol
-        self.stock = yf.Ticker(symbol)
-
-    def get_info(self) -> pd.DataFrame:
-        return pd.DataFrame([self.stock.info])
-
-    def get_financials(self) -> pd.DataFrame:
-        return self.stock.financials  # type: ignore
-
-    def get_dividends(self) -> pd.DataFrame:
-        return pd.DataFrame(self.stock.dividends).reset_index()
-
-
-@dataclass
 class Dataset:
     """Dataset downloader."""
 
@@ -93,24 +59,21 @@ class Dataset:
         """Retrieve all stocks."""
         return get_stocks(self.country)
 
-    def get_stock_fundamentals(self, stock: tuple) -> None:
-
-        # Fundamental analysis
-        fa = FundamentalAnalysis(stock.country, stock.symbol)  # type: ignore
-
-        # Get stock info
-        stock_info = fa.get_info()
-        print(stock_info.T)  # __AUTO_GENERATED_PRINT_VAR__
-
-        # Get stock dividends
-        # stock_dividends = fa.get_dividends()
-
-        # Save the stock info
-        # self._save(stock_info, "stock_info")
-
     def download(self, recoverable=True, show_progress=True, throttle=True) -> None:
         stocks = self.get_stocks()
 
         # Get data for each stock
-        for row in stocks.head(1).itertuples(index=False, name="Stock"):
-            self.get_stock_fundamentals(row)
+        for stock in stocks.head(1).itertuples(index=False, name="Stock"):
+            ticker: Ticker = yf.Ticker(stock.symbol)  # type: ignore
+
+            # Get stock info
+            stock_info = pd.DataFrame([ticker.info])
+            print(stock_info.T)
+
+            # Get stock dividends
+            stock_dividends = pd.DataFrame(ticker.dividends).reset_index()
+            print(stock_dividends.T)
+
+            # Save the stock info
+            self._save(stock_info, "stock_info")
+
