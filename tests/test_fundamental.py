@@ -4,7 +4,7 @@ import unittest.mock
 import investpy
 import pandas as pd
 
-from alphalib.fundamental import FundamentalAnalysis, MarketAnalysis
+from alphalib.fundamental import Downloader
 from alphalib.models import Stock
 from alphalib.utils import logger
 
@@ -12,10 +12,17 @@ COUNTRY = "united states"
 SYMBOL = "BAC"
 
 
+# For testing
+pd.set_option("display.max_rows", None)
+# pd.set_option("display.max_columns", None)
+# pd.set_option("display.width", None)
+# pd.set_option("display.max_colwidth", None)
+
+
 class TestFundamental(unittest.TestCase):
     """Test out the fundamental indicator."""
 
-    ma = MarketAnalysis(country=COUNTRY)
+    ma = Downloader(country=COUNTRY)
     fa = FundamentalAnalysis(country=COUNTRY, symbol=SYMBOL)
 
     # All stock countries
@@ -28,7 +35,7 @@ class TestFundamental(unittest.TestCase):
     stock: Stock
 
     def setUp(self):
-        self.countries = MarketAnalysis.get_countries()
+        self.countries = Downloader.get_countries()
         self.stocks = self.ma.get_stocks()
 
     def tearDown(self):
@@ -65,4 +72,4 @@ class TestFundamental(unittest.TestCase):
         logger.info(dividends.head(10))
 
     def test_get_fundamentals(self):
-        self.ma.download_fundamentals()
+        self.ma.download()

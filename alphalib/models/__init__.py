@@ -2,7 +2,7 @@ import dataclasses
 import json
 from dataclasses import asdict, dataclass
 from decimal import Decimal
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 
 def json_encoder(cls):
