@@ -2,9 +2,10 @@ import unittest
 import unittest.mock
 
 import pandas as pd
+import yfinance as yf
 
 import alphalib.data_sources as ds
-from alphalib.data_sources import investing, yahoo_finance
+from alphalib.data_sources import investing
 from alphalib.utils import logger
 
 COUNTRY = "united states"
@@ -39,6 +40,6 @@ class TestDataSources(unittest.TestCase):
 
     def test_yf_get_stock_info(self):
         """Get stock info."""
-        stock = yahoo_finance.get_stock("BAC")
+        stock = yf.Ticker("BAC")
         stock_info = pd.DataFrame([stock.info])
         logger.info(stock_info.head(10).T)

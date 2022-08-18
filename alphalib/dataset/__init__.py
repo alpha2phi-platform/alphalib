@@ -10,7 +10,7 @@ from yfinance import Ticker
 from alphalib.data_sources import get_stock_countries, get_stocks
 
 
-class StorageFormat(Enum):
+class Storage(Enum):
     EXCEL = 1
     PICKLE = 2
 
@@ -50,7 +50,7 @@ class FundamentalAnalysis:
 
 
 @dataclass
-class Downloader:
+class Dataset:
     """Dataset downloader."""
 
     # Excel file name
@@ -61,8 +61,14 @@ class Downloader:
     # Default to US
     country: str = "united states"
 
+    # Storage
+    storage: Storage = Storage.EXCEL
+
     def __post_init__(self):
-        pass
+        if self.storage == Storage.PICKLE:
+            self.file_name = os.path.join(
+                pathlib.Path(__file__).parent.parent.absolute(), "alphalib.pkl"
+            )
 
     def __del__(self):
         pass
@@ -102,7 +108,7 @@ class Downloader:
         # Save the stock info
         # self._save(stock_info, "stock_info")
 
-    def download( self, recoverable=True, show_progress=True, throttle=True) -> None:
+    def download(self, recoverable=True, show_progress=True, throttle=True) -> None:
         stocks = self.get_stocks()
 
         # Get data for each stock
