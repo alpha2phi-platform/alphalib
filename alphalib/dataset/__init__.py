@@ -5,12 +5,11 @@ from enum import Enum
 
 import pandas as pd
 import yfinance as yf
+from alphalib.data_sources import get_stock_countries, get_stocks
 from yfinance import Ticker
 
-from alphalib.data_sources import get_stock_countries, get_stocks
 
-
-class Storage(Enum):
+class Persistence(Enum):
     EXCEL = 1
     PICKLE = 2
 
@@ -27,11 +26,11 @@ class Dataset:
     # Default to US
     country: str = "united states"
 
-    # Storage
-    storage: Storage = Storage.EXCEL
+    # Persistent storage
+    persist: Persistence = Persistence.EXCEL
 
     def __post_init__(self):
-        if self.storage == Storage.PICKLE:
+        if self.persist == Persistence.PICKLE:
             self.file_name = os.path.join(
                 pathlib.Path(__file__).parent.parent.absolute(), "alphalib.pkl"
             )
@@ -76,4 +75,3 @@ class Dataset:
 
             # Save the stock info
             self._save(stock_info, "stock_info")
-

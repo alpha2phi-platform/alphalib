@@ -8,3 +8,4 @@ rich
 scipy
 yfinance
 openpyxl
+pandas-datareader
