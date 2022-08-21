@@ -15,6 +15,15 @@ A financial investment terminal and library
 - Dividend Yield Ratio
 - Debt To Equity Ratio (D/E)
 
+## Stock
+
+- country
+- name
+- full_name
+- isin
+- currency
+- symbol
+
 ## Stock Info
 
 Available fields

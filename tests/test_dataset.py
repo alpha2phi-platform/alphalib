@@ -1,8 +1,8 @@
 import unittest
 import unittest.mock
 
-import investpy
 import pandas as pd
+from openpyxl import load_workbook
 
 from alphalib.dataset import Dataset
 from alphalib.utils import logger
@@ -13,12 +13,12 @@ SYMBOL = "BAC"
 
 # For testing
 pd.set_option("display.max_rows", None)
-# pd.set_option("display.max_columns", None)
-# pd.set_option("display.width", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", None)
 # pd.set_option("display.max_colwidth", None)
 
 
-class TestFundamental(unittest.TestCase):
+class TestDataset(unittest.TestCase):
     """Test out the fundamental indicator."""
 
     dataset = Dataset(country=COUNTRY)
@@ -36,5 +36,5 @@ class TestFundamental(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
-    def test_get_fundamentals(self):
+    def test_get_dataset(self):
         self.dataset.download()
