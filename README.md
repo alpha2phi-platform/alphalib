@@ -174,4 +174,3 @@ Available fields
 - yield
 - ytdReturn
 - zip
-- 
