@@ -5,7 +5,6 @@ from dataclasses import dataclass
 import pandas as pd
 import yfinance as yf
 from openpyxl import load_workbook
-from openpyxl.workbook import Workbook
 from yfinance import Ticker
 
 from alphalib.data_sources import get_stock_countries, get_stocks
@@ -45,8 +44,8 @@ class Dataset:
         filename,
         df: pd.DataFrame,
         sheet_name: str = "Sheet1",
-        startrow=None,
-        truncate_sheet=False,
+        startrow: int | None = None,
+        truncate_sheet: bool = False,
         **to_excel_kwargs
     ):
         # Excel file doesn't exist - saving and exiting
@@ -55,6 +54,7 @@ class Dataset:
                 filename,
                 sheet_name=sheet_name,
                 startrow=startrow if startrow is not None else 0,
+                header=True,
                 **to_excel_kwargs
             )
             return
@@ -63,27 +63,27 @@ class Dataset:
         if "engine" in to_excel_kwargs:
             to_excel_kwargs.pop("engine")
 
-        writer: pd.ExcelWriter = pd.ExcelWriter(filename, engine="openpyxl", mode="a")  # type: ignore
+        writer = pd.ExcelWriter(filename, engine="openpyxl", mode="a", if_sheet_exists="overlay")  # type: ignore
 
         # try to open an existing workbook
-        writer.book = load_workbook(filename)
+        writer.book = load_workbook(filename)  # type: ignore
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
-        if startrow is None and sheet_name in writer.book.sheetnames:
-            startrow = writer.book[sheet_name].max_row
+        if startrow is None and sheet_name in writer.book.sheetnames:  # type: ignore
+            startrow = writer.book[sheet_name].max_row  # type: ignore
 
         # truncate sheet
-        if truncate_sheet and sheet_name in writer.book.sheetnames:
+        if truncate_sheet and sheet_name in writer.book.sheetnames:  # type: ignore
             # index of [sheet_name] sheet
-            idx = writer.book.sheetnames.index(sheet_name)
+            idx = writer.book.sheetnames.index(sheet_name)  # type: ignore
             # remove [sheet_name]
-            writer.book.remove(writer.book.worksheets[idx])
+            writer.book.remove(writer.book.worksheets[idx])  # type: ignore
             # create an empty sheet [sheet_name] using old index
-            writer.book.create_sheet(sheet_name, idx)
+            writer.book.create_sheet(sheet_name, idx)  # type: ignore
 
         # copy existing sheets
-        writer.sheets = {ws.title: ws for ws in writer.book.worksheets}
+        writer.sheets = {ws.title: ws for ws in writer.book.worksheets}  # type: ignore
 
         if startrow is None:
             startrow = 0
@@ -117,16 +117,23 @@ class Dataset:
             stock_financials["Full Name"] = stock.full_name  # type: ignore
             stock_financials.index.name = "Date"
 
-            with pd.ExcelWriter(self.TARGET_FILE_NAME, engine="openpyxl", mode="w") as writer:  # type: ignore
-                stock_info.to_excel(
-                    writer, sheet_name="stock_info", index=False, header=True
-                )
-                stock_dividends.to_excel(
-                    writer, sheet_name="stock_dividends", header=True
-                )
-                stock_financials.to_excel(
-                    writer, sheet_name="stock_financials", header=True
-                )
+            self._append_df_to_excel(
+                self.TARGET_FILE_NAME,
+                stock_info,
+                sheet_name="stock_info",
+                index=False,
+            )
+            self._append_df_to_excel(
+                self.TARGET_FILE_NAME,
+                stock_dividends,
+                sheet_name="stock_dividends",
+            )
+            self._append_df_to_excel(
+                self.TARGET_FILE_NAME,
+                stock_financials,
+                sheet_name="stock_financials",
+            )
+
             # stock_cashflow = ticker.cashflow
             # stock_earnings = ticker.earnings
             # stock_balance_sheet = ticker.balance_sheet
