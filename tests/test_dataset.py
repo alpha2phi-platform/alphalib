@@ -2,12 +2,13 @@ import unittest
 import unittest.mock
 
 import pandas as pd
+import yfinance as yf
 
 from alphalib.dataset import Dataset
-from alphalib.utils import get_project_root, logger
+from alphalib.utils import logger
 
 COUNTRY = "united states"
-SYMBOL = "BAC"
+SYMBOL = "BA"
 
 
 # For testing
@@ -35,5 +36,18 @@ class TestDataset(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
+    def test_get_ticker(self):
+        ticker = yf.Ticker(SYMBOL)
+        stock_info = pd.DataFrame([ticker.info])
+        print(stock_info.T)
+
+    def test_list_diff(self):
+        a = ["a", "b", "c", "e"]
+        b = ["a", "b", "c", "d"]
+        c = list(set(b) - set(a))
+        d = list(set(b).symmetric_difference(set(a)))
+        print(c)
+        print(d)
+
     def test_get_dataset(self):
-        self.dataset.download()
+        self.dataset.download(continue_from_last_download=True)
