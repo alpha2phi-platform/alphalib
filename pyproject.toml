@@ -14,6 +14,7 @@ backtrader = "^1.9.76"
 pydantic = "^1.9.1"
 openpyxl = "^3.0.10"
 pandas-datareader = "^0.10.0"
+fire = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 

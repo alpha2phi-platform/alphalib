@@ -149,12 +149,18 @@ class Dataset:
 
         # Get data for each stock
         console = Console()
-        with console.status("[bold green]Downloading data..."):
-            for stock in stocks.head(8).itertuples(index=False, name="Stock"):
+        skip = False
+        total_stocks = len(stocks)
+        counter = 0
+        with console.status(f"[bold green]Downloading stock..."):
+            for stock in stocks.head(11).itertuples(index=False, name="Stock"):
                 try:
+                    skip = False
+                    counter = counter + 1
                     if continue_from_last_download:
                         if stock.symbol in stocks_lookup:  # type: ignore
-                            console.log(f"Skipping {stock.symbol}")  # type: ignore
+                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            skip = True
                             continue
 
                     ticker: Ticker = yf.Ticker(stock.symbol)  # type: ignore
@@ -231,4 +237,5 @@ class Dataset:
                     traceback.print_exc()
                     return
                 finally:
-                    console.log(f"[green]Finish fetching data[/green] {stock.symbol}-{stock.name}")  # type: ignore
+                    if not skip:
+                        console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}")  # type: ignore

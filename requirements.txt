@@ -1,11 +1,12 @@
+fire
 investpy
 matplotlib
 mplfinance
+openpyxl
 pandas
+pandas-datareader
 prompt_toolkit
 pydantic
 rich
 scipy
 yfinance
-openpyxl
-pandas-datareader
