@@ -2,10 +2,9 @@ import unittest
 import unittest.mock
 
 import pandas as pd
-from openpyxl import load_workbook
 
 from alphalib.dataset import Dataset
-from alphalib.utils import logger
+from alphalib.utils import get_project_root, logger
 
 COUNTRY = "united states"
 SYMBOL = "BAC"

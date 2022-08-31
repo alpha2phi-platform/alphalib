@@ -1,6 +1,7 @@
 import os
-import pathlib
+import time
 from dataclasses import dataclass
+from pathlib import Path
 
 import pandas as pd
 import yfinance as yf
@@ -8,24 +9,27 @@ from openpyxl import load_workbook
 from yfinance import Ticker
 
 from alphalib.data_sources import get_stock_countries, get_stocks
+from alphalib.utils import get_project_root
 
 
 @dataclass
 class Dataset:
     """Dataset downloader."""
 
-    TARGET_FILE_NAME = os.path.join(
-        pathlib.Path(__file__).parent.parent.absolute(), "alphalib.xlsx"
-    )
-
-    RECOVERY_FILE = os.path.join(
-        pathlib.Path(__file__).parent.parent.absolute(), "recovery.txt"
-    )
-
     country: str = "united states"
+    file_name: str = ""
+
+    SHEET_NAME_STOCK_INFO = "stock_info"
+    SHEET_NAME_STOCK_DIVIDENDS = "stock_dividends"
+    SHEET_NAME_STOCK_FINANCIALS = "stock_financials"
 
     def __post_init__(self):
-        pass
+        self.file_name = str(
+            get_project_root()
+            .absolute()
+            .joinpath("".join(["alphalib_", self.country.replace(" ", "_"), ".xlsx"]))
+            .resolve()
+        )
 
     def __del__(self):
         pass
@@ -88,17 +92,47 @@ class Dataset:
         if startrow is None:
             startrow = 0
 
+        header = False
+        if startrow == 0:
+            header = True
+
         # write out the new sheet
-        df.to_excel(writer, sheet_name, startrow=startrow, **to_excel_kwargs)
+        df.to_excel(
+            writer, sheet_name, startrow=startrow, header=header, **to_excel_kwargs
+        )
 
-        # save the workbook
+        # save and close the workbook
         writer.save()
+        writer.close()
 
-    def download(self, recoverable=True, show_progress=True, throttle=True) -> None:
+    def download(
+        self, continue_from_last_download=True, show_progress=True, throttle=True
+    ) -> None:
+
         stocks = self.get_stocks()
+        stocks_lookup = []
+
+        if not continue_from_last_download:
+            # Remove the exising file
+            Path(self.file_name).unlink(missing_ok=True)
+        else:
+            if Path(self.file_name).exists():
+                df_download = pd.read_excel(
+                    self.file_name,
+                    sheet_name=self.SHEET_NAME_STOCK_INFO,
+                    engine="openpyxl",
+                )
+                stocks_lookup = df_download.symbol.tolist()
 
         # Get data for each stock
         for stock in stocks.head(2).itertuples(index=False, name="Stock"):
+
+            if continue_from_last_download:
+                if stock.symbol in stocks_lookup: # type: ignore
+                    print(f"Skipping {stock.symbol}") # type: ignore
+                    continue
+                    
+            
             ticker: Ticker = yf.Ticker(stock.symbol)  # type: ignore
 
             # Get stock data
@@ -117,22 +151,27 @@ class Dataset:
             stock_financials["Full Name"] = stock.full_name  # type: ignore
             stock_financials.index.name = "Date"
 
-            self._append_df_to_excel(
-                self.TARGET_FILE_NAME,
-                stock_info,
-                sheet_name="stock_info",
-                index=False,
-            )
-            self._append_df_to_excel(
-                self.TARGET_FILE_NAME,
-                stock_dividends,
-                sheet_name="stock_dividends",
-            )
-            self._append_df_to_excel(
-                self.TARGET_FILE_NAME,
-                stock_financials,
-                sheet_name="stock_financials",
-            )
+            if len(stock_dividends) > 0:
+                self._append_df_to_excel(
+                    self.file_name,
+                    stock_dividends,
+                    sheet_name="stock_dividends",
+                )
+
+            if len(stock_financials) > 0:
+                self._append_df_to_excel(
+                    self.file_name,
+                    stock_financials,
+                    sheet_name="stock_financials",
+                )
+
+            if len(stock_info) > 0:
+                self._append_df_to_excel(
+                    self.file_name,
+                    stock_info,
+                    sheet_name="stock_info",
+                    index=False,
+                )
 
             # stock_cashflow = ticker.cashflow
             # stock_earnings = ticker.earnings
@@ -149,4 +188,5 @@ class Dataset:
             # stock_stats = ticker.stats()
             # stock_sustainability = ticker.sustainability
 
-            # Save the stock info
+            if throttle:
+                time.sleep(3)  # Sleep for 3 seconds
