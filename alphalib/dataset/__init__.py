@@ -164,7 +164,7 @@ class Dataset:
         counter = 0
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
-            for stock in stocks.head(20).itertuples(index=False, name="Stock"):
+            for stock in stocks.head(100).itertuples(index=False, name="Stock"):
                 try:
                     skip = False
                     counter = counter + 1
