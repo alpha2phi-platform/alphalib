@@ -1,14 +1,16 @@
 import unittest
 import unittest.mock
 
+import investpy
 import pandas as pd
 import yfinance as yf
 
 from alphalib.dataset import Dataset
 from alphalib.utils import logger
+from alphalib.data_sources import get_stocks
 
 COUNTRY = "united states"
-SYMBOL = "BA"
+SYMBOL = "BAC"
 
 
 # For testing
@@ -48,6 +50,14 @@ class TestDataset(unittest.TestCase):
         d = list(set(b).symmetric_difference(set(a)))
         print(c)
         print(d)
+
+    def test_get_stocks(self):
+        stocks = get_stocks(COUNTRY)
+        print(stocks.head(1))
+
+    def test_investpy_get_dividends(self):
+        stock_dividends = investpy.get_stock_dividends(SYMBOL, COUNTRY)
+        print(stock_dividends)
 
     def test_get_dataset(self):
         self.dataset.download(continue_from_last_download=True)

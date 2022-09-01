@@ -2,8 +2,10 @@ import os
 import time
 import traceback
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
+import investpy
 import pandas as pd
 import yfinance as yf
 from openpyxl import load_workbook
@@ -124,6 +126,7 @@ class Dataset:
         stocks = self.get_stocks()
         stocks_lookup = []
         stock_info_columns = []
+        stock_dividends_columns = []
         stock_financials_columns = []
 
         if not continue_from_last_download:
@@ -141,17 +144,25 @@ class Dataset:
                     sheet_name=self.SHEET_NAME_STOCK_FINANCIALS,
                     engine="openpyxl",
                 )
+                stock_dividends_download = pd.read_excel(
+                    self.file_name,
+                    sheet_name=self.SHEET_NAME_STOCK_DIVIDENDS,
+                    engine="openpyxl",
+                )
                 stocks_lookup = stock_info_download.symbol.tolist()
                 stock_info_columns = stock_info_download.columns.tolist()
                 stock_financials_columns = stock_financials_download.columns.tolist()
+                stock_dividends_columns = stock_dividends_download.columns.tolist()
                 stock_info_columns.sort()
                 stock_financials_columns.sort()
+                stock_dividends_columns.sort()
 
         # Get data for each stock
         console = Console()
         skip = False
         total_stocks = len(stocks)
         counter = 0
+        last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
             for stock in stocks.head(20).itertuples(index=False, name="Stock"):
                 try:
@@ -173,12 +184,22 @@ class Dataset:
                         stock_info_columns.sort()
                     self._create_missing_cols(stock_info, stock_info_columns)
 
-                    stock_dividends = pd.DataFrame(ticker.dividends)
+                    try:
+                        # From investpy
+                        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
+                    except:
+                        # From yfinance
+                        stock_dividends = pd.DataFrame(ticker.dividends)
+                        stock_dividends.reset_index(inplace=True)
+
                     stock_dividends["Country"] = stock.country  # type: ignore
                     stock_dividends["Name"] = stock.name  # type: ignore
                     stock_dividends["Symbol"] = stock.symbol  # type: ignore
                     stock_dividends["Full Name"] = stock.full_name  # type: ignore
-                    stock_dividends.reset_index(inplace=True)
+                    if len(stock_dividends_columns) == 0:
+                        stock_dividends_columns = stock_dividends.columns.tolist()
+                        stock_dividends_columns.sort()
+                    self._create_missing_cols(stock_dividends, stock_dividends_columns)
 
                     stock_financials = ticker.financials.T  # type: ignore
                     stock_financials["Country"] = stock.country  # type: ignore
@@ -197,7 +218,10 @@ class Dataset:
                     if len(stock_dividends) > 0:
                         self._append_df_to_excel(
                             self.file_name,
-                            stock_dividends,
+                            stock_dividends[stock_dividends_columns][
+                                pd.DatetimeIndex(stock_dividends["Date"]).year # type: ignore
+                                > last_10_years
+                            ],
                             sheet_name="stock_dividends",
                         )
 
