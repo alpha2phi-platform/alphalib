@@ -4,10 +4,11 @@ import unittest.mock
 import investpy
 import pandas as pd
 import yfinance as yf
+from yfinance import Ticker
 
+from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset
 from alphalib.utils import logger
-from alphalib.data_sources import get_stocks
 
 COUNTRY = "united states"
 SYMBOL = "BAC"
@@ -39,9 +40,10 @@ class TestDataset(unittest.TestCase):
         logger.info("Tear down")
 
     def test_get_ticker(self):
-        ticker = yf.Ticker(SYMBOL)
-        stock_info = pd.DataFrame([ticker.info])
-        print(stock_info.T)
+        ticker: Ticker = yf.Ticker("SPAR")
+        history: pd.DataFrame = ticker.history()
+        if history.empty:
+            print("no data found")
 
     def test_list_diff(self):
         a = ["a", "b", "c", "e"]

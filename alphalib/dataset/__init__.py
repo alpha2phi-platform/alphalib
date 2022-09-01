@@ -164,7 +164,7 @@ class Dataset:
         counter = 0
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
-            for stock in stocks.head(100).itertuples(index=False, name="Stock"):
+            for stock in stocks.head(1000).itertuples(index=False, name="Stock"):
                 try:
                     skip = False
                     counter = counter + 1
@@ -175,14 +175,18 @@ class Dataset:
                             continue
 
                     ticker: Ticker = yf.Ticker(stock.symbol)  # type: ignore
-                    ticker.history(period="10y")
+                    history: pd.DataFrame = ticker.history(period="10y")
+                    if history.empty:
+                        console.log(f"[blue]Stock not found. Skipping {stock.symbol}")  # type: ignore
+                        continue
 
                     # Get stock data
                     stock_info = pd.DataFrame([ticker.info])
                     if len(stock_info_columns) == 0:
                         stock_info_columns = stock_info.columns.tolist()
                         stock_info_columns.sort()
-                    self._create_missing_cols(stock_info, stock_info_columns)
+                    if len(stock_info) > 0:
+                        self._create_missing_cols(stock_info, stock_info_columns)
 
                     try:
                         # From investpy
@@ -199,7 +203,10 @@ class Dataset:
                     if len(stock_dividends_columns) == 0:
                         stock_dividends_columns = stock_dividends.columns.tolist()
                         stock_dividends_columns.sort()
-                    self._create_missing_cols(stock_dividends, stock_dividends_columns)
+                    if len(stock_dividends) > 0:
+                        self._create_missing_cols(
+                            stock_dividends, stock_dividends_columns
+                        )
 
                     stock_financials = ticker.financials.T  # type: ignore
                     stock_financials["Country"] = stock.country  # type: ignore
@@ -211,15 +218,16 @@ class Dataset:
                     if len(stock_financials_columns) == 0:
                         stock_financials_columns = stock_financials.columns.tolist()
                         stock_financials_columns.sort()
-                    self._create_missing_cols(
-                        stock_financials, stock_financials_columns
-                    )
+                    if len(stock_financials) > 0:
+                        self._create_missing_cols(
+                            stock_financials, stock_financials_columns
+                        )
 
                     if len(stock_dividends) > 0:
                         self._append_df_to_excel(
                             self.file_name,
                             stock_dividends[stock_dividends_columns][
-                                pd.DatetimeIndex(stock_dividends["Date"]).year # type: ignore
+                                pd.DatetimeIndex(stock_dividends["Date"]).year  # type: ignore
                                 > last_10_years
                             ],
                             sheet_name="stock_dividends",
