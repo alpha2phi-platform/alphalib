@@ -164,7 +164,7 @@ class Dataset:
         counter = 0
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
-            for stock in stocks.head(400).itertuples(index=False, name="Stock"):
+            for stock in stocks.head(600).itertuples(index=False, name="Stock"):
                 try:
                     skip = False
                     counter = counter + 1
@@ -175,7 +175,7 @@ class Dataset:
                             continue
 
                     ticker: Ticker = yf.Ticker(stock.symbol)  # type: ignore
-                    history: pd.DataFrame = ticker.history(period="10y")
+                    history: pd.DataFrame = ticker.history()
                     if history.empty:
                         console.log(f"[blue]Stock not found. Skipping {stock.symbol}")  # type: ignore
                         continue
@@ -263,7 +263,7 @@ class Dataset:
                     # stock_sustainability = ticker.sustainability
 
                     if throttle:
-                        time.sleep(3)  # Sleep for 3 seconds
+                        time.sleep(2)  # Sleep for x seconds
                 except Exception as e:
                     rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
                     traceback.print_exc()

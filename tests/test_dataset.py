@@ -40,8 +40,8 @@ class TestDataset(unittest.TestCase):
         logger.info("Tear down")
 
     def test_get_ticker(self):
-        ticker: Ticker = yf.Ticker("SPAR")
-        history: pd.DataFrame = ticker.history()
+        ticker: Ticker = yf.Ticker("BMS")
+        history: pd.DataFrame = ticker.history(period="10y")
         if history.empty:
             print("no data found")
 
