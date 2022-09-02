@@ -121,7 +121,9 @@ class Dataset:
         missing_cols = list(set(target_cols) - set(columns))
         df[missing_cols] = None
 
-    def download(self, continue_from_last_download=True, throttle=True) -> None:
+    def download(
+        self, continue_from_last_download=True, start_pos=0, throttle=True
+    ) -> None:
 
         stocks = self.get_stocks()
         stocks_lookup = []
@@ -164,10 +166,13 @@ class Dataset:
         counter = 0
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
-            for stock in stocks.head(600).itertuples(index=False, name="Stock"):
+            # for stock in stocks.head(700).itertuples(index=False, name="Stock"):
+            for stock in stocks.itertuples(index=False, name="Stock"):
                 try:
                     skip = False
                     counter = counter + 1
+                    if start_pos > 0 and counter < start_pos:
+                        continue
                     if continue_from_last_download:
                         if stock.symbol in stocks_lookup:  # type: ignore
                             console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
