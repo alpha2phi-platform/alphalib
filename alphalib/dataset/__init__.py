@@ -8,13 +8,12 @@ from pathlib import Path
 import investpy
 import pandas as pd
 import yfinance as yf
+from alphalib.data_sources import get_stock_countries, get_stocks
+from alphalib.utils import get_project_root
 from openpyxl import load_workbook
 from rich import print as rprint
 from rich.console import Console
 from yfinance import Ticker
-
-from alphalib.data_sources import get_stock_countries, get_stocks
-from alphalib.utils import get_project_root
 
 
 @dataclass
@@ -269,6 +268,10 @@ class Dataset:
 
                     if throttle:
                         time.sleep(2)  # Sleep for x seconds
+                    
+                    del stock_financials
+                    del stock_dividends
+                    del stock_info
                 except Exception as e:
                     rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
                     traceback.print_exc()
