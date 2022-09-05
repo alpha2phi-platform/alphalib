@@ -6,7 +6,7 @@ from alphalib.dataset import Dataset
 class AlphaLib(object):
     def download(self, country="united states"):
         dataset = Dataset(country=country)
-        dataset.download(continue_from_last_download=True, start_pos=2825)
+        dataset.download(continue_from_last_download=True, start_pos=2944)
 
 
 if __name__ == "__main__":
