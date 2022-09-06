@@ -40,10 +40,11 @@ class TestDataset(unittest.TestCase):
         logger.info("Tear down")
 
     def test_get_ticker(self):
-        ticker: Ticker = yf.Ticker("BMS")
-        history: pd.DataFrame = ticker.history(period="10y")
-        if history.empty:
-            print("no data found")
+        # ticker: Ticker = yf.Ticker("GM")
+        # stock_dividends = ticker.dividends
+        # print(stock_dividends)
+        stock_dividends = investpy.get_stock_dividends("NSP", COUNTRY)
+        print(stock_dividends)
 
     def test_list_diff(self):
         a = ["a", "b", "c", "e"]

@@ -8,12 +8,13 @@ from pathlib import Path
 import investpy
 import pandas as pd
 import yfinance as yf
-from alphalib.data_sources import get_stock_countries, get_stocks
-from alphalib.utils import get_project_root
 from openpyxl import load_workbook
 from rich import print as rprint
 from rich.console import Console
 from yfinance import Ticker
+
+from alphalib.data_sources import get_stock_countries, get_stocks
+from alphalib.utils import get_project_root
 
 
 @dataclass
@@ -21,17 +22,24 @@ class Dataset:
     """Dataset downloader."""
 
     country: str = "united states"
-    file_name: str = ""
+    stock_file_name: str = ""
+    stock_dividends_file_name: str = ""
 
     SHEET_NAME_STOCK_INFO = "stock_info"
     SHEET_NAME_STOCK_DIVIDENDS = "stock_dividends"
     SHEET_NAME_STOCK_FINANCIALS = "stock_financials"
 
     def __post_init__(self):
-        self.file_name = str(
+        self.stock_file_name = str(
             get_project_root()
             .absolute()
             .joinpath("".join(["alphalib_", self.country.replace(" ", "_"), ".xlsx"]))
+            .resolve()
+        )
+        self.stock_dividends_file_name = str(
+            get_project_root()
+            .absolute()
+            .joinpath("".join(["alphalib_dividends_", self.country.replace(" ", "_"), ".xlsx"]))
             .resolve()
         )
 
@@ -132,21 +140,21 @@ class Dataset:
 
         if not continue_from_last_download:
             # Remove the exising file
-            Path(self.file_name).unlink(missing_ok=True)
+            Path(self.stock_file_name).unlink(missing_ok=True)
         else:
-            if Path(self.file_name).exists():
+            if Path(self.stock_file_name).exists():
                 stock_info_download = pd.read_excel(
-                    self.file_name,
+                    self.stock_file_name,
                     sheet_name=self.SHEET_NAME_STOCK_INFO,
                     engine="openpyxl",
                 )
                 stock_financials_download = pd.read_excel(
-                    self.file_name,
+                    self.stock_file_name,
                     sheet_name=self.SHEET_NAME_STOCK_FINANCIALS,
                     engine="openpyxl",
                 )
                 stock_dividends_download = pd.read_excel(
-                    self.file_name,
+                    self.stock_file_name,
                     sheet_name=self.SHEET_NAME_STOCK_DIVIDENDS,
                     engine="openpyxl",
                 )
@@ -229,7 +237,7 @@ class Dataset:
 
                     if len(stock_dividends) > 0:
                         self._append_df_to_excel(
-                            self.file_name,
+                            self.stock_file_name,
                             stock_dividends[stock_dividends_columns][
                                 pd.DatetimeIndex(stock_dividends["Date"]).year  # type: ignore
                                 > last_10_years
@@ -239,39 +247,21 @@ class Dataset:
 
                     if len(stock_financials) > 0:
                         self._append_df_to_excel(
-                            self.file_name,
+                            self.stock_file_name,
                             stock_financials[stock_financials_columns],
                             sheet_name="stock_financials",
                         )
 
                     if len(stock_info) > 0:
                         self._append_df_to_excel(
-                            self.file_name,
+                            self.stock_file_name,
                             stock_info[stock_info_columns],
                             sheet_name="stock_info",
                         )
 
-                    # stock_cashflow = ticker.cashflow
-                    # stock_earnings = ticker.earnings
-                    # stock_balance_sheet = ticker.balance_sheet
-                    # stock_calendar = ticker.calendar
-                    # stock_earnings_date  = ticker.earnings_dates
-                    # stock_recommendations = ticker.recommendations
-                    # stock_news = ticker.news
-                    # stock_history = ticker.history()
-                    # stock_splits = ticker.splits
-                    # stock_earnings_history = ticker.earnings_history
-                    # stock_actions = ticker.actions
-                    # stock_analysis = ticker.analysis
-                    # stock_stats = ticker.stats()
-                    # stock_sustainability = ticker.sustainability
-
                     if throttle:
                         time.sleep(2)  # Sleep for x seconds
-                    
-                    del stock_financials
-                    del stock_dividends
-                    del stock_info
+
                 except Exception as e:
                     rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
                     traceback.print_exc()
@@ -279,3 +269,99 @@ class Dataset:
                 finally:
                     if not skip:
                         console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}")  # type: ignore
+
+    def download_dividends(
+        self, continue_from_last_download=True, start_pos=0, throttle=True
+    ) -> None:
+        stocks_lookup = []
+        stocks = pd.read_excel(
+            self.stock_file_name,
+            sheet_name=self.SHEET_NAME_STOCK_INFO,
+            engine="openpyxl",
+        )
+        
+        if not continue_from_last_download:
+            # Remove the exising file
+            Path(self.stock_file_name).unlink(missing_ok=True)
+        else:
+            if Path(self.stock_file_name).exists():
+                stock_dividends_download = pd.read_excel(
+                    self.stock_file_name,
+                    sheet_name=self.SHEET_NAME_STOCK_DIVIDENDS,
+                    engine="openpyxl",
+                )
+                stocks_lookup = stock_dividends_download.symbol.tolist()
+
+        # Get data for each stock
+        console = Console()
+        skip = False
+        total_stocks = len(stocks)
+        counter = 0
+        last_10_years = datetime.now().year - 10
+        with console.status(f"[bold green]Downloading stock..."):
+            # for stock in stocks.head(700).itertuples(index=False, name="Stock"):
+            for stock in stocks.itertuples(index=False, name="Stock"):
+                try:
+                    skip = False
+                    counter = counter + 1
+                    if start_pos > 0 and counter < start_pos:
+                        continue
+                    if continue_from_last_download:
+                        if stock.symbol in stocks_lookup:  # type: ignore
+                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            skip = True
+                            continue
+
+                    try:
+                        # From investpy
+                        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
+                        stock_dividends["country"] = stock.country  # type: ignore
+                        stock_dividends["shortName"] = stock.shortName  # type: ignore
+                        stock_dividends["symbol"] = stock.symbol  # type: ignore
+                        if len(stock_dividends_columns) == 0:
+                            stock_dividends_columns = stock_dividends.columns.tolist()
+                            stock_dividends_columns.sort()
+                        if len(stock_dividends) > 0:
+                            self._create_missing_cols(
+                                stock_dividends, stock_dividends_columns
+                            )
+
+                        if len(stock_dividends) > 0:
+                            self._append_df_to_excel(
+                                self.stock_file_name,
+                                stock_dividends[stock_dividends_columns][
+                                    pd.DatetimeIndex(stock_dividends["Date"]).year  # type: ignore
+                                    > last_10_years
+                                ],
+                                sheet_name="stock_dividends",
+                            )
+                    except:
+                        continue
+
+                    if throttle:
+                        time.sleep(2)  # Sleep for x seconds
+
+                except Exception as e:
+                    rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
+                    traceback.print_exc()
+                    return
+                finally:
+                    if not skip:
+                        console.log(
+                            f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}"
+                        )
+
+    # stock_cashflow = ticker.cashflow
+    # stock_earnings = ticker.earnings
+    # stock_balance_sheet = ticker.balance_sheet
+    # stock_calendar = ticker.calendar
+    # stock_earnings_date  = ticker.earnings_dates
+    # stock_recommendations = ticker.recommendations
+    # stock_news = ticker.news
+    # stock_history = ticker.history()
+    # stock_splits = ticker.splits
+    # stock_earnings_history = ticker.earnings_history
+    # stock_actions = ticker.actions
+    # stock_analysis = ticker.analysis
+    # stock_stats = ticker.stats()
+    # stock_sustainability = ticker.sustainability
