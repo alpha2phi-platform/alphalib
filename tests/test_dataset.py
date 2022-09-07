@@ -11,7 +11,7 @@ from alphalib.dataset import Dataset
 from alphalib.utils import logger
 
 COUNTRY = "united states"
-SYMBOL = "BAC"
+SYMBOL = "T"
 
 
 # For testing
@@ -56,11 +56,14 @@ class TestDataset(unittest.TestCase):
 
     def test_get_stocks(self):
         stocks = get_stocks(COUNTRY)
-        print(stocks.head(1))
+        self.assertGreater(len(stocks), 0)
 
     def test_investpy_get_dividends(self):
         stock_dividends = investpy.get_stock_dividends(SYMBOL, COUNTRY)
         print(stock_dividends)
 
-    def test_get_dataset(self):
-        self.dataset.download(continue_from_last_download=True)
+    def test_get_stock_info(self):
+        self.dataset.stock_info(continue_from_last_download=True)
+
+    def test_get_stock_dividends(self):
+        self.dataset.stock_dividends(continue_from_last_download=True)

@@ -39,7 +39,11 @@ class Dataset:
         self.stock_dividends_file_name = str(
             get_project_root()
             .absolute()
-            .joinpath("".join(["alphalib_dividends_", self.country.replace(" ", "_"), ".xlsx"]))
+            .joinpath(
+                "".join(
+                    ["alphalib_dividends_", self.country.replace(" ", "_"), ".xlsx"]
+                )
+            )
             .resolve()
         )
 
@@ -128,7 +132,7 @@ class Dataset:
         missing_cols = list(set(target_cols) - set(columns))
         df[missing_cols] = None
 
-    def download(
+    def stock_info(
         self, continue_from_last_download=True, start_pos=0, throttle=True
     ) -> None:
 
@@ -270,27 +274,23 @@ class Dataset:
                     if not skip:
                         console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}")  # type: ignore
 
-    def download_dividends(
+    def stock_dividends(
         self, continue_from_last_download=True, start_pos=0, throttle=True
     ) -> None:
+        stocks = self.get_stocks()
         stocks_lookup = []
-        stocks = pd.read_excel(
-            self.stock_file_name,
-            sheet_name=self.SHEET_NAME_STOCK_INFO,
-            engine="openpyxl",
-        )
-        
+
         if not continue_from_last_download:
             # Remove the exising file
-            Path(self.stock_file_name).unlink(missing_ok=True)
+            Path(self.stock_dividends_file_name).unlink(missing_ok=True)
         else:
-            if Path(self.stock_file_name).exists():
+            if Path(self.stock_dividends_file_name).exists():
                 stock_dividends_download = pd.read_excel(
-                    self.stock_file_name,
+                    self.stock_dividends_file_name,
                     sheet_name=self.SHEET_NAME_STOCK_DIVIDENDS,
                     engine="openpyxl",
                 )
-                stocks_lookup = stock_dividends_download.symbol.tolist()
+                stocks_lookup = stock_dividends_download.Symbol.tolist()
 
         # Get data for each stock
         console = Console()
@@ -300,55 +300,46 @@ class Dataset:
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
             # for stock in stocks.head(700).itertuples(index=False, name="Stock"):
-            for stock in stocks.itertuples(index=False, name="Stock"):
+            for stock in stocks.head(50).itertuples(index=False, name="Stock"):
+                skip = False
+                counter = counter + 1
+                if start_pos > 0 and counter < start_pos:
+                    continue
+                if continue_from_last_download:
+                    if stock.symbol in stocks_lookup:  # type: ignore
+                        console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                        skip = True
+                        continue
+
                 try:
-                    skip = False
-                    counter = counter + 1
-                    if start_pos > 0 and counter < start_pos:
-                        continue
-                    if continue_from_last_download:
-                        if stock.symbol in stocks_lookup:  # type: ignore
-                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
-                            skip = True
-                            continue
+                    # From investpy
+                    stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
 
-                    try:
-                        # From investpy
-                        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
-                        stock_dividends["country"] = stock.country  # type: ignore
-                        stock_dividends["shortName"] = stock.shortName  # type: ignore
-                        stock_dividends["symbol"] = stock.symbol  # type: ignore
-                        if len(stock_dividends_columns) == 0:
-                            stock_dividends_columns = stock_dividends.columns.tolist()
-                            stock_dividends_columns.sort()
-                        if len(stock_dividends) > 0:
-                            self._create_missing_cols(
-                                stock_dividends, stock_dividends_columns
-                            )
-
-                        if len(stock_dividends) > 0:
-                            self._append_df_to_excel(
-                                self.stock_file_name,
-                                stock_dividends[stock_dividends_columns][
-                                    pd.DatetimeIndex(stock_dividends["Date"]).year  # type: ignore
-                                    > last_10_years
-                                ],
-                                sheet_name="stock_dividends",
-                            )
-                    except:
-                        continue
-
+                    if len(stock_dividends) > 0:
+                        stock_dividends["Country"] = stock.country  # type: ignore
+                        stock_dividends["Name"] = stock.name  # type: ignore
+                        stock_dividends["Symbol"] = stock.symbol  # type: ignore
+                        stock_dividends["Full Name"] = stock.full_name  # type: ignore
+                        stock_dividends_columns = stock_dividends.columns.tolist()
+                        stock_dividends_columns.sort()
+                        self._append_df_to_excel(
+                            self.stock_dividends_file_name,
+                            stock_dividends[stock_dividends_columns][
+                                pd.DatetimeIndex(stock_dividends["Date"]).year  # type: ignore
+                                > last_10_years
+                            ],
+                            sheet_name="stock_dividends",
+                        )
                     if throttle:
                         time.sleep(2)  # Sleep for x seconds
-
                 except Exception as e:
                     rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
                     traceback.print_exc()
-                    return
+                    continue
                 finally:
                     if not skip:
                         console.log(
-                            f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}"
+                            f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}"  # type: ignore
                         )
 
     # stock_cashflow = ticker.cashflow
