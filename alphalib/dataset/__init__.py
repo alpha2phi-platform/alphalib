@@ -300,7 +300,7 @@ class Dataset:
         last_10_years = datetime.now().year - 10
         with console.status(f"[bold green]Downloading stock..."):
             # for stock in stocks.head(700).itertuples(index=False, name="Stock"):
-            for stock in stocks.head(50).itertuples(index=False, name="Stock"):
+            for stock in stocks.itertuples(index=False, name="Stock"):
                 skip = False
                 counter = counter + 1
                 if start_pos > 0 and counter < start_pos:
