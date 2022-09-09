@@ -225,7 +225,7 @@ class Dataset:
                         )
 
                     if throttle:
-                        time.sleep(5)  # Sleep for x seconds
+                        time.sleep(2)  # Sleep for x seconds
 
                 except Exception as e:
                     rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
