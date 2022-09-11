@@ -6,7 +6,7 @@ from alphalib.dataset import Dataset
 class AlphaLib(object):
     def stock_info(self, country="united states"):
         dataset = Dataset(country=country)
-        dataset.stock_info(continue_from_last_download=True)
+        dataset.stock_info(continue_last_download=True)
 
     def stock_dividends(self, country="united states"):
         dataset = Dataset(country=country)

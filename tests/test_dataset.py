@@ -7,7 +7,7 @@ import yfinance as yf
 from yfinance import Ticker
 
 from alphalib.data_sources import get_stocks
-from alphalib.dataset import Dataset
+from alphalib.dataset import Dataset, Downloader
 from alphalib.utils import logger
 
 COUNTRY = "united states"
@@ -22,19 +22,10 @@ pd.set_option("display.width", None)
 
 
 class TestDataset(unittest.TestCase):
-    """Test out the fundamental indicator."""
-
-    dataset = Dataset(country=COUNTRY)
-
-    # All stock countries
-    countries: list[str]
-
-    # Stocks for a country
-    stocks: pd.DataFrame
+    dataset: Dataset
 
     def setUp(self):
-        self.countries = Dataset.get_countries()
-        self.stocks = self.dataset.get_stocks()
+        self.dataset = Dataset()
 
     def tearDown(self):
         logger.info("Tear down")
@@ -62,8 +53,27 @@ class TestDataset(unittest.TestCase):
         stock_dividends = investpy.get_stock_dividends(SYMBOL, COUNTRY)
         print(stock_dividends)
 
+    def test_investpy_get_stock_info(self):
+        stock_info = investpy.get_stock_information(SYMBOL, COUNTRY)
+        print(stock_info.T)
+
     def test_get_stock_info(self):
-        self.dataset.stock_info(continue_from_last_download=True)
+        self.dataset.stock_info()
 
     def test_get_stock_dividends(self):
-        self.dataset.stock_dividends(continue_from_last_download=True)
+        self.dataset.stock_dividends()
+
+    def test_downloader(self):
+        @Downloader(
+            continue_last_download=True,
+            file_prefix="alphalib_",
+            sheet_name="stock_info",
+            primary_col="symbol",
+            throttle=2,
+            start_pos=0,
+        )
+        def stock_info(*args, **kwargs):
+            print("it works!")
+            return pd.DataFrame()
+
+        stock_info()
