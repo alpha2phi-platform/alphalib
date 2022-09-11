@@ -153,7 +153,7 @@ class Downloader:
             has_error = False
             with console.status(f"[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
-                for stock in stocks.head(5).itertuples(index=False, name="Stock"):
+                for stock in stocks.head(10).itertuples(index=False, name="Stock"):
                     try:
                         skip = False
                         has_error = False
