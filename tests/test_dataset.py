@@ -60,6 +60,9 @@ class TestDataset(unittest.TestCase):
     def test_get_stock_info(self):
         self.dataset.stock_info()
 
+    def test_get_stock_financials(self):
+        self.dataset.stock_financials()
+
     def test_get_stock_dividends(self):
         self.dataset.stock_dividends()
 
