@@ -4,9 +4,17 @@ from alphalib.dataset import Dataset
 
 
 class AlphaLib(object):
-    def download(self, country="united states"):
-        dataset = Dataset(country=country)
-        dataset.download(continue_from_last_download=True)
+    def stock_info(self):
+        dataset = Dataset()
+        dataset.stock_info()
+
+    def stock_financials(self):
+        dataset = Dataset()
+        dataset.stock_financials()
+
+    def stock_dividends(self):
+        dataset = Dataset()
+        dataset.stock_dividends()
 
 
 if __name__ == "__main__":
