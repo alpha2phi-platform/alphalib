@@ -3,13 +3,15 @@ import unittest.mock
 
 import investpy
 import pandas as pd
+import yfinance as yf
+from yfinance import Ticker
 
 from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset, Downloader
 from alphalib.utils import logger
 
 COUNTRY = "united states"
-SYMBOL = "T"
+SYMBOL = "ARR"
 
 
 # For testing
@@ -78,3 +80,8 @@ class TestDataset(unittest.TestCase):
             return pd.DataFrame()
 
         stock_info()
+
+    def test_get_dividends(self):
+        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
+        stats = pd.DataFrame([ ticker.stats() ])
+        print(stats.T)
