@@ -10,3 +10,5 @@ pydantic
 rich
 scipy
 yfinance
+html5lib
+beautifulsoup4

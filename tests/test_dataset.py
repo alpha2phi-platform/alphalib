@@ -18,7 +18,7 @@ SYMBOL = "ARR"
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", None)
-# pd.set_option("display.max_colwidth", None)
+pd.set_option("display.max_colwidth", None)
 
 
 class TestDataset(unittest.TestCase):
@@ -30,11 +30,9 @@ class TestDataset(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
-    def test_get_ticker(self):
-        # ticker: Ticker = yf.Ticker("GM")
-        # stock_dividends = ticker.dividends
-        # print(stock_dividends)
-        stock_dividends = investpy.get_stock_dividends("NSP", COUNTRY)
+    def test_yfinance_get_dividends(self):
+        ticker: Ticker = yf.Ticker("GM")
+        stock_dividends = ticker.dividends
         print(stock_dividends)
 
     def test_list_diff(self):
@@ -81,7 +79,20 @@ class TestDataset(unittest.TestCase):
 
         stock_info()
 
-    def test_get_dividends(self):
+    def test_yfinance_get_stock_info(self):
+        ticker: Ticker = yf.Ticker("EVV")
+        print(ticker.info)
+
+    def test_get_stats(self):
         ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
-        stats = pd.DataFrame([ ticker.stats() ])
-        print(stats.T)
+        stats = ticker.stats()
+        for k, v in stats.items():
+            if type(v) is dict:
+                df = pd.DataFrame([v])
+                print(f"---- {k} ----- ")
+                print(df.head(1).T)
+
+    def test_yfinance_get_earning_dates(self):
+        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
+        earning_dates = ticker.earnings_dates
+        print(earning_dates)
