@@ -40,8 +40,8 @@ class TestDataset(unittest.TestCase):
         b = ["a", "b", "c", "d"]
         c = list(set(b) - set(a))
         d = list(set(b).symmetric_difference(set(a)))
-        print(c)
-        print(d)
+        print(len(c), c)
+        print(len(d), d)
 
     def test_get_stocks(self):
         stocks = get_stocks(COUNTRY)
@@ -96,3 +96,8 @@ class TestDataset(unittest.TestCase):
         ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
         earning_dates = ticker.earnings_dates
         print(earning_dates)
+
+    def test_yfinance_get_calendar(self):
+        ticker: Ticker = yf.Ticker(SYMBOL)
+        calendar = ticker.calendar
+        print(calendar)

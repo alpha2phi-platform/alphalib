@@ -121,7 +121,8 @@ class Downloader:
     def create_missing_cols(self, df, target_cols):
         columns = df.columns.tolist()
         missing_cols = list(set(target_cols) - set(columns))
-        df[missing_cols] = None
+        if len(missing_cols) > 0:
+            df[missing_cols] = None
 
     def check_last_download(self):
         fld_list = []
@@ -215,7 +216,7 @@ class Dataset:
     def __del__(self):
         pass
 
-    @Downloader(sheet_name="stock_info")
+    @Downloader(file_prefix="alphalib_", sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
         # stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
