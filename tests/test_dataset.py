@@ -11,14 +11,14 @@ from alphalib.dataset import Dataset, Downloader
 from alphalib.utils import logger
 
 COUNTRY = "united states"
-SYMBOL = "ARR"
+SYMBOL = "TWO"
 
 
 # For testing
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", None)
-pd.set_option("display.max_colwidth", None)
+# pd.set_option("display.max_colwidth", None)
 
 
 class TestDataset(unittest.TestCase):
@@ -64,6 +64,9 @@ class TestDataset(unittest.TestCase):
     def test_get_stock_dividends(self):
         self.dataset.stock_dividends()
 
+    def test_get_stock_stats(self):
+        self.dataset.stock_stats()
+
     def test_downloader(self):
         @Downloader(
             continue_last_download=True,
@@ -83,7 +86,7 @@ class TestDataset(unittest.TestCase):
         ticker: Ticker = yf.Ticker("EVV")
         print(ticker.info)
 
-    def test_get_stats(self):
+    def test_get_all_stats(self):
         ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
         stats = ticker.stats()
         for k, v in stats.items():
@@ -91,6 +94,24 @@ class TestDataset(unittest.TestCase):
                 df = pd.DataFrame([v])
                 print(f"---- {k} ----- ")
                 print(df.head(1).T)
+
+    def get_stats(self, stats, result, stats_type):
+        if stats[stats_type]:  # type: ignore
+            v = stats[stats_type]
+            if type(v) is dict:
+                result = {**result, **v}
+            return result
+
+    def test_get_stats(self):
+        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
+        stats = ticker.stats()  # type: ignore
+        result: dict = {}
+        result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
+        result = self.get_stats(stats, result, "financialData")  # type: ignore
+        result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
+        print(len(result))
+        df = pd.DataFrame([result])
+        print(df.head(1).T)
 
     def test_yfinance_get_earning_dates(self):
         ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore

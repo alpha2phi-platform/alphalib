@@ -154,7 +154,7 @@ class Downloader:
             has_error = False
             with console.status(f"[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
-                for stock in stocks.itertuples(index=False, name="Stock"):
+                for stock in stocks.head(10).itertuples(index=False, name="Stock"):
                     try:
                         skip = False
                         has_error = False
@@ -258,6 +258,30 @@ class Dataset:
                 pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
             ]
         return pd.DataFrame()
+
+    def get_stats(self, stats, result, stats_type):
+        if stats[stats_type]:  # type: ignore
+            v = stats[stats_type]
+            if type(v) is dict:
+                result = {**result, **v}
+            return result
+
+    @Downloader(file_prefix="alphalib_stats_", sheet_name="stock_stats")
+    def stock_stats(self, *_, **kwargs):
+        stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
+        ticker: Ticker = kwargs["ticker"]
+
+        stats = ticker.stats()  # type: ignore
+        result: dict = {}
+        result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
+        result = self.get_stats(stats, result, "financialData")  # type: ignore
+        result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
+        stock_stats = pd.DataFrame([result])
+        stock_stats["country"] = stock.country  # type: ignore
+        stock_stats["name"] = stock.name  # type: ignore
+        stock_stats["symbol"] = stock.symbol  # type: ignore
+        stock_stats["fullName"] = stock.full_name  # type: ignore
+        return stock_stats
 
     # stock_cashflow = ticker.cashflow
     # stock_earnings = ticker.earnings
