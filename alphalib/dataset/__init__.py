@@ -154,7 +154,7 @@ class Downloader:
             has_error = False
             with console.status(f"[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
-                for stock in stocks.head(10).itertuples(index=False, name="Stock"):
+                for stock in stocks.itertuples(index=False, name="Stock"):
                     try:
                         skip = False
                         has_error = False
@@ -216,6 +216,20 @@ class Dataset:
     def __del__(self):
         pass
 
+    def set_stock_info(self, result, stock):
+        result["country"] = stock.country  # type: ignore
+        result["name"] = stock.name  # type: ignore
+        result["symbol"] = stock.symbol  # type: ignore
+        result["fullName"] = stock.full_name  # type: ignore
+        return result
+
+    def get_stats(self, stats, result, stats_type):
+        if stats[stats_type]:  # type: ignore
+            v = stats[stats_type]
+            if type(v) is dict:
+                result = {**result, **v}
+            return result
+
     @Downloader(file_prefix="alphalib_", sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
         # stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
@@ -230,15 +244,14 @@ class Dataset:
         stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
 
-        stock_financials = ticker.financials.T  # type: ignore
-        stock_financials["country"] = stock.country  # type: ignore
-        stock_financials["name"] = stock.name  # type: ignore
-        stock_financials["symbol"] = stock.symbol  # type: ignore
-        stock_financials["fullName"] = stock.full_name  # type: ignore
-        stock_financials.index.name = "Date"
-        stock_financials.reset_index(inplace=True)
-
-        return stock_financials
+        stock_financials = ticker.financials
+        if len(stock_financials) > 0:
+            stock_financials = stock_financials.T  # type: ignore
+            stock_financials = self.set_stock_info(stock_financials, stock)
+            stock_financials.index.name = "Date"
+            stock_financials.reset_index(inplace=True)
+            return stock_financials
+        return pd.DataFrame()
 
     @Downloader(file_prefix="alphalib_dividends_", sheet_name="stock_dividends")
     def stock_dividends(self, *_, **kwargs):
@@ -246,25 +259,13 @@ class Dataset:
 
         # From investpy
         stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
-        last_10_years = datetime.now().year - 10
         if len(stock_dividends) > 0:
-            stock_dividends["country"] = stock.country  # type: ignore
-            stock_dividends["name"] = stock.name  # type: ignore
-            stock_dividends["symbol"] = stock.symbol  # type: ignore
-            stock_dividends["fullName"] = stock.full_name  # type: ignore
-            stock_dividends_columns = stock_dividends.columns.tolist()
-            stock_dividends_columns.sort()
+            last_10_years = datetime.now().year - 10
+            stock_dividends = self.set_stock_info(stock_dividends, stock)
             return stock_dividends[
                 pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
             ]
         return pd.DataFrame()
-
-    def get_stats(self, stats, result, stats_type):
-        if stats[stats_type]:  # type: ignore
-            v = stats[stats_type]
-            if type(v) is dict:
-                result = {**result, **v}
-            return result
 
     @Downloader(file_prefix="alphalib_stats_", sheet_name="stock_stats")
     def stock_stats(self, *_, **kwargs):
@@ -276,11 +277,10 @@ class Dataset:
         result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
         result = self.get_stats(stats, result, "financialData")  # type: ignore
         result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
+        if not result:
+            return pd.DataFrame()
         stock_stats = pd.DataFrame([result])
-        stock_stats["country"] = stock.country  # type: ignore
-        stock_stats["name"] = stock.name  # type: ignore
-        stock_stats["symbol"] = stock.symbol  # type: ignore
-        stock_stats["fullName"] = stock.full_name  # type: ignore
+        stock_stats = self.set_stock_info(stock_stats, stock)
         return stock_stats
 
     # stock_cashflow = ticker.cashflow
