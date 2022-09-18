@@ -21,13 +21,13 @@ class TestDataSources(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
-    def test_get_countries(self):
-        self.countries = ds.get_stock_countries()
-        logger.info(self.countries)
+    # def test_get_countries(self):
+    #     self.countries = ds.get_stock_countries()
+    #     logger.info(self.countries)
 
-    def test_get_stocks(self):
-        self.stocks = ds.get_stocks(COUNTRY)
-        logger.info(self.stocks.head(10))
+    # def test_get_stocks(self):
+    #     self.stocks = ds.get_stocks(COUNTRY)
+    #     logger.info(self.stocks.head(10))
 
     def test_yf_get_stock_info(self):
         """Get stock info."""
