@@ -33,4 +33,4 @@ def get_stocks() -> pd.DataFrame:
         .joinpath("".join(["data/stock", ".xlsx"]))
         .resolve()
     )
-    return pd.read_excel(stock_file, sheet_name="stocks")
+    return pd.read_excel(stock_file, sheet_name="stock")
