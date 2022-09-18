@@ -30,7 +30,7 @@ def get_stocks() -> pd.DataFrame:
     stock_file = str(
         get_project_root()
         .absolute()
-        .joinpath("".join(["data/stocks", ".xlsx"]))
+        .joinpath("".join(["data/stock", ".xlsx"]))
         .resolve()
     )
     return pd.read_excel(stock_file, sheet_name="stocks")
