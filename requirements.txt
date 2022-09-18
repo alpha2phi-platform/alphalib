@@ -1,4 +1,8 @@
+beautifulsoup4
+financedatabase
 fire
+fundamentalanalysis
+html5lib
 investpy
 matplotlib
 mplfinance
@@ -10,5 +14,3 @@ pydantic
 rich
 scipy
 yfinance
-html5lib
-beautifulsoup4

@@ -1,2 +1,5 @@
+from prompt_toolkit import prompt
+
 if __name__ == "__main__":
-    print("todo")
+    answer = prompt("Query>")
+    print("You ask: %s" % answer)
