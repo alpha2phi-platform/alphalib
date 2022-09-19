@@ -5,13 +5,14 @@ import investpy
 import pandas as pd
 import yfinance as yf
 from yfinance import Ticker
+from yfinance.utils import get_json
 
 from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset, Downloader
 from alphalib.utils import logger
 
 COUNTRY = "united states"
-SYMBOL = "TWO"
+SYMBOL = "AAPL"
 
 
 # For testing
@@ -44,7 +45,7 @@ class TestDataset(unittest.TestCase):
         print(len(d), d)
 
     def test_get_stocks(self):
-        stocks = get_stocks(COUNTRY)
+        stocks = get_stocks()
         self.assertGreater(len(stocks), 0)
 
     def test_investpy_get_dividends(self):
@@ -53,16 +54,16 @@ class TestDataset(unittest.TestCase):
 
     def test_investpy_get_stock_info(self):
         stock_info = investpy.get_stock_information(SYMBOL, COUNTRY)
-        print(stock_info.T)
+        print(stock_info.T)  # type: ignore
 
     def test_get_stock_info(self):
         self.dataset.stock_info()
 
-    def test_get_stock_financials(self):
-        self.dataset.stock_financials()
+    # def test_get_stock_financials(self):
+    #     self.dataset.stock_financials()
 
-    def test_get_stock_dividends(self):
-        self.dataset.stock_dividends()
+    # def test_get_stock_dividends(self):
+    #     self.dataset.stock_dividends()
 
     def test_get_stock_stats(self):
         self.dataset.stock_stats()
@@ -122,3 +123,10 @@ class TestDataset(unittest.TestCase):
         ticker: Ticker = yf.Ticker(SYMBOL)
         calendar = ticker.calendar
         print(calendar)
+
+    def test_yfinance_get_json(self):
+        stock_details = get_json("https://finance.yahoo.com/quote/" + SYMBOL)
+        print(stock_details["defaultKeyStatistics"])
+        # for k, v in stock_details.items():
+        #     print(k)
+

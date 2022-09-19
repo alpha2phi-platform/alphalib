@@ -63,6 +63,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "financedatabase"
+version = "1.0.2"
+description = "This is a database of 300.000+ symbols containing Equities, ETFs, Funds, Indices, Currencies, Cryptocurrencies and Money Markets."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "fire"
 version = "0.4.0"
 description = "A library for automatically generating command line interfaces."
@@ -73,6 +81,14 @@ python-versions = "*"
 [package.dependencies]
 six = "*"
 termcolor = "*"
+
+[[package]]
+name = "fundamentalanalysis"
+version = "0.2.14"
+description = "Fully-fledged Fundamental Analysis package capable of collecting 20 years of Company Profiles,    Financial Statements, Ratios and Stock Data of 20.000+ companies."
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "html5lib"
@@ -358,7 +374,7 @@ requests = ">=2.26"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d184acf61f468e81cf63e204aa3a639de2758f37902a03d83489656b40a18d8c"
+content-hash = "95ea9974abc78f7b6d13f9f9c791309cdd1361497a988d3b8bb0d52de189dfc6"
 
 [metadata.files]
 backtrader = [
@@ -384,8 +400,16 @@ et-xmlfile = [
     {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
     {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
 ]
+financedatabase = [
+    {file = "financedatabase-1.0.2-py3-none-any.whl", hash = "sha256:2fbe8acea1a12d2e3371c81b075f357f61f34cae5e6d94de9b3afd68ff3c3a19"},
+    {file = "financedatabase-1.0.2.tar.gz", hash = "sha256:7b03d37ef5eef8433380d92122f2fd24bad741971518eaf1bd4a9c6f30763e23"},
+]
 fire = [
     {file = "fire-0.4.0.tar.gz", hash = "sha256:c5e2b8763699d1142393a46d0e3e790c5eb2f0706082df8f647878842c216a62"},
+]
+fundamentalanalysis = [
+    {file = "fundamentalanalysis-0.2.14-py3-none-any.whl", hash = "sha256:eda7920cb3b2f76b197cfe0a47e3936e6b4e65273a3852039cd3e5edd1bb06cc"},
+    {file = "fundamentalanalysis-0.2.14.tar.gz", hash = "sha256:bc3ee7948f7de817e195b2ac6d34dc6ba9c5f4780c9d29b7768c2790e67ab4a4"},
 ]
 html5lib = [
     {file = "html5lib-1.1-py2.py3-none-any.whl", hash = "sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d"},

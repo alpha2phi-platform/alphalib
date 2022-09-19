@@ -8,14 +8,6 @@ class AlphaLib(object):
         dataset = Dataset()
         dataset.stock_info()
 
-    def stock_financials(self):
-        dataset = Dataset()
-        dataset.stock_financials()
-
-    def stock_dividends(self):
-        dataset = Dataset()
-        dataset.stock_dividends()
-
     def stock_stats(self):
         dataset = Dataset()
         dataset.stock_stats()

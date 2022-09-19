@@ -2,12 +2,10 @@ import os
 import time
 import traceback
 from dataclasses import dataclass
-from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any, Iterable
 
-import investpy
 import pandas as pd
 import yfinance as yf
 from openpyxl import load_workbook
@@ -15,7 +13,7 @@ from rich import print as rprint
 from rich.console import Console
 from yfinance import Ticker
 
-from alphalib.data_sources import get_stock_countries, get_stocks
+from alphalib.data_sources import get_stocks
 from alphalib.utils import get_project_root
 
 
@@ -28,29 +26,22 @@ class Downloader:
         start_pos: int = 0,
         primary_col: str = "symbol",
         throttle: int = 2,
-        country: str = "united states",
     ):
         self.continue_last_download = continue_last_download
         self.sheet_name = sheet_name
         self.primary_col = primary_col
         self.throttle = throttle
         self.start_pos = start_pos
-        self.country = country
         self.file_name = str(
             get_project_root()
             .absolute()
-            .joinpath("".join([file_prefix, self.country.replace(" ", "_"), ".xlsx"]))
+            .joinpath("".join([file_prefix, ".xlsx"]))
             .resolve()
         )
 
-    @staticmethod
-    def get_countries() -> list[str]:
-        """Get a list of countries."""
-        return get_stock_countries()
-
     def get_stocks(self) -> pd.DataFrame:
         """Retrieve all stocks."""
-        return get_stocks(self.country)
+        return get_stocks()
 
     def append_df_to_excel(
         self,
@@ -139,7 +130,7 @@ class Downloader:
                 )
                 fld_list = df.columns.tolist()
                 fld_list.sort()
-                lookup = df[self.primary_col].unique().tolist()
+                lookup = df[self.primary_col].unique().tolist()  # type: ignore
 
         return fld_list, lookup
 
@@ -190,15 +181,15 @@ class Downloader:
 
                     except Exception as e:
                         has_error = True
-                        rprint(f"Unable to download data for {stock.symbol}-{stock.name}", e)  # type: ignore
+                        rprint(f"Unable to download data for {stock.symbol}-{stock.short_name}", e)  # type: ignore
                         traceback.print_exc()
                         # return # continue
                     finally:
                         if not skip:
                             if not has_error:
-                                console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}")  # type: ignore
+                                console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.short_name}")  # type: ignore
                             else:
-                                console.log(f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.name}")  # type: ignore
+                                console.log(f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}")  # type: ignore
 
                             if self.throttle > 0:
                                 time.sleep(self.throttle)
@@ -217,10 +208,9 @@ class Dataset:
         pass
 
     def set_stock_info(self, result, stock):
-        result["country"] = stock.country  # type: ignore
-        result["name"] = stock.name  # type: ignore
+        result["name"] = stock.short_name  # type: ignore
         result["symbol"] = stock.symbol  # type: ignore
-        result["fullName"] = stock.full_name  # type: ignore
+        result["sector"] = stock.sector  # type: ignore
         return result
 
     def get_stats(self, stats, result, stats_type):
@@ -230,7 +220,7 @@ class Dataset:
                 result = {**result, **v}
             return result
 
-    @Downloader(file_prefix="alphalib_", sheet_name="stock_info")
+    @Downloader(file_prefix="stock_info", sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
         # stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
@@ -239,35 +229,7 @@ class Dataset:
         stock_info = pd.DataFrame([ticker.info])
         return stock_info
 
-    @Downloader(file_prefix="alphalib_financials_", sheet_name="stock_financials")
-    def stock_financials(self, *_, **kwargs):
-        stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
-        ticker: Ticker = kwargs["ticker"]
-
-        stock_financials = ticker.financials
-        if len(stock_financials) > 0:
-            stock_financials = stock_financials.T  # type: ignore
-            stock_financials = self.set_stock_info(stock_financials, stock)
-            stock_financials.index.name = "Date"
-            stock_financials.reset_index(inplace=True)
-            return stock_financials
-        return pd.DataFrame()
-
-    @Downloader(file_prefix="alphalib_dividends_", sheet_name="stock_dividends")
-    def stock_dividends(self, *_, **kwargs):
-        stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
-
-        # From investpy
-        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
-        if len(stock_dividends) > 0:
-            last_10_years = datetime.now().year - 10
-            stock_dividends = self.set_stock_info(stock_dividends, stock)
-            return stock_dividends[
-                pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
-            ]
-        return pd.DataFrame()
-
-    @Downloader(file_prefix="alphalib_stats_", sheet_name="stock_stats")
+    @Downloader(file_prefix="stock_stats", sheet_name="stock_stats")
     def stock_stats(self, *_, **kwargs):
         stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
@@ -282,6 +244,34 @@ class Dataset:
         stock_stats = pd.DataFrame([result])
         stock_stats = self.set_stock_info(stock_stats, stock)
         return stock_stats
+
+    # @Downloader(file_prefix="alphalib_financials_", sheet_name="stock_financials")
+    # def stock_financials(self, *_, **kwargs):
+    #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
+    #     ticker: Ticker = kwargs["ticker"]
+
+    #     stock_financials = ticker.financials
+    #     if len(stock_financials) > 0:
+    #         stock_financials = stock_financials.T  # type: ignore
+    #         stock_financials = self.set_stock_info(stock_financials, stock)
+    #         stock_financials.index.name = "Date"
+    #         stock_financials.reset_index(inplace=True)
+    #         return stock_financials
+    #     return pd.DataFrame()
+
+    # @Downloader(file_prefix="alphalib_dividends_", sheet_name="stock_dividends")
+    # def stock_dividends(self, *_, **kwargs):
+    #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
+
+    #     # From investpy
+    #     stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
+    #     if len(stock_dividends) > 0:
+    #         last_10_years = datetime.now().year - 10
+    #         stock_dividends = self.set_stock_info(stock_dividends, stock)
+    #         return stock_dividends[
+    #             pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
+    #         ]
+    #     return pd.DataFrame()
 
     # stock_cashflow = ticker.cashflow
     # stock_earnings = ticker.earnings

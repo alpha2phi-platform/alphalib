@@ -17,6 +17,8 @@ pandas-datareader = "^0.10.0"
 fire = "^0.4.0"
 html5lib = "^1.1"
 beautifulsoup4 = "^4.11.1"
+financedatabase = "^1.0.2"
+fundamentalanalysis = "^0.2.14"
 
 [tool.poetry.dev-dependencies]
 
