@@ -1,4 +1,3 @@
-import gc
 import os
 import time
 import traceback
@@ -48,7 +47,6 @@ class Downloader:
         self,
         df: pd.DataFrame,
         startrow: int | None = None,
-        truncate_sheet: bool = False,
         **to_excel_kwargs,
     ):
         # Excel file doesn't exist - saving and exiting
@@ -67,27 +65,13 @@ class Downloader:
         if "engine" in to_excel_kwargs:
             to_excel_kwargs.pop("engine")
 
-        writer = pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay")  # type: ignore
-
         # try to open an existing workbook
-        writer.book = load_workbook(self.file_name)  # type: ignore
+        work_book = load_workbook(self.file_name, read_only=True, keep_vba=False)  # type: ignore
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
-        if startrow is None and self.sheet_name in writer.book.sheetnames:  # type: ignore
-            startrow = writer.book[self.sheet_name].max_row  # type: ignore
-
-        # truncate sheet
-        if truncate_sheet and self.sheet_name in writer.book.sheetnames:  # type: ignore
-            # index of [sheet_name] sheet
-            idx = writer.book.sheetnames.index(self.sheet_name)  # type: ignore
-            # remove [sheet_name]
-            writer.book.remove(writer.book.worksheets[idx])  # type: ignore
-            # create an empty sheet [sheet_name] using old index
-            writer.book.create_sheet(self.sheet_name, idx)  # type: ignore
-
-        # copy existing sheets
-        writer.sheets = {ws.title: ws for ws in writer.book.worksheets}  # type: ignore
+        if startrow is None and self.sheet_name in work_book.sheetnames:  # type: ignore
+            startrow = work_book[self.sheet_name].max_row  # type: ignore
 
         if startrow is None:
             startrow = 0
@@ -97,18 +81,18 @@ class Downloader:
             header = True
 
         # write out the new sheet
-        df.to_excel(
-            writer,
-            self.sheet_name,
-            startrow=startrow,
-            header=header,
-            index=False,
-            **to_excel_kwargs,
-        )
+        with pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:  # type: ignore
+            df.to_excel(
+                writer,
+                self.sheet_name,
+                startrow=startrow,
+                header=header,
+                index=False,
+                **to_excel_kwargs,
+            )
 
-        # save and close the workbook
-        writer.save()
-        writer.close()
+        # close the work_book
+        work_book.close()
 
     def create_missing_cols(self, df, target_cols):
         columns = df.columns.tolist()
@@ -176,7 +160,7 @@ class Downloader:
                             **kwargs,
                         )
 
-                        if len(result) > 0:
+                        if len(result) > 0 and len(result.columns) > 10:
                             if len(fld_list) == 0:
                                 fld_list.extend(result.columns.tolist())
                                 fld_list.sort()
@@ -196,8 +180,6 @@ class Downloader:
                                 console.log(f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}")  # type: ignore
 
                             if self.throttle > 0:
-                                if counter % 10 == 0:
-                                    gc.collect()
                                 time.sleep(self.throttle)
 
         return wrapper
