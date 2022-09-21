@@ -151,6 +151,8 @@ class Downloader:
                         has_error = False
                         counter = counter + 1
                         if self.start_pos > 0 and counter < self.start_pos:
+                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            skip = True
                             continue
                         if self.continue_last_download:
                             if stock.symbol in lookup:  # type: ignore
@@ -162,6 +164,7 @@ class Downloader:
                         history: pd.DataFrame = ticker.history()
                         if history.empty:
                             console.log(f"[blue]Stock not found. Skipping {stock.symbol}")  # type: ignore
+                            skip = True
                             continue
 
                         result = fn(
