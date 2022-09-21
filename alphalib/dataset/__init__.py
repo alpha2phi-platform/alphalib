@@ -1,3 +1,4 @@
+import gc
 import os
 import time
 import traceback
@@ -69,7 +70,7 @@ class Downloader:
         writer = pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay")  # type: ignore
 
         # try to open an existing workbook
-        writer.book = load_workbook(self.file_name, read_only = True, keep_vba = False)  # type: ignore
+        writer.book = load_workbook(self.file_name)  # type: ignore
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
@@ -195,6 +196,8 @@ class Downloader:
                                 console.log(f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}")  # type: ignore
 
                             if self.throttle > 0:
+                                if counter % 10 == 0:
+                                    gc.collect()
                                 time.sleep(self.throttle)
 
         return wrapper
