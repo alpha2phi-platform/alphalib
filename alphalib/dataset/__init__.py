@@ -220,7 +220,7 @@ class Dataset:
                 result = {**result, **v}
             return result
 
-    @Downloader(file_prefix="stock_info", sheet_name="stock_info")
+    @Downloader(file_prefix="stock_info_2", start_pos=6295, sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
         # stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
