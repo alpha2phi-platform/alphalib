@@ -69,7 +69,7 @@ class Downloader:
         writer = pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay")  # type: ignore
 
         # try to open an existing workbook
-        writer.book = load_workbook(self.file_name)  # type: ignore
+        writer.book = load_workbook(self.file_name, read_only = True, keep_vba = False)  # type: ignore
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
@@ -223,7 +223,7 @@ class Dataset:
                 result = {**result, **v}
             return result
 
-    @Downloader(file_prefix="stock_info_2", start_pos=6295, sheet_name="stock_info")
+    @Downloader(file_prefix="stock_info", sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
         # stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
         ticker: Ticker = kwargs["ticker"]
