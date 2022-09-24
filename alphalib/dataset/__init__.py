@@ -151,7 +151,7 @@ class Downloader:
                         history: pd.DataFrame = ticker.history()
                         if history.empty:
                             console.log(f"[blue]Stock not found. Skipping {stock.symbol}")  # type: ignore
-                            skip = True
+                            # skip = True
                             continue
 
                         result = fn(
