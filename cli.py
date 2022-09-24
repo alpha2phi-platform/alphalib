@@ -12,6 +12,10 @@ class AlphaLib(object):
         dataset = Dataset()
         dataset.stock_stats()
 
+    def stock_dividends(self):
+        dataset = Dataset()
+        dataset.stock_dividends()
+
 
 if __name__ == "__main__":
     alphalib = AlphaLib()

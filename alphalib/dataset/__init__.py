@@ -2,10 +2,12 @@ import os
 import time
 import traceback
 from dataclasses import dataclass
+from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any, Iterable
 
+import investpy
 import pandas as pd
 import yfinance as yf
 from openpyxl import load_workbook
@@ -233,6 +235,20 @@ class Dataset:
         stock_stats = self.set_stock_info(stock_stats, stock)
         return stock_stats
 
+    @Downloader(file_prefix="stock_dividends", sheet_name="stock_dividends")
+    def stock_dividends(self, *_, **kwargs):
+        stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
+
+        # From investpy
+        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
+        if len(stock_dividends) > 0:
+            last_10_years = datetime.now().year - 10
+            stock_dividends = self.set_stock_info(stock_dividends, stock)
+            return stock_dividends[
+                pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
+            ]
+        return pd.DataFrame()
+
     # @Downloader(file_prefix="alphalib_financials_", sheet_name="stock_financials")
     # def stock_financials(self, *_, **kwargs):
     #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
@@ -245,20 +261,6 @@ class Dataset:
     #         stock_financials.index.name = "Date"
     #         stock_financials.reset_index(inplace=True)
     #         return stock_financials
-    #     return pd.DataFrame()
-
-    # @Downloader(file_prefix="alphalib_dividends_", sheet_name="stock_dividends")
-    # def stock_dividends(self, *_, **kwargs):
-    #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
-
-    #     # From investpy
-    #     stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
-    #     if len(stock_dividends) > 0:
-    #         last_10_years = datetime.now().year - 10
-    #         stock_dividends = self.set_stock_info(stock_dividends, stock)
-    #         return stock_dividends[
-    #             pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
-    #         ]
     #     return pd.DataFrame()
 
     # stock_cashflow = ticker.cashflow

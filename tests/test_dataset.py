@@ -11,7 +11,7 @@ from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset, Downloader
 from alphalib.utils import logger
 
-COUNTRY = "united states"
+COUNTRY = "United States"
 SYMBOL = "AAPL"
 
 
@@ -129,4 +129,3 @@ class TestDataset(unittest.TestCase):
         print(stock_details["defaultKeyStatistics"])
         # for k, v in stock_details.items():
         #     print(k)
-
