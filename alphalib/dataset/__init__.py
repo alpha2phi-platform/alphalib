@@ -162,7 +162,7 @@ class Downloader:
                             **kwargs,
                         )
 
-                        if len(result) > 0 and len(result.columns) > 10:
+                        if len(result) > 0 and len(result.columns) > 5:
                             if len(fld_list) == 0:
                                 fld_list.extend(result.columns.tolist())
                                 fld_list.sort()
@@ -240,7 +240,7 @@ class Dataset:
         stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
 
         # From investpy
-        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
+        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country.lower())  # type: ignore
         if len(stock_dividends) > 0:
             last_10_years = datetime.now().year - 10
             stock_dividends = self.set_stock_info(stock_dividends, stock)
