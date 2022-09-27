@@ -84,7 +84,7 @@ class TestDataset(unittest.TestCase):
         stock_info()
 
     def test_yfinance_get_stock_info(self):
-        ticker: Ticker = yf.Ticker("EVV")
+        ticker: Ticker = yf.Ticker("CEN")
         print(ticker.info)
 
     def test_get_all_stats(self):
