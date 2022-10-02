@@ -2,10 +2,12 @@ import os
 import time
 import traceback
 from dataclasses import dataclass
+from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any, Iterable
 
+import investpy
 import pandas as pd
 import yfinance as yf
 from openpyxl import load_workbook
@@ -47,7 +49,6 @@ class Downloader:
         self,
         df: pd.DataFrame,
         startrow: int | None = None,
-        truncate_sheet: bool = False,
         **to_excel_kwargs,
     ):
         # Excel file doesn't exist - saving and exiting
@@ -66,27 +67,13 @@ class Downloader:
         if "engine" in to_excel_kwargs:
             to_excel_kwargs.pop("engine")
 
-        writer = pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay")  # type: ignore
-
         # try to open an existing workbook
-        writer.book = load_workbook(self.file_name)  # type: ignore
+        work_book = load_workbook(self.file_name, read_only=True, keep_vba=False)  # type: ignore
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
-        if startrow is None and self.sheet_name in writer.book.sheetnames:  # type: ignore
-            startrow = writer.book[self.sheet_name].max_row  # type: ignore
-
-        # truncate sheet
-        if truncate_sheet and self.sheet_name in writer.book.sheetnames:  # type: ignore
-            # index of [sheet_name] sheet
-            idx = writer.book.sheetnames.index(self.sheet_name)  # type: ignore
-            # remove [sheet_name]
-            writer.book.remove(writer.book.worksheets[idx])  # type: ignore
-            # create an empty sheet [sheet_name] using old index
-            writer.book.create_sheet(self.sheet_name, idx)  # type: ignore
-
-        # copy existing sheets
-        writer.sheets = {ws.title: ws for ws in writer.book.worksheets}  # type: ignore
+        if startrow is None and self.sheet_name in work_book.sheetnames:  # type: ignore
+            startrow = work_book[self.sheet_name].max_row  # type: ignore
 
         if startrow is None:
             startrow = 0
@@ -96,18 +83,18 @@ class Downloader:
             header = True
 
         # write out the new sheet
-        df.to_excel(
-            writer,
-            self.sheet_name,
-            startrow=startrow,
-            header=header,
-            index=False,
-            **to_excel_kwargs,
-        )
+        with pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:  # type: ignore
+            df.to_excel(
+                writer,
+                self.sheet_name,
+                startrow=startrow,
+                header=header,
+                index=False,
+                **to_excel_kwargs,
+            )
 
-        # save and close the workbook
-        writer.save()
-        writer.close()
+        # close the work_book
+        work_book.close()
 
     def create_missing_cols(self, df, target_cols):
         columns = df.columns.tolist()
@@ -151,6 +138,8 @@ class Downloader:
                         has_error = False
                         counter = counter + 1
                         if self.start_pos > 0 and counter < self.start_pos:
+                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            skip = True
                             continue
                         if self.continue_last_download:
                             if stock.symbol in lookup:  # type: ignore
@@ -162,6 +151,7 @@ class Downloader:
                         history: pd.DataFrame = ticker.history()
                         if history.empty:
                             console.log(f"[blue]Stock not found. Skipping {stock.symbol}")  # type: ignore
+                            # skip = True
                             continue
 
                         result = fn(
@@ -172,7 +162,7 @@ class Downloader:
                             **kwargs,
                         )
 
-                        if len(result) > 0:
+                        if len(result) > 0 and len(result.columns) > 5:
                             if len(fld_list) == 0:
                                 fld_list.extend(result.columns.tolist())
                                 fld_list.sort()
@@ -245,6 +235,20 @@ class Dataset:
         stock_stats = self.set_stock_info(stock_stats, stock)
         return stock_stats
 
+    @Downloader(file_prefix="stock_dividends", sheet_name="stock_dividends")
+    def stock_dividends(self, *_, **kwargs):
+        stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
+
+        # From investpy
+        stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country.lower())  # type: ignore
+        if len(stock_dividends) > 0:
+            last_10_years = datetime.now().year - 10
+            stock_dividends = self.set_stock_info(stock_dividends, stock)
+            return stock_dividends[
+                pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
+            ]
+        return pd.DataFrame()
+
     # @Downloader(file_prefix="alphalib_financials_", sheet_name="stock_financials")
     # def stock_financials(self, *_, **kwargs):
     #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
@@ -257,20 +261,6 @@ class Dataset:
     #         stock_financials.index.name = "Date"
     #         stock_financials.reset_index(inplace=True)
     #         return stock_financials
-    #     return pd.DataFrame()
-
-    # @Downloader(file_prefix="alphalib_dividends_", sheet_name="stock_dividends")
-    # def stock_dividends(self, *_, **kwargs):
-    #     stock: Iterable[tuple[Any, ...]] = kwargs["stock"]
-
-    #     # From investpy
-    #     stock_dividends = investpy.get_stock_dividends(stock.symbol, stock.country)  # type: ignore
-    #     if len(stock_dividends) > 0:
-    #         last_10_years = datetime.now().year - 10
-    #         stock_dividends = self.set_stock_info(stock_dividends, stock)
-    #         return stock_dividends[
-    #             pd.DatetimeIndex(stock_dividends["Date"]).year > last_10_years  # type: ignore
-    #         ]
     #     return pd.DataFrame()
 
     # stock_cashflow = ticker.cashflow
