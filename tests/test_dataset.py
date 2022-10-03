@@ -4,14 +4,15 @@ import unittest.mock
 import investpy
 import pandas as pd
 import yfinance as yf
-from alphalib.data_sources import get_stocks
-from alphalib.dataset import Dataset, Downloader
-from alphalib.utils import logger
 from yfinance import Ticker
 from yfinance.utils import get_json
 
+from alphalib.data_sources import get_stocks
+from alphalib.dataset import Dataset, Downloader
+from alphalib.utils import logger
+
 COUNTRY = "United States"
-SYMBOL = "AAPL"
+SYMBOL = "PBR-A"
 
 
 # For testing
@@ -89,7 +90,7 @@ class TestDataset(unittest.TestCase):
     def test_get_all_stats(self):
         ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
         stats = ticker.stats()
-        for k, v in stats.items(): # type: ignore
+        for k, v in stats.items():  # type: ignore
             if type(v) is dict:
                 df = pd.DataFrame([v])
                 print(f"---- {k} ----- ")
