@@ -183,3 +183,7 @@ Available fields
 - yield
 - ytdReturn
 - zip
+
+## Yahoo Finance Screener
+
+- [High Dividend Yield Stock](https://finance.yahoo.com/u/yahoo-finance/watchlists/high-yield-dividend-stocks/)
