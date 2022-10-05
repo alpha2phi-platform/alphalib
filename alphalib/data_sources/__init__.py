@@ -8,7 +8,7 @@ from alphalib.utils import get_project_root
 
 
 @dataclass
-class HighYield:
+class StockAnalysis:
     symbol: str = ""
     name: str = ""
     sector: str = ""
@@ -18,6 +18,8 @@ class HighYield:
     exDividendDate: datetime = datetime.min
     dividendDate: datetime = datetime.min
     dividendHistory: pd.DataFrame = pd.DataFrame()
+    seeking_alpha: str = ""
+    nasdaq: str = ""
 
 
 def get_stocks() -> pd.DataFrame:

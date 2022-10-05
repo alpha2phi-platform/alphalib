@@ -4,6 +4,7 @@ fire
 fundamentalanalysis
 html5lib
 investpy
+lxml
 matplotlib
 mplfinance
 openpyxl
@@ -11,6 +12,8 @@ pandas
 pandas-datareader
 prompt_toolkit
 pydantic
+requests
+requests_html
 rich
 scipy
 yfinance
