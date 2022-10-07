@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 from alphalib.utils import get_project_root
+from .nasdaq import Nasdaq
 
 
 @dataclass
@@ -18,8 +19,8 @@ class StockAnalysis:
     exDividendDate: datetime = datetime.min
     dividendDate: datetime = datetime.min
     dividendHistory: pd.DataFrame = pd.DataFrame()
+    nasdaq: Nasdaq = Nasdaq()
     seeking_alpha: str = ""
-    nasdaq: str = ""
 
 
 def get_stocks() -> pd.DataFrame:

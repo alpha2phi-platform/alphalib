@@ -3,9 +3,8 @@ import unittest.mock
 
 import pandas as pd
 import yfinance as yf
-
-import alphalib.data_sources as ds
-from alphalib.utils import logger
+from alphalib.data_sources.nasdaq import get_dividend_history
+from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
 
@@ -34,3 +33,8 @@ class TestDataSources(unittest.TestCase):
         stock = yf.Ticker("BAC")
         stock_info = pd.DataFrame([stock.info])
         logger.info(stock_info.head(10).T)
+
+
+    def test_nasdaq(self):
+        nasdaq = get_dividend_history("https://www.nasdaq.com/market-activity/stocks/oxlc/dividend-history")
+        print(nasdaq)

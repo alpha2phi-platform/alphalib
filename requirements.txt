@@ -1,4 +1,5 @@
 beautifulsoup4
+cssselect
 financedatabase
 fire
 fundamentalanalysis
@@ -13,7 +14,6 @@ pandas-datareader
 prompt_toolkit
 pydantic
 requests
-requests_html
 rich
 scipy
 yfinance
