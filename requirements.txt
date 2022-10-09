@@ -16,5 +16,6 @@ pydantic
 requests
 rich
 scipy
-yfinance
 scrapy
+selenium
+yfinance
