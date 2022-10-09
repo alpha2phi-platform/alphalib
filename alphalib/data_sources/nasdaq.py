@@ -1,3 +1,5 @@
+import time
+from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -25,33 +27,32 @@ def get_dividend_history(url: str) -> Nasdaq:
     assert url is not None
 
     nasdaq = Nasdaq()
-    s = requests.Session()
-    try:
+    with closing(requests.Session()) as s:
         s.verify = False
         s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
         r = s.get(
             url, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
         )
-        if r.status_code != 200:
+        if r.status_code != requests.status_codes.codes["ok"]:
             raise ConnectionError(
                 "ERR: error " + str(r.status_code) + ", try again later."
             )
-        soup = BeautifulSoup(
-            s.get(
-                url, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
-            ).text,
-            "lxml",
-        )
+        soup = BeautifulSoup(r.text, "lxml")
+        print(r.text)
 
         # Get the stock label
         tag: Tag | None = soup.select_one("div.dividend-history__heading > h1")
         if tag:
             nasdaq.label = tag.text
 
-
         # Get ex dividend date
-
-    finally:
-        s.close()
+        tag = soup.select_one(
+            "ul > li:nth-child(1) > span.dividend-history__summary-item__value"
+        )
+        if tag:
+            print(tag.text)
+        else:
+            print("not found")
+            # nasdaq.exDividendDate =
 
     return nasdaq

@@ -3,6 +3,7 @@ import unittest.mock
 
 import pandas as pd
 import yfinance as yf
+
 from alphalib.data_sources.nasdaq import get_dividend_history
 from alphalib.utils.logger import logger
 
@@ -34,7 +35,8 @@ class TestDataSources(unittest.TestCase):
         stock_info = pd.DataFrame([stock.info])
         logger.info(stock_info.head(10).T)
 
-
     def test_nasdaq(self):
-        nasdaq = get_dividend_history("https://www.nasdaq.com/market-activity/stocks/oxlc/dividend-history")
+        nasdaq = get_dividend_history(
+            "https://www.nasdaq.com/market-activity/stocks/oxlc/dividend-history"
+        )
         print(nasdaq)
