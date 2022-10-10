@@ -9,6 +9,9 @@ from alphalib.utils.convertutils import dt_from_ts
 @dataclass
 class YahooFinance:
     symbol: str = ""
+    name: str = ""
+    exchange: str = ""
+    sector: str = ""
     currentPrice: float = 0
     earningsDate: datetime = datetime.min
     exDividendDate: datetime = datetime.min
@@ -23,6 +26,9 @@ def get_stock_details(symbol: str) -> YahooFinance:
 
     ticker = yf.Ticker(symbol)
     stock_stats = ticker.stats()
+    yahoo_finance.name = stock_stats["price"]["shortName"]  # type: ignore
+    yahoo_finance.exchange = stock_stats["price"]["exchange"]  # type: ignore
+    yahoo_finance.sector = stock_stats["summaryProfile"]["sector"]  # type: ignore
     yahoo_finance.currentPrice = stock_stats["financialData"]["currentPrice"]  # type: ignore
     calendar_events = stock_stats["calendarEvents"]  # type: ignore
     yahoo_finance.earningsDate = dt_from_ts(

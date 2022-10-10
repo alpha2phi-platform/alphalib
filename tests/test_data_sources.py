@@ -39,7 +39,7 @@ class TestDataSources(unittest.TestCase):
         print(nasdaq)
 
     def test_seeking_alpha(self):
-        seeking_alpha = get_seeking_alpha("oxlc")
+        seeking_alpha = get_seeking_alpha("gogl")
         print(seeking_alpha)
 
     def test_yfinance(self):
