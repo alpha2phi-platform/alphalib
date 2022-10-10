@@ -1,13 +1,13 @@
 from datetime import datetime
 
 
-def strip(text):
+def strip(text) -> str:
     if text:
         return text.strip()
     return ""
 
 
-def to_date(text, format="%m/%d/%Y"):
+def to_date(text, format="%m/%d/%Y") -> datetime:
     if text:
         try:
             return datetime.strptime(strip(text), format)
@@ -16,13 +16,22 @@ def to_date(text, format="%m/%d/%Y"):
     return datetime.min
 
 
-def strip_chars(text, chars=" $%\xa0"):
+def strip_chars(text, chars=" $%\xa0") -> str:
     if text:
         return text.strip(chars)
     return ""
 
 
-def to_float(text):
+def dt_from_ts(text) -> datetime:
+    if text:
+        try:
+            return datetime.fromtimestamp(text)
+        except Exception:
+            return datetime.min
+    return datetime.min
+
+
+def to_float(text) -> float:
     if text:
         try:
             return float(strip_chars(text))

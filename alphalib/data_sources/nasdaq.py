@@ -26,7 +26,7 @@ class Nasdaq:
     url: str = ""
 
 
-def get_dividend_history(symbol: str) -> Nasdaq:
+def get_stock_details(symbol: str) -> Nasdaq:
     assert symbol is not None
 
     download_url = URL.format(symbol.lower())

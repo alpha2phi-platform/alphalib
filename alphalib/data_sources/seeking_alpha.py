@@ -19,7 +19,7 @@ class SeekingAlpha:
     dividend_history: pd.DataFrame = pd.DataFrame()
 
 
-def get_dividend_history(symbol: str) -> SeekingAlpha:
+def get_stock_details(symbol: str) -> SeekingAlpha:
     assert symbol is not None
 
     download_url = URL.format(symbol.upper())
@@ -36,27 +36,13 @@ def get_dividend_history(symbol: str) -> SeekingAlpha:
     soup = BeautifulSoup(page_source, "lxml")
 
     # Dividend history
-    rs_decl_dt = soup.select(
-        "div > table > tbody > tr > td:nth-child(2)"
-    )
-    rs_ex_div_dt = soup.select(
-        "div > table > tbody > tr > td:nth-child(3)"
-    )
-    rs_rec_dt = soup.select(
-        "div > table > tbody > tr > td:nth-child(4)"
-    )
-    rs_pay_dt = soup.select(
-        "div > table > tbody > tr > td:nth-child(5)"
-    )
-    rs_freq = soup.select(
-        "div > table > tbody > tr > td:nth-child(6)"
-    )
-    rs_amt = soup.select(
-        "div > table > tbody > tr > td:nth-child(7)"
-    )
-    rs_adj_amt = soup.select(
-        "div > table > tbody > tr > td:nth-child(8)"
-    )
+    rs_decl_dt = soup.select("div > table > tbody > tr > td:nth-child(2)")
+    rs_ex_div_dt = soup.select("div > table > tbody > tr > td:nth-child(3)")
+    rs_rec_dt = soup.select("div > table > tbody > tr > td:nth-child(4)")
+    rs_pay_dt = soup.select("div > table > tbody > tr > td:nth-child(5)")
+    rs_freq = soup.select("div > table > tbody > tr > td:nth-child(6)")
+    rs_amt = soup.select("div > table > tbody > tr > td:nth-child(7)")
+    rs_adj_amt = soup.select("div > table > tbody > tr > td:nth-child(8)")
 
     div_hists = []
     for idx in range(0, len(rs_decl_dt)):
