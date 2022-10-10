@@ -32,7 +32,5 @@ class TestDataSources(unittest.TestCase):
         print("\xa0 x17%x".strip(" $%\xa0"))
 
     def test_nasdaq(self):
-        nasdaq = get_dividend_history(
-            "https://www.nasdaq.com/market-activity/stocks/oxlc/dividend-history"
-        )
+        nasdaq = get_dividend_history("oxlc")
         print(nasdaq)

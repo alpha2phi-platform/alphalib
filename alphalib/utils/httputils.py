@@ -1,5 +1,7 @@
 import random
 
+from bs4 import BeautifulSoup
+from bs4.element import Tag
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -33,6 +35,13 @@ def random_user_agent():
     return str(random.choice(USER_AGENTS))
 
 
+def get_tag_value(soup: BeautifulSoup, selector: str, fn):
+    tag: Tag | None = soup.select_one(selector)
+    if tag:
+        return fn(tag.text)
+    return fn(None)
+
+
 # Default HTTP time out in second
 DEFAULT_HTTP_TIMEOUT = 10
 
@@ -53,8 +62,8 @@ content_setting = {"profile.managed_default_content_settings.images": 2}
 chrome_options.add_experimental_option("prefs", content_setting)
 
 # Web driver
-driver = webdriver.Chrome(
+web_driver = webdriver.Chrome(
     service=ChromeService(ChromeDriverManager().install()),
     chrome_options=chrome_options,
 )
-action = ActionChains(driver)
+action = ActionChains(web_driver)
