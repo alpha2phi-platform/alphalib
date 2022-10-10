@@ -3,7 +3,6 @@ from datetime import datetime
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from bs4.element import Tag
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -17,20 +16,23 @@ URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 
 @dataclass
 class Nasdaq:
-
     label: str = ""
+    symbol: str = ""
     exDividendDate: datetime = datetime.min
     dividend_yield_pct: float = 0
     annual_dividend: float = 0
     pe_ratio: float = 0
     dividend_history: pd.DataFrame = pd.DataFrame()
+    url: str = ""
 
 
 def get_dividend_history(symbol: str) -> Nasdaq:
     assert symbol is not None
 
-    nasdaq = Nasdaq()
     download_url = URL.format(symbol.lower())
+    nasdaq = Nasdaq()
+    nasdaq.symbol = symbol
+    nasdaq.url = download_url
     web_driver.get(download_url)
     WebDriverWait(web_driver, DEFAULT_HTTP_TIMEOUT).until(
         EC.presence_of_element_located(

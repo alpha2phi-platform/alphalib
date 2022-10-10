@@ -5,7 +5,8 @@ from datetime import datetime
 import pandas as pd
 import yfinance as yf
 
-from alphalib.data_sources.nasdaq import get_dividend_history
+from alphalib.data_sources.nasdaq import get_dividend_history as get_nasdaq
+from alphalib.data_sources.seeking_alpha import get_dividend_history as get_seeking_alpha
 from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
@@ -32,5 +33,9 @@ class TestDataSources(unittest.TestCase):
         print("\xa0 x17%x".strip(" $%\xa0"))
 
     def test_nasdaq(self):
-        nasdaq = get_dividend_history("oxlc")
+        nasdaq = get_nasdaq("aapl")
         print(nasdaq)
+
+    def test_seeking_alpha(self):
+        seeking_alpha = get_seeking_alpha("oxlc")
+        print(seeking_alpha)
