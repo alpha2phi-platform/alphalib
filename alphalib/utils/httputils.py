@@ -1,5 +1,10 @@
 import random
 
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+
 USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36",
     "Mozilla/5.0 (Linux; Android 11; Pixel 5 Build/RQ3A.210805.001.A1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.159 Mobile Safari/537.36",
@@ -14,10 +19,6 @@ USER_AGENTS = [
 ]
 
 
-DEFAULT_HTTP_TIMEOUT = 5
-DEFAULT_HTTP_RETRY = 3
-
-
 def http_headers():
     return {
         "User-Agent": random_user_agent(),
@@ -30,3 +31,30 @@ def http_headers():
 
 def random_user_agent():
     return str(random.choice(USER_AGENTS))
+
+
+# Default HTTP time out in second
+DEFAULT_HTTP_TIMEOUT = 10
+
+# Chrome options
+chrome_options = webdriver.ChromeOptions()
+chrome_options.headless = True
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("user-agent=" + random_user_agent())
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("window-sized1200,600")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--proxy-server='direct://'")
+chrome_options.add_argument("--proxy-bypass-list=*")
+chrome_options.add_argument("--blink-settings=imagesEnabled=false")
+content_setting = {"profile.managed_default_content_settings.images": 2}
+chrome_options.add_experimental_option("prefs", content_setting)
+
+# Web driver
+driver = webdriver.Chrome(
+    service=ChromeService(ChromeDriverManager().install()),
+    chrome_options=chrome_options,
+)
+action = ActionChains(driver)

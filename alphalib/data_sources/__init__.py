@@ -1,26 +1,26 @@
 # import investpy
 from dataclasses import dataclass
-from datetime import datetime
 
 import pandas as pd
 
 from alphalib.utils import get_project_root
+
+from .investing import Investing
 from .nasdaq import Nasdaq
+from .seeking_alpha import SeekingAlpha
+from .yahoo_finance import YahooFinance
 
 
 @dataclass
-class StockAnalysis:
-    symbol: str = ""
+class AggregatedSource:
     name: str = ""
+    symbol: str = ""
     sector: str = ""
     exchange: str = ""
-    currentPrice: float = 0
-    earningsDate: datetime = datetime.min
-    exDividendDate: datetime = datetime.min
-    dividendDate: datetime = datetime.min
-    dividendHistory: pd.DataFrame = pd.DataFrame()
+    yahooFinance: YahooFinance = YahooFinance()
+    investing: Investing = Investing()
     nasdaq: Nasdaq = Nasdaq()
-    seeking_alpha: str = ""
+    seeking_alpha: SeekingAlpha = SeekingAlpha()
 
 
 def get_stocks() -> pd.DataFrame:

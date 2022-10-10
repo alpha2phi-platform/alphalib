@@ -1,16 +1,15 @@
-import time
-from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime
 
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from requests.adapters import HTTPAdapter
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
-from ..utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
-                               http_headers)
+from alphalib.utils.convertutils import strip, to_date, to_float
+from alphalib.utils.httputils import DEFAULT_HTTP_TIMEOUT, driver
 
 
 @dataclass
@@ -23,36 +22,87 @@ class Nasdaq:
     dividend_history: pd.DataFrame = pd.DataFrame()
 
 
+def get_tag_value(soup: BeautifulSoup, selector: str, fn):
+    tag: Tag | None = soup.select_one(selector)
+    if tag:
+        return fn(tag.text)
+    return fn(None)
+
+
 def get_dividend_history(url: str) -> Nasdaq:
     assert url is not None
 
     nasdaq = Nasdaq()
-    with closing(requests.Session()) as s:
-        s.verify = False
-        s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
-        r = s.get(
-            url, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
-        )
-        if r.status_code != requests.status_codes.codes["ok"]:
-            raise ConnectionError(
-                "ERR: error " + str(r.status_code) + ", try again later."
-            )
-        soup = BeautifulSoup(r.text, "lxml")
-        print(r.text)
 
-        # Get the stock label
-        tag: Tag | None = soup.select_one("div.dividend-history__heading > h1")
-        if tag:
-            nasdaq.label = tag.text
-
-        # Get ex dividend date
-        tag = soup.select_one(
-            "ul > li:nth-child(1) > span.dividend-history__summary-item__value"
+    driver.get(url)
+    WebDriverWait(driver, DEFAULT_HTTP_TIMEOUT).until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded")
         )
-        if tag:
-            print(tag.text)
-        else:
-            print("not found")
-            # nasdaq.exDividendDate =
+    )
+    page_source = driver.page_source
+    soup = BeautifulSoup(page_source, "lxml")
+
+    # Get the stock label
+    nasdaq.label = get_tag_value(soup, "div.dividend-history__heading > h1", strip)
+
+    # Ex dividend date
+    nasdaq.exDividendDate = get_tag_value(
+        soup,
+        "ul > li:nth-child(1) > span.dividend-history__summary-item__value",
+        to_date,
+    )
+
+    # Dividend yield
+    nasdaq.dividend_yield_pct = get_tag_value(
+        soup,
+        "ul > li:nth-child(2) > span.dividend-history__summary-item__value",
+        to_float
+    )
+
+    # Annual dividend
+    nasdaq.annual_dividend = get_tag_value(
+        soup,
+        "ul > li:nth-child(3) > span.dividend-history__summary-item__value",
+        to_float
+    )
+
+    # PE ratio
+    nasdaq.pe_ratio = get_tag_value(
+        soup,
+        "ul > li:nth-child(4) > span.dividend-history__summary-item__value",
+        to_float
+    )
+
+    # Dividend history
+    rs_ex_dt = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > th"
+    )
+    rs_type = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > td.dividend-history__cell.dividend-history__cell--type"
+    )
+    rs_cash_amt = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > td.dividend-history__cell.dividend-history__cell--amount"
+    )
+    rs_decl_dt = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > td.dividend-history__cell.dividend-history__cell--declarationDate"
+    )
+    rs_rec_dt = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > td.dividend-history__cell.dividend-history__cell--recordDate"
+    )
+    rs_payment_dt = soup.select(
+        "div.dividend-history__table-container > table > tbody > tr > td.dividend-history__cell.dividend-history__cell--paymentDate"
+    )
+
+    assert (
+        len(rs_ex_dt)
+        == len(rs_type)
+        == len(rs_cash_amt)
+        == len(rs_decl_dt)
+        == len(rs_rec_dt)
+        == len(rs_payment_dt)
+    )
+    for idx in range(0, len(rs_ex_dt)):
+        print(rs_ex_dt[idx].text)
 
     return nasdaq

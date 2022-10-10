@@ -16,6 +16,6 @@ pydantic
 requests
 rich
 scipy
-scrapy
 selenium
 yfinance
+webdriver-manager
