@@ -35,11 +35,11 @@ class TestDataSources(unittest.TestCase):
         print("\xa0 x17%x".strip(" $%\xa0"))
 
     def test_nasdaq(self):
-        nasdaq = get_nasdaq("aapl")
+        nasdaq = get_nasdaq("gogl")
         print(nasdaq)
 
     def test_seeking_alpha(self):
-        seeking_alpha = get_seeking_alpha("gogl")
+        seeking_alpha = get_seeking_alpha("T")
         print(seeking_alpha)
 
     def test_yfinance(self):

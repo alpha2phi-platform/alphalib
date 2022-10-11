@@ -4,12 +4,9 @@ from datetime import datetime
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from alphalib.utils.convertutils import strip, to_date, to_float
-from alphalib.utils.httputils import (DEFAULT_HTTP_TIMEOUT, get_tag_value,
-                                      web_driver)
+from alphalib.utils.httputils import get_tag_value, web_driver
 
 URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 
@@ -34,10 +31,12 @@ def get_stock_details(symbol: str) -> Nasdaq:
     nasdaq.symbol = symbol
     nasdaq.url = download_url
     web_driver.get(download_url)
-    WebDriverWait(web_driver, DEFAULT_HTTP_TIMEOUT).until(
-        EC.presence_of_element_located(
-            (By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded")
-        )
+    # WebDriverWait(web_driver, DEFAULT_HTTP_TIMEOUT).until(
+    #     EC.presence_of_element_located(
+    #         (By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(2) > td:nth-child(2)")
+    #     )
+    web_driver.find_element(
+        By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded"
     )
     page_source = web_driver.page_source
     soup = BeautifulSoup(page_source, "lxml")

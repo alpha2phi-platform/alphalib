@@ -58,6 +58,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--proxy-server='direct://'")
 chrome_options.add_argument("--proxy-bypass-list=*")
 chrome_options.add_argument("--blink-settings=imagesEnabled=false")
+chrome_options.add_argument("--enable-javascript")
 content_setting = {"profile.managed_default_content_settings.images": 2}
 chrome_options.add_experimental_option("prefs", content_setting)
 
@@ -66,4 +67,5 @@ web_driver = webdriver.Chrome(
     service=ChromeService(ChromeDriverManager().install()),
     chrome_options=chrome_options,
 )
+web_driver.implicitly_wait(DEFAULT_HTTP_TIMEOUT)
 action = ActionChains(web_driver)
