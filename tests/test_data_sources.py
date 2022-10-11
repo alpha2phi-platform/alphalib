@@ -14,6 +14,13 @@ from alphalib.utils.logger import logger
 COUNTRY = "united states"
 
 
+# For testing
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", None)
+# pd.set_option("display.max_colwidth", None)
+
+
 class TestDataSources(unittest.TestCase):
     """Test out the different data sources."""
 
@@ -28,11 +35,8 @@ class TestDataSources(unittest.TestCase):
     def test_yf_get_stock_info(self):
         """Get stock info."""
         stock = yf.Ticker("BAC")
-        stock_info = pd.DataFrame([stock.info])
+        stock_info = pd.DataFrame([stock.stats()])
         logger.info(stock_info.head(10).T)
-
-    def test_method(self):
-        print("\xa0 x17%x".strip(" $%\xa0"))
 
     def test_nasdaq(self):
         nasdaq = get_nasdaq("gogl")

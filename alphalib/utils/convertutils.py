@@ -38,3 +38,12 @@ def to_float(text) -> float:
         except Exception:
             return 0
     return 0
+
+
+def join_dicts(to_dict, from_dict, from_dict_key) -> dict:
+    if from_dict[from_dict_key]:
+        v = from_dict[from_dict_key]
+        if type(v) is dict:
+            to_dict = {**to_dict, **v}
+        return to_dict
+    return to_dict
