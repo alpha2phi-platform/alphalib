@@ -20,7 +20,7 @@ class TestAnalysis(unittest.TestCase):
         pass
 
     def test_stock_analysis(self):
-        stock_analysis = all_sources("gogl")
+        stock_analysis = all_sources("orc")
         print(stock_analysis)
 
     def test_seeking_alpha(self):
