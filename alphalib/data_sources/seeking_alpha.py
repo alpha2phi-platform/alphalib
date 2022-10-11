@@ -1,10 +1,9 @@
-from dataclasses import dataclass
 import time
+from dataclasses import dataclass
 
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 from alphalib.utils.convertutils import strip, to_date, to_float
 from alphalib.utils.httputils import web_driver
@@ -28,7 +27,7 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
     seekingAlpha.url = download_url
 
     web_driver.get(download_url)
-    web_driver.find_element(
+    _ = web_driver.find_element(
         By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(n+2) > td:nth-child(2)"
     )
     time.sleep(5)
