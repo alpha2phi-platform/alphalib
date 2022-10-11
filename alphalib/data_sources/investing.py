@@ -11,7 +11,7 @@ class Investing:
 
 
 def get_stock_details(symbol: str, country: str = "united states") -> Investing:
-    assert symbol is not None
+    assert symbol
     investing = Investing()
     investing.symbol = symbol
     try:

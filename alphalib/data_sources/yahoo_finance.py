@@ -19,7 +19,7 @@ class YahooFinance:
 
 
 def get_stock_details(symbol: str) -> YahooFinance:
-    assert symbol is not None
+    assert symbol
 
     yahoo_finance = YahooFinance()
     yahoo_finance.symbol = symbol

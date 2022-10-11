@@ -24,7 +24,7 @@ class Nasdaq:
 
 
 def get_stock_details(symbol: str) -> Nasdaq:
-    assert symbol is not None
+    assert symbol
 
     download_url = URL.format(symbol.lower())
     nasdaq = Nasdaq()

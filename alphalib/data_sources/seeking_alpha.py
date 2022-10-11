@@ -19,7 +19,7 @@ class SeekingAlpha:
 
 
 def get_stock_details(symbol: str) -> SeekingAlpha:
-    assert symbol is not None
+    assert symbol
 
     download_url = URL.format(symbol.upper())
     seekingAlpha = SeekingAlpha()
