@@ -31,7 +31,7 @@ def dt_from_ts(text) -> datetime:
     return datetime.min
 
 
-def to_float(text) -> float:
+def to_float(text: str) -> float:
     if text:
         try:
             return float(strip_chars(text))
