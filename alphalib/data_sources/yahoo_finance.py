@@ -44,7 +44,6 @@ def get_stock_details(symbol: str) -> YahooFinance:
     if not stats:
         return yahoo_finance
 
-    print(stats)
     key_stats: dict = {}
     key_stats = join_dicts(key_stats, stats, "defaultKeyStatistics")
     key_stats = join_dicts(key_stats, stats, "financialData")
