@@ -24,9 +24,9 @@ class TestAnalysis(unittest.TestCase):
         print(stock_analysis)
 
     def test_seeking_alpha(self):
-        analysis = seeking_alpha("gogl")
+        analysis = seeking_alpha("GOGL")
         print(analysis)
 
     def test_yahoo_finance(self):
-        analysis = yahoo_finance("gogl")
-        print(analysis)
+        analysis = yahoo_finance("PBR")
+        print(analysis.to_df().head().T)

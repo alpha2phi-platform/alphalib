@@ -47,7 +47,7 @@ DEFAULT_HTTP_TIMEOUT = 10
 
 # Chrome options
 chrome_options = webdriver.ChromeOptions()
-chrome_options.headless = True
+# chrome_options.headless = True
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--incognito")
 chrome_options.add_argument("user-agent=" + random_user_agent())

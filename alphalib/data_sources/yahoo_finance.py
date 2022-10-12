@@ -3,11 +3,11 @@ from datetime import datetime
 
 import yfinance as yf
 
-from alphalib.utils.convertutils import dt_from_ts, join_dicts, strip
+from alphalib.utils.convertutils import dt_from_ts, join_dicts, strip, TypeConverter
 
 
 @dataclass
-class YahooFinance:
+class YahooFinance(TypeConverter):
     symbol: str = ""
     name: str = ""
     exchange: str = ""

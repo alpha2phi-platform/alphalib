@@ -5,14 +5,14 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 
-from alphalib.utils.convertutils import strip, to_date, to_float
+from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import get_tag_value, web_driver
 
 URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 
 
 @dataclass
-class Nasdaq:
+class Nasdaq(TypeConverter):
     label: str = ""
     symbol: str = ""
     exDividendDate: datetime = datetime.min

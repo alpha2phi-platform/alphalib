@@ -1,4 +1,26 @@
+from dataclasses import asdict
 from datetime import datetime
+
+import pandas as pd
+
+
+class TypeConverter(object):
+    def to_df(self):
+        """Convert dataclass to Pandas data frame.
+
+        Returns:
+            Pandas data frame.
+        """
+        return pd.DataFrame(
+            [
+                asdict(
+                    self,
+                    dict_factory=lambda x: {
+                        k: v for (k, v) in x if type(v) is not pd.DataFrame
+                    },
+                )
+            ]
+        )
 
 
 def strip(text) -> str:

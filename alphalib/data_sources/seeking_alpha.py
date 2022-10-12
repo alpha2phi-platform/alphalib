@@ -5,14 +5,14 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 
-from alphalib.utils.convertutils import strip, to_date, to_float
+from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import web_driver
 
 URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
 
 
 @dataclass
-class SeekingAlpha:
+class SeekingAlpha(TypeConverter):
     symbol: str = ""
     url: str = ""
     dividend_history: pd.DataFrame = pd.DataFrame()
@@ -30,6 +30,9 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
     _ = web_driver.find_element(
         By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(n+2) > td:nth-child(2)"
     )
+    # for c in web_driver.get_cookies():
+    #     print(c)
+
     time.sleep(5)
     page_source = web_driver.page_source
     soup = BeautifulSoup(page_source, "lxml")
@@ -50,15 +53,15 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
     )
 
     div_hists = []
-    # assert (
-    #     len(rs_decl_dt)
-    #     == len(rs_ex_div_dt)
-    #     == len(rs_rec_dt)
-    #     == len(rs_pay_dt)
-    #     == len(rs_freq)
-    #     == len(rs_amt)
-    #     == len(rs_adj_amt)
-    # )
+    assert (
+        len(rs_decl_dt)
+        == len(rs_ex_div_dt)
+        == len(rs_rec_dt)
+        == len(rs_pay_dt)
+        == len(rs_freq)
+        == len(rs_amt)
+        == len(rs_adj_amt)
+    )
     for idx in range(0, len(rs_adj_amt)):
         div_hist = []
         adj_amt = rs_adj_amt[idx].text
