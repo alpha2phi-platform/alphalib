@@ -18,7 +18,7 @@ class StockAnalysis:
     yahoo_finance: YahooFinance = YahooFinance()
     investing: Investing = Investing()
     nasdaq: Nasdaq = Nasdaq()
-    seeking_alpha: SeekingAlpha = SeekingAlpha()
+    # seeking_alpha: SeekingAlpha = SeekingAlpha()
 
 
 def all_sources(symbol: str) -> StockAnalysis:
@@ -26,9 +26,9 @@ def all_sources(symbol: str) -> StockAnalysis:
     stock_analysis = StockAnalysis()
     stock_analysis.symbol = symbol
     stock_analysis.yahoo_finance = yahoo_finance(symbol)
-    stock_analysis.seeking_alpha = seeking_alpha(symbol)
     stock_analysis.nasdaq = nasdaq(symbol)
     stock_analysis.investing = investing(symbol)
+    # stock_analysis.seeking_alpha = seeking_alpha(symbol)
     return stock_analysis
 
 

@@ -19,3 +19,5 @@ scipy
 selenium
 yfinance
 webdriver-manager
+pytrends
+nltk

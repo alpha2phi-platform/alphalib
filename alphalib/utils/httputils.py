@@ -1,4 +1,6 @@
+import os
 import random
+from pathlib import Path
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
@@ -47,9 +49,9 @@ DEFAULT_HTTP_TIMEOUT = 10
 
 # Chrome options
 chrome_options = webdriver.ChromeOptions()
-# chrome_options.headless = True
+chrome_options.headless = True
+# chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--ignore-certificate-errors")
-chrome_options.add_argument("--incognito")
 chrome_options.add_argument("user-agent=" + random_user_agent())
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("window-sized1200,600")
@@ -59,8 +61,18 @@ chrome_options.add_argument("--proxy-server='direct://'")
 chrome_options.add_argument("--proxy-bypass-list=*")
 chrome_options.add_argument("--blink-settings=imagesEnabled=false")
 chrome_options.add_argument("--enable-javascript")
-content_setting = {"profile.managed_default_content_settings.images": 2}
+content_setting = {
+    "profile.managed_default_content_settings.images": 2,
+    "profile.default_content_setting_values.cookies": 1,
+    "profile.cookie_controls_mode": 0,
+}
 chrome_options.add_experimental_option("prefs", content_setting)
+
+user_data = os.path.join(Path.home(), ".config", "google-chrome")
+profile_dir = "Default"
+chrome_options.add_argument(f"--user-data-dir={user_data}")
+chrome_options.add_argument(f"--profile-directory={profile_dir}")
+
 
 # Web driver
 web_driver = webdriver.Chrome(

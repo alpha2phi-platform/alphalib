@@ -3,7 +3,7 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis import all_sources, seeking_alpha, yahoo_finance
+from alphalib.analysis import all_sources, seeking_alpha, yahoo_finance, nasdaq
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -24,7 +24,11 @@ class TestAnalysis(unittest.TestCase):
         print(stock_analysis)
 
     def test_seeking_alpha(self):
-        analysis = seeking_alpha("GOGL")
+        analysis = seeking_alpha("MFA")
+        print(analysis)
+
+    def test_nasdaq(self):
+        analysis = nasdaq("PBR")
         print(analysis)
 
     def test_yahoo_finance(self):
