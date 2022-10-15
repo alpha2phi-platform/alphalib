@@ -1,9 +1,11 @@
 beautifulsoup4
+cssselect
 financedatabase
 fire
 fundamentalanalysis
 html5lib
 investpy
+lxml
 matplotlib
 mplfinance
 openpyxl
@@ -11,6 +13,11 @@ pandas
 pandas-datareader
 prompt_toolkit
 pydantic
+requests
 rich
 scipy
+selenium
 yfinance
+webdriver-manager
+pytrends
+nltk

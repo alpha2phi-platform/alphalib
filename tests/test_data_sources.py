@@ -4,10 +4,21 @@ import unittest.mock
 import pandas as pd
 import yfinance as yf
 
-import alphalib.data_sources as ds
-from alphalib.utils import logger
+from alphalib.data_sources.nasdaq import get_stock_details as get_nasdaq
+from alphalib.data_sources.seeking_alpha import \
+    get_stock_details as get_seeking_alpha
+from alphalib.data_sources.yahoo_finance import \
+    get_stock_details as get_yfinance
+from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
+
+
+# For testing
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", None)
+# pd.set_option("display.max_colwidth", None)
 
 
 class TestDataSources(unittest.TestCase):
@@ -21,16 +32,20 @@ class TestDataSources(unittest.TestCase):
     def tearDown(self):
         logger.info("Tear down")
 
-    # def test_get_countries(self):
-    #     self.countries = ds.get_stock_countries()
-    #     logger.info(self.countries)
-
-    # def test_get_stocks(self):
-    #     self.stocks = ds.get_stocks(COUNTRY)
-    #     logger.info(self.stocks.head(10))
-
     def test_yf_get_stock_info(self):
         """Get stock info."""
         stock = yf.Ticker("BAC")
-        stock_info = pd.DataFrame([stock.info])
+        stock_info = pd.DataFrame([stock.stats()])
         logger.info(stock_info.head(10).T)
+
+    def test_nasdaq(self):
+        nasdaq = get_nasdaq("gogl")
+        print(nasdaq)
+
+    def test_seeking_alpha(self):
+        seeking_alpha = get_seeking_alpha("T")
+        print(seeking_alpha)
+
+    def test_yfinance(self):
+        yahoo_finance = get_yfinance("oxlc")
+        print(yahoo_finance)

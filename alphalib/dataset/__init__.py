@@ -17,6 +17,7 @@ from yfinance import Ticker
 
 from alphalib.data_sources import get_stocks
 from alphalib.utils import get_project_root
+from alphalib.utils.convertutils import join_dicts
 
 
 class Downloader:
@@ -130,7 +131,7 @@ class Downloader:
             counter = 0
             console = Console()
             has_error = False
-            with console.status(f"[bold green]Downloading stock..."):
+            with console.status("[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
                 for stock in stocks.itertuples(index=False, name="Stock"):
                     try:
@@ -203,12 +204,12 @@ class Dataset:
         result["sector"] = stock.sector  # type: ignore
         return result
 
-    def get_stats(self, stats, result, stats_type):
-        if stats[stats_type]:  # type: ignore
-            v = stats[stats_type]
-            if type(v) is dict:
-                result = {**result, **v}
-            return result
+    # def get_stats(self, stats, result, stats_type):
+    #     if stats[stats_type]:  # type: ignore
+    #         v = stats[stats_type]
+    #         if type(v) is dict:
+    #             result = {**result, **v}
+    #         return result
 
     @Downloader(file_prefix="stock_info", sheet_name="stock_info")
     def stock_info(self, *_, **kwargs):
@@ -226,9 +227,9 @@ class Dataset:
 
         stats = ticker.stats()  # type: ignore
         result: dict = {}
-        result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
-        result = self.get_stats(stats, result, "financialData")  # type: ignore
-        result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
+        result = join_dicts(result, stats, "defaultKeyStatistics")
+        result = join_dicts(result, stats, "financialData")
+        result = join_dicts(result, stats, "summaryDetail")
         if not result:
             return pd.DataFrame()
         stock_stats = pd.DataFrame([result])
