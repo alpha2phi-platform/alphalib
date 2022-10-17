@@ -9,6 +9,7 @@ from alphalib.data_sources.seeking_alpha import \
     get_stock_details as get_seeking_alpha
 from alphalib.data_sources.yahoo_finance import \
     get_stock_details as get_yfinance
+from alphalib.dataset.high_yield import HighYield, get_high_yield_stocks
 from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
@@ -49,3 +50,8 @@ class TestDataSources(unittest.TestCase):
     def test_yfinance(self):
         yahoo_finance = get_yfinance("oxlc")
         print(yahoo_finance)
+
+    def test_high_yield(self):
+        stocks: list[HighYield] = get_high_yield_stocks()
+        print(stocks)
+        self.assertGreater(len(stocks), 0)

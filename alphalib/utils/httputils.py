@@ -45,7 +45,10 @@ def get_tag_value(soup: BeautifulSoup, selector: str, fn):
 
 
 # Default HTTP time out in second
-DEFAULT_HTTP_TIMEOUT = 10
+DEFAULT_HTTP_TIMEOUT = 15
+
+# HTTP retry
+DEFAULT_HTTP_RETRY = 3
 
 # Chrome options
 chrome_options = webdriver.ChromeOptions()
@@ -68,10 +71,10 @@ content_setting = {
 }
 chrome_options.add_experimental_option("prefs", content_setting)
 
-user_data = os.path.join(Path.home(), ".config", "google-chrome")
-profile_dir = "Default"
-chrome_options.add_argument(f"--user-data-dir={user_data}")
-chrome_options.add_argument(f"--profile-directory={profile_dir}")
+# user_data = os.path.join(Path.home(), ".config", "google-chrome")
+# profile_dir = "Default"
+# chrome_options.add_argument(f"--user-data-dir={user_data}")
+# chrome_options.add_argument(f"--profile-directory={profile_dir}")
 
 
 # Web driver
