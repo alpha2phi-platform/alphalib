@@ -1,13 +1,10 @@
 from dataclasses import dataclass
 
-import requests
 from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
 from selenium.webdriver.common.by import By
 
-from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
-from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
-                                      http_headers, web_driver)
+from alphalib.utils.convertutils import TypeConverter, strip, to_float
+from alphalib.utils.httputils import web_driver
 
 URL = "https://finance.yahoo.com/u/yahoo-finance/watchlists/high-yield-dividend-stocks/"
 
@@ -31,12 +28,12 @@ def get_high_yield_stocks() -> list[HighYield]:
     web_driver.get(URL)
     _ = web_driver.find_element(
         By.CSS_SELECTOR,
-        "div > section:nth-child(5) > div > div > table > tbody",
+        "#Col1-0-WatchlistDetail-Proxy > div > section:nth-child(5) > div > div > table > tbody"
     )
     page_source = web_driver.page_source
     soup = BeautifulSoup(page_source, "lxml")
     rs_list = soup.select(
-        "div > section:nth-child(5) > div > div > table > tbody",
+        "#Col1-0-WatchlistDetail-Proxy > div > section:nth-child(5) > div > div > table > tbody"
     )
     for tbl in rs_list:
         rs_row = tbl.select("tr")
