@@ -15,7 +15,7 @@ URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 class Nasdaq(TypeConverter):
     label: str = ""
     symbol: str = ""
-    exDividendDate: datetime = datetime.min
+    ex_diviend_date: datetime = datetime.min
     dividend_yield_pct: float = 0
     annual_dividend: float = 0
     pe_ratio: float = 0
@@ -45,7 +45,7 @@ def get_stock_details(symbol: str) -> Nasdaq:
     nasdaq.label = get_tag_value(soup, "div.dividend-history__heading > h1", strip)
 
     # Ex dividend date
-    nasdaq.exDividendDate = get_tag_value(
+    nasdaq.ex_diviend_date = get_tag_value(
         soup,
         "ul > li:nth-child(1) > span.dividend-history__summary-item__value",
         to_date,
