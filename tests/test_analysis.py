@@ -3,7 +3,8 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis import all_sources, seeking_alpha, yahoo_finance, nasdaq
+from alphalib.analysis import all_sources, nasdaq, seeking_alpha, yahoo_finance
+from alphalib.analysis.dividend_yield import recommend_stocks
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -34,3 +35,6 @@ class TestAnalysis(unittest.TestCase):
     def test_yahoo_finance(self):
         analysis = yahoo_finance("PBR")
         print(analysis.to_df().head().T)
+
+    def test_high_yield(self):
+        recommend_stocks(by="sector")

@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+import pandas as pd
+
 
 def current_time_utc() -> datetime:
     """Get current time in iso format
@@ -82,3 +84,7 @@ def days_diff(start_time: datetime, end_time: datetime) -> int:
         tzinfo=timezone.utc
     )
     return round(diff.total_seconds() / 60 / 24)
+
+
+def from_epoch_time(value) -> datetime:
+    return pd.to_datetime(value, unit="s")
