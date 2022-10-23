@@ -3,10 +3,12 @@ from dataclasses import dataclass
 
 import pandas as pd
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import web_driver
+from alphalib.utils.logger import logger
 
 URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
 
@@ -27,9 +29,13 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
     seekingAlpha.url = download_url
 
     web_driver.get(download_url)
-    _ = web_driver.find_element(
-        By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(n+2) > td:nth-child(2)"
-    )
+    try:
+        web_driver.find_element(
+            By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(n+2) > td:nth-child(2)"
+        )
+    except NoSuchElementException:
+        logger.warn(f"Unable to get details for {symbol}")
+        return seekingAlpha
 
     time.sleep(5)
     page_source = web_driver.page_source
@@ -64,16 +70,20 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
         div_hist = []
         adj_amt = rs_adj_amt[idx].text
         if strip(adj_amt):
-            div_hist.append(to_date(rs_decl_dt[idx].text))
-            div_hist.append(to_date(rs_ex_div_dt[idx].text))
-            div_hist.append(to_date(rs_rec_dt[idx].text))
-            div_hist.append(to_date(rs_pay_dt[idx].text))
-            div_hist.append(strip(rs_freq[idx].text))
-            div_hist.append(to_float(rs_amt[idx].text))
-            div_hist.append(to_float(adj_amt))
+            div_hist.extend(
+                [
+                    to_date(rs_decl_dt[idx].text),
+                    to_date(rs_ex_div_dt[idx].text),
+                    to_date(rs_rec_dt[idx].text),
+                    to_date(rs_pay_dt[idx].text),
+                    strip(rs_freq[idx].text),
+                    to_float(rs_amt[idx].text),
+                    to_float(adj_amt),
+                ]
+            )
 
         if len(div_hist) > 0:
-            div_hists.append(div_hist)
+            div_hists.extend([div_hist])
 
     seekingAlpha.dividend_history = pd.DataFrame(
         div_hists,

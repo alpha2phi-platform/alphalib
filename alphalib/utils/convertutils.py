@@ -69,3 +69,8 @@ def join_dicts(to_dict, from_dict, from_dict_key) -> dict:
             to_dict = {**to_dict, **v}
         return to_dict
     return to_dict
+
+
+def set_fields(fr, to):
+    for key, value in asdict(fr).items():
+        setattr(to, key, value)

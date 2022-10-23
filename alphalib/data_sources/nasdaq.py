@@ -3,10 +3,12 @@ from datetime import datetime
 
 import pandas as pd
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import get_tag_value, web_driver
+from alphalib.utils.logger import logger
 
 URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 
@@ -35,9 +37,14 @@ def get_stock_details(symbol: str) -> Nasdaq:
     #     EC.presence_of_element_located(
     #         (By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(2) > td:nth-child(2)")
     #     )
-    web_driver.find_element(
-        By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded"
-    )
+    try:
+        web_driver.find_element(
+            By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded"
+        )
+    except NoSuchElementException:
+        logger.warn(f"Unable to get details for {symbol}")
+        return nasdaq
+
     page_source = web_driver.page_source
     soup = BeautifulSoup(page_source, "lxml")
 
@@ -103,14 +110,17 @@ def get_stock_details(symbol: str) -> Nasdaq:
     div_hists = []
     for idx in range(0, len(rs_ex_dt)):
         div_hist = []
-        div_hist.append(to_date(rs_ex_dt[idx].text))
-        div_hist.append(strip(rs_type[idx].text))
-        div_hist.append(to_float(rs_cash_amt[idx].text))
-        div_hist.append(to_date(rs_decl_dt[idx].text))
-        div_hist.append(to_date(rs_rec_dt[idx].text))
-        div_hist.append(to_date(rs_payment_dt[idx].text))
-
-        div_hists.append(div_hist)
+        div_hist.extend(
+            [
+                to_date(rs_ex_dt[idx].text),
+                strip(rs_type[idx].text),
+                to_float(rs_cash_amt[idx].text),
+                to_date(rs_decl_dt[idx].text),
+                to_date(rs_rec_dt[idx].text),
+                to_date(rs_payment_dt[idx].text),
+            ]
+        )
+        div_hists.extend([div_hist])
 
     nasdaq.dividend_history = pd.DataFrame(
         div_hists,
