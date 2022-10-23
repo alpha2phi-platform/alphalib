@@ -21,3 +21,4 @@ yfinance
 webdriver-manager
 pytrends
 nltk
+python-dateutil

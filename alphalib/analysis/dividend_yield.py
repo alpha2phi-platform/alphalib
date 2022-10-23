@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import pandas as pd
+from dateutil import relativedelta
 
 from alphalib.analysis import get_nasdaq, get_yfinance
 from alphalib.data_sources import get_stock_stats
@@ -15,10 +16,10 @@ from alphalib.utils.logger import logger
 
 @dataclass
 class YieldAnalysis(YahooFinance, Nasdaq):
-    pass
+    source: str = ""
 
 
-def recommend_stocks(by="sector") -> list[YieldAnalysis]:
+def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis]:
     stock_stats: pd.DataFrame = get_stock_stats()
     stock_stats["lastdividenddate"] = stock_stats["lastdividenddate"].apply(
         from_epoch_time
@@ -59,6 +60,7 @@ def recommend_stocks(by="sector") -> list[YieldAnalysis]:
         yf_stock_info = get_yfinance(symbol)
         nasdaq_stock_info = get_nasdaq(symbol)
         rec_stock = YieldAnalysis()
+        rec_stock.source = "dataset"
         set_fields(yf_stock_info, rec_stock)
         set_fields(nasdaq_stock_info, rec_stock)
         rec_stocks.append(rec_stock)
@@ -69,8 +71,29 @@ def recommend_stocks(by="sector") -> list[YieldAnalysis]:
             yf_stock_info = get_yfinance(stock.symbol)
             nasdaq_stock_info = get_nasdaq(stock.symbol)
             rec_stock = YieldAnalysis()
+            rec_stock.source = "yahoo_finance"
             set_fields(yf_stock_info, rec_stock)
             set_fields(nasdaq_stock_info, rec_stock)
             rec_stocks.append(rec_stock)
+
+    # Sort by dividend yield %
+    rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
+
+    # Only earnings date in current and next month
+    if filter_earnings_dt:
+        current_month = datetime.now()
+        next_month = current_month + relativedelta.relativedelta(months=1)
+        rec_stocks = [
+            s
+            for s in rec_stocks
+            if (
+                s.earnings_date.year == current_month.year
+                and s.earnings_date.month == current_month.month
+            )
+            or (
+                s.earnings_date.year == next_month.year
+                and s.earnings_date.month == next_month.month
+            )
+        ]
 
     return rec_stocks

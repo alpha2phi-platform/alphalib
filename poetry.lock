@@ -666,7 +666,7 @@ requests = ">=2.26"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "b23852d01e9e16986a185cb245322815459880eea2bce8483427f8db0144943f"
+content-hash = "2b842969752628e2f1b1801522341a5d9d5dc1c9cf643ce2932ab9c3cbae2f7c"
 
 [metadata.files]
 async-generator = [

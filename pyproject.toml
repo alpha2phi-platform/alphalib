@@ -27,6 +27,7 @@ selenium = "^4.5.0"
 webdriver-manager = "^3.8.3"
 pytrends = "^4.8.0"
 nltk = "^3.7"
+python-dateutil = "^2.8.2"
 
 [tool.poetry.dev-dependencies]
 
