@@ -18,11 +18,14 @@ SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}"
 
 @dataclass
 class YieldAnalysis(YahooFinance, Nasdaq):
+    sentiment_score: float = 0
     source: str = ""
     info_url: str = ""
 
 
-def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis]:
+def recommend_stocks(
+    by="sector", filter_earnings_dt=True, sentiment=True
+) -> list[YieldAnalysis]:
     stock_stats: pd.DataFrame = get_stock_stats()
     stock_stats["lastdividenddate"] = stock_stats["lastdividenddate"].apply(
         from_epoch_time
@@ -100,5 +103,9 @@ def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis
                 and s.earnings_date.month == next_month.month
             )
         ]
+
+    # Sentiment analysis
+    if sentiment:
+        pass
 
     return rec_stocks
