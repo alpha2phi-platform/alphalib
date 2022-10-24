@@ -13,6 +13,7 @@ class YahooFinance(TypeConverter):
     name: str = ""
     exchange: str = ""
     sector: str = ""
+    beta: float = 0
     current_price: float | None = 0
     five_year_avg_dividend_yield: float | None = 0
     earnings_date: datetime = datetime.min
@@ -56,6 +57,7 @@ def get_stock_details(symbol: str) -> YahooFinance:
     yahoo_finance.name = strip(key_stats.get("shortName"))
     yahoo_finance.exchange = strip(key_stats.get("exchange"))
     yahoo_finance.sector = strip(key_stats.get("sector"))
+    yahoo_finance.beta = key_stats.get("beta")
     yahoo_finance.current_price = key_stats.get("currentPrice")
 
     earningDts: list = key_stats.get("earnings", {}).get("earningsDate", [])

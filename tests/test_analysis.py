@@ -5,6 +5,7 @@ import pandas as pd
 
 from alphalib.analysis import all_sources, nasdaq, seeking_alpha, yahoo_finance
 from alphalib.analysis.dividend_yield import recommend_stocks
+from alphalib.analysis.sentiment import analyze_sentiment
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -38,3 +39,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_high_yield(self):
         recommend_stocks(by="sector")
+
+    def test_sentiment(self):
+        df = analyze_sentiment("gogl")
+        mean_score = df["compound"].mean()
+        print(df.head(1000))
+        print(f"\n\nMean score - {mean_score}")

@@ -13,10 +13,13 @@ from alphalib.utils.convertutils import set_fields
 from alphalib.utils.dateutils import from_epoch_time
 from alphalib.utils.logger import logger
 
+SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}"
+
 
 @dataclass
 class YieldAnalysis(YahooFinance, Nasdaq):
     source: str = ""
+    info_url: str = ""
 
 
 def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis]:
@@ -63,6 +66,7 @@ def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis
         rec_stock.source = "dataset"
         set_fields(yf_stock_info, rec_stock)
         set_fields(nasdaq_stock_info, rec_stock)
+        rec_stock.info_url = SEEKING_ALPHA_URL.format(symbol)
         rec_stocks.append(rec_stock)
 
     for stock in yf_stocks:
@@ -74,6 +78,7 @@ def recommend_stocks(by="sector", filter_earnings_dt=True) -> list[YieldAnalysis
             rec_stock.source = "yahoo_finance"
             set_fields(yf_stock_info, rec_stock)
             set_fields(nasdaq_stock_info, rec_stock)
+            rec_stock.info_url = SEEKING_ALPHA_URL.format(stock.symbol)
             rec_stocks.append(rec_stock)
 
     # Sort by dividend yield %
