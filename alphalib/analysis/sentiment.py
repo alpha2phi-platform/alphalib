@@ -1,4 +1,3 @@
-# https://github.com/damianboh/stock_news_sentiment_analysis/blob/master/Sentiment%20Analysis%20of%20Financial%20News%20Headlines.ipynb
 from contextlib import closing
 
 import nltk
