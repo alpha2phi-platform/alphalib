@@ -10,23 +10,23 @@ from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import web_driver
 from alphalib.utils.logger import logger
 
-URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
+SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
 
 
 @dataclass
 class SeekingAlpha(TypeConverter):
     symbol: str = ""
-    url: str = ""
+    seeking_alpha_url: str = ""
     dividend_history: pd.DataFrame = pd.DataFrame()
 
 
 def get_stock_details(symbol: str) -> SeekingAlpha:
     assert symbol
 
-    download_url = URL.format(symbol.upper())
+    download_url = SEEKING_ALPHA_URL.format(symbol.upper())
     seekingAlpha = SeekingAlpha()
     seekingAlpha.symbol = symbol
-    seekingAlpha.url = download_url
+    seekingAlpha.seeking_alpha_url = download_url
 
     web_driver.get(download_url)
     try:

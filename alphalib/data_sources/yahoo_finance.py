@@ -1,10 +1,18 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+import pandas as pd
 import yfinance as yf
 
 from alphalib.utils.convertutils import (TypeConverter, dt_from_ts, join_dicts,
                                          strip)
+
+YFINANCE_URL = "https://finance.yahoo.com/quote/{0}/key-statistics?p={0}"
+
+pd.set_option("display.max_rows", None)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", None)
+pd.set_option("display.max_colwidth", None)
 
 
 @dataclass
@@ -15,6 +23,8 @@ class YahooFinance(TypeConverter):
     sector: str = ""
     beta: float = 0
     current_price: float | None = 0
+    fifty_two_week_low: float | None = 0
+    fifty_two_week_high: float | None = 0
     five_year_avg_dividend_yield: float | None = 0
     earnings_date: datetime = datetime.min
     ex_dividend_date: datetime = datetime.min
@@ -33,6 +43,9 @@ class YahooFinance(TypeConverter):
     payout_ratio: float | None = 0
     dividend_yield: float | None = 0
     dividend_rate: float | None = 0
+    trailing_annual_dividend_rate: float | None = 0
+    trailing_annual_dividend_yield: float | None = 0
+    yfinance_url: str = ""
 
 
 def get_stock_details(symbol: str) -> YahooFinance:
@@ -40,6 +53,7 @@ def get_stock_details(symbol: str) -> YahooFinance:
 
     yahoo_finance = YahooFinance()
     yahoo_finance.symbol = symbol
+    yahoo_finance.yfinance_url = YFINANCE_URL.format(symbol)
 
     ticker = yf.Ticker(symbol)
     stats: dict = ticker.stats()  # type: ignore
@@ -59,6 +73,8 @@ def get_stock_details(symbol: str) -> YahooFinance:
     yahoo_finance.sector = strip(key_stats.get("sector"))
     yahoo_finance.beta = key_stats.get("beta")
     yahoo_finance.current_price = key_stats.get("currentPrice")
+    yahoo_finance.fifty_two_week_low = key_stats.get("fiftyTwoWeekLow")
+    yahoo_finance.fifty_two_week_high = key_stats.get("fiftyTwoWeekHigh")
 
     earningDts: list = key_stats.get("earnings", {}).get("earningsDate", [])
     if len(earningDts) > 0:
@@ -86,5 +102,11 @@ def get_stock_details(symbol: str) -> YahooFinance:
     yahoo_finance.payout_ratio = key_stats.get("payoutRatio")
     yahoo_finance.dividend_yield = key_stats.get("dividendYield")
     yahoo_finance.dividend_rate = key_stats.get("dividendRate")
+    yahoo_finance.trailing_annual_dividend_rate = key_stats.get(
+        "trailingAnnualDividendRate"
+    )
+    yahoo_finance.trailing_annual_dividend_yield = key_stats.get(
+        "trailingAnnualDividendYield"
+    )
 
     return yahoo_finance

@@ -41,7 +41,7 @@ class TestAnalysis(unittest.TestCase):
         recommend_stocks(by="sector")
 
     def test_sentiment(self):
-        df = analyze_sentiment("nflx")
+        df = analyze_sentiment("orc")
         mean_score = df["compound"].mean()
         print(df.head(1000))
         print(f"\n\nMean score - {mean_score}")

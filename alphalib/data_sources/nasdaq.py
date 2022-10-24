@@ -10,7 +10,7 @@ from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import get_tag_value, web_driver
 from alphalib.utils.logger import logger
 
-URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
+NASDAQ_URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 
 
 @dataclass
@@ -22,16 +22,16 @@ class Nasdaq(TypeConverter):
     annual_dividend: float = 0
     pe_ratio: float = 0
     dividend_history: pd.DataFrame = pd.DataFrame()
-    url: str = ""
+    nasdaq_url: str = ""
 
 
 def get_stock_details(symbol: str) -> Nasdaq:
     assert symbol
 
-    download_url = URL.format(symbol.lower())
+    download_url = NASDAQ_URL.format(symbol.lower())
     nasdaq = Nasdaq()
     nasdaq.symbol = symbol
-    nasdaq.url = download_url
+    nasdaq.nasdaq_url = download_url
     web_driver.get(download_url)
     # WebDriverWait(web_driver, DEFAULT_HTTP_TIMEOUT).until(
     #     EC.presence_of_element_located(
