@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from alphalib.analysis import get_nasdaq, get_yfinance
+from alphalib.analysis.fa import get_nasdaq, get_yfinance
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.data_sources import get_stock_stats
 from alphalib.data_sources.nasdaq import Nasdaq
