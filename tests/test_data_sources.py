@@ -40,7 +40,7 @@ class TestDataSources(unittest.TestCase):
         logger.info(stock_info.head(10).T)
 
     def test_nasdaq(self):
-        nasdaq = get_nasdaq("gogl")
+        nasdaq = get_nasdaq("pmt")
         print(nasdaq)
 
     def test_seeking_alpha(self):
@@ -48,7 +48,7 @@ class TestDataSources(unittest.TestCase):
         print(seeking_alpha)
 
     def test_yfinance(self):
-        yahoo_finance = get_yfinance("oxlc")
+        yahoo_finance = get_yfinance("pmt")
         print(yahoo_finance)
 
     def test_high_yield(self):

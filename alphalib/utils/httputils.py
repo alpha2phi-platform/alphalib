@@ -42,7 +42,7 @@ def get_tag_value(soup: BeautifulSoup, selector: str, fn):
 
 
 # Default HTTP time out in second
-DEFAULT_HTTP_TIMEOUT = 15
+DEFAULT_HTTP_TIMEOUT = 20
 
 # HTTP retry
 DEFAULT_HTTP_RETRY = 3

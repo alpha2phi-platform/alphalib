@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 
 def current_time_utc() -> datetime:
@@ -88,3 +89,9 @@ def days_diff(start_time: datetime, end_time: datetime) -> int:
 
 def from_epoch_time(value) -> datetime:
     return pd.to_datetime(value, unit="s")
+
+
+def month_from(mths_ago=-2) -> datetime:
+    now = datetime.now()
+    current_month = date(now.year, now.month, 1)
+    return current_month + relativedelta(months=mths_ago)

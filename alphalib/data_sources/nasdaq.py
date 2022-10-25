@@ -42,7 +42,7 @@ def get_stock_details(symbol: str) -> Nasdaq:
             By.CSS_SELECTOR, "div.dividend-history.dividend-history--loaded"
         )
     except NoSuchElementException:
-        logger.warn(f"Unable to get details for {symbol}")
+        logger.warning(f"Unable to get details for {symbol}")
         return nasdaq
 
     page_source = web_driver.page_source
