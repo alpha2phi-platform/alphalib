@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from alphalib.analysis.fa import get_nasdaq, get_yfinance
+from alphalib.analysis.fa import nasdaq, yahoo_finance
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.data_sources import get_stock_stats
 from alphalib.data_sources.nasdaq import Nasdaq
@@ -79,8 +79,8 @@ def recommend_stocks(
     rec_stocks: list[YieldAnalysis] = []
     for symbol in yield_stocks["symbol"]:
         logger.info(f"Getting info for {symbol}")
-        yf_stock_info = get_yfinance(symbol)
-        nasdaq_stock_info = get_nasdaq(symbol)
+        yf_stock_info = yahoo_finance(symbol)
+        nasdaq_stock_info = nasdaq(symbol)
         rec_stock = YieldAnalysis()
         rec_stock.source = "dataset"
         set_fields(yf_stock_info, rec_stock)
@@ -97,8 +97,8 @@ def recommend_stocks(
     for stock in yf_stocks:
         if stock.symbol not in yield_stocks["symbol"]:
             logger.info(f"Getting info for {stock.symbol}")
-            yf_stock_info = get_yfinance(stock.symbol)
-            nasdaq_stock_info = get_nasdaq(stock.symbol)
+            yf_stock_info = yahoo_finance(stock.symbol)
+            nasdaq_stock_info = nasdaq(stock.symbol)
             rec_stock = YieldAnalysis()
             rec_stock.source = "yahoo_finance"
             set_fields(yf_stock_info, rec_stock)

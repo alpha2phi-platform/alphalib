@@ -23,13 +23,13 @@ class FundamentalAnalysis:
 
 def all_sources(symbol: str) -> FundamentalAnalysis:
     assert symbol
-    stock_analysis = FundamentalAnalysis()
-    stock_analysis.symbol = symbol
-    stock_analysis.yahoo_finance = yahoo_finance(symbol)
-    stock_analysis.nasdaq = nasdaq(symbol)
-    stock_analysis.investing = investing(symbol)
+    fa_analysis = FundamentalAnalysis()
+    fa_analysis.symbol = symbol
+    fa_analysis.yahoo_finance = yahoo_finance(symbol)
+    fa_analysis.nasdaq = nasdaq(symbol)
+    fa_analysis.investing = investing(symbol)
     # stock_analysis.seeking_alpha = seeking_alpha(symbol)
-    return stock_analysis
+    return fa_analysis
 
 
 def yahoo_finance(symbol: str) -> YahooFinance:

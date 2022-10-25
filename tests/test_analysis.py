@@ -3,8 +3,9 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis import all_sources, nasdaq, seeking_alpha, yahoo_finance
 from alphalib.analysis.dividend_yield import recommend_stocks
+from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
+                                  yahoo_finance)
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.utils.dateutils import month_from
 
