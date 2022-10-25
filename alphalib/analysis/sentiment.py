@@ -17,7 +17,7 @@ FINWIZ_URL = "https://finviz.com/quote.ashx?t="
 nltk.download("vader_lexicon")
 
 
-def analyze_sentiment(symbol: str) -> pd.DataFrame:
+def sentiment_analysis(symbol: str) -> pd.DataFrame:
     assert symbol
 
     news_tables = {}

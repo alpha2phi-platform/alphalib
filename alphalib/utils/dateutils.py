@@ -91,7 +91,10 @@ def from_epoch_time(value) -> datetime:
     return pd.to_datetime(value, unit="s")
 
 
-def month_from(mths_ago=-2) -> datetime:
+def month_from(mths_ago=-2, first_day=True) -> datetime:
     now = datetime.now()
-    current_month = date(now.year, now.month, 1)
+    if first_day:
+        current_month = date(now.year, now.month, 1)
+    else:
+        current_month = now
     return current_month + relativedelta(months=mths_ago)

@@ -5,7 +5,7 @@ import pandas as pd
 
 from alphalib.analysis import all_sources, nasdaq, seeking_alpha, yahoo_finance
 from alphalib.analysis.dividend_yield import recommend_stocks
-from alphalib.analysis.sentiment import analyze_sentiment
+from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.utils.dateutils import month_from
 
 # For testing
@@ -35,17 +35,15 @@ class TestAnalysis(unittest.TestCase):
         print(analysis)
 
     def test_yahoo_finance(self):
-        analysis = yahoo_finance("PBR")
+        analysis = yahoo_finance("CLM")
         print(analysis.to_df().head().T)
 
     def test_high_yield(self):
         recommend_stocks(by="sector")
 
     def test_sentiment(self):
-        df = analyze_sentiment("orc")
+        df = sentiment_analysis("gogl")
         past_3_months = month_from(-2)
-        print(past_3_months)
         print(df[df["date"] >= past_3_months].head(1000))
-
         mean_score = df[df["date"] >= past_3_months]["compound"].mean()
         print(f"\n\nMean score - {mean_score}")

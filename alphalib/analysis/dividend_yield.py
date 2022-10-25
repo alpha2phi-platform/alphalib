@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 
 from alphalib.analysis import get_nasdaq, get_yfinance
-from alphalib.analysis.sentiment import analyze_sentiment
+from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.data_sources import get_stock_stats
 from alphalib.data_sources.nasdaq import Nasdaq
 from alphalib.data_sources.yahoo_finance import YahooFinance
@@ -28,7 +28,7 @@ class YieldAnalysis(YahooFinance, Nasdaq):
 def _3_month_sentiment(symbol: str) -> float:
     try:
         past_3_months = month_from(-2)
-        sentiment_result = analyze_sentiment(symbol)
+        sentiment_result = sentiment_analysis(symbol)
         return sentiment_result[sentiment_result["date"] >= past_3_months][
             "compound"
         ].mean()
