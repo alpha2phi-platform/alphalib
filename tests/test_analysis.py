@@ -3,10 +3,12 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis.dividend_yield import recommend_stocks
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
 from alphalib.analysis.sentiment import sentiment_analysis
+from alphalib.analysis.ta.bollinger_bands import plot_bb, plot_bb2
+from alphalib.analysis.ta.ichimoku import plot_ichimoku
+from alphalib.analysis.yield_analysis import recommend_stocks
 from alphalib.utils.dateutils import month_from
 
 # For testing
@@ -32,7 +34,7 @@ class TestAnalysis(unittest.TestCase):
         print(analysis)
 
     def test_nasdaq(self):
-        analysis = nasdaq("PBR")
+        analysis = nasdaq("gogl")
         print(analysis)
 
     def test_yahoo_finance(self):
@@ -43,8 +45,15 @@ class TestAnalysis(unittest.TestCase):
         recommend_stocks(by="sector")
 
     def test_sentiment(self):
-        df = sentiment_analysis("gogl")
+        df = sentiment_analysis("googl")
         past_3_months = month_from(-2)
         print(df[df["date"] >= past_3_months].head(1000))
         mean_score = df[df["date"] >= past_3_months]["compound"].mean()
         print(f"\n\nMean score - {mean_score}")
+
+    def test_ta_bb(self):
+        plot_bb2("googl")
+
+    def test_ta_icho(self):
+        plot_ichimoku("googl")
+        pass
