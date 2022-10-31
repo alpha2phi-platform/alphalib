@@ -56,4 +56,3 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_icho(self):
         plot_ichimoku("googl")
-        pass
