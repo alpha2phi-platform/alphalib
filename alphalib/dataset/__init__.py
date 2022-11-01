@@ -199,9 +199,9 @@ class Dataset:
         pass
 
     def set_stock_info(self, result, stock):
-        result["name"] = stock.short_name  # type: ignore
-        result["symbol"] = stock.symbol  # type: ignore
-        result["sector"] = stock.sector  # type: ignore
+        result["name"] = stock.short_name
+        result["symbol"] = stock.symbol
+        result["sector"] = stock.sector
         return result
 
     # def get_stats(self, stats, result, stats_type):

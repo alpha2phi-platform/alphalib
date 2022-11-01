@@ -9,7 +9,7 @@ from yfinance.utils import get_json
 
 from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset, Downloader
-from alphalib.utils import logger
+from alphalib.utils.logger import logger
 
 COUNTRY = "United States"
 SYMBOL = "PBR-A"
@@ -110,7 +110,6 @@ class TestDataset(unittest.TestCase):
         result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
         result = self.get_stats(stats, result, "financialData")  # type: ignore
         result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
-        print(len(result))
         df = pd.DataFrame([result])
         print(df.head(1).T)
 

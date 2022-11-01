@@ -3,11 +3,11 @@ import plotly.io as pio
 import yfinance as yf
 
 
-def plot_bb(symbol: str):
+def plot_bb(symbol: str, period: str = "1y"):
     assert symbol
 
     stock = yf.Ticker(symbol)
-    data = stock.history(period="1y")
+    data = stock.history(period=period)
     df_close = data[["Close"]]
 
     sma = df_close.rolling(window=20).mean().dropna()
