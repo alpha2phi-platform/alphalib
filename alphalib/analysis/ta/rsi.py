@@ -79,12 +79,17 @@ def plot_rsi(symbol: str, period: str = "1y"):
     plt.show()
 
 
-def plot_rsi2(symbol: str, period: str = "1y"):
+def plot_rsi_atr_ma(symbol: str, period: str = "1y"):
     data = yf.download(symbol, period=period)
     data["RSI"] = rsi(data["Close"])
 
     pio.templates.default = "plotly_dark"
-    fig = make_subplots(rows=2, cols=1)
+    fig = make_subplots(
+        rows=2,
+        cols=1,
+        shared_xaxes=True,
+        subplot_titles=("Close Price with ATR and MA", "RSI"),
+    )
 
     fig.add_trace(
         go.Scatter(
@@ -107,7 +112,8 @@ def plot_rsi2(symbol: str, period: str = "1y"):
         row=2,
         col=1,
     )
-    fig.update_xaxes(title="Date", rangeslider_visible=False, row=1, col=1)
+
+    fig.update_layout(title_text="Technical Indicator - RSI")
     fig.update_xaxes(title="Date", rangeslider_visible=True, row=2, col=1)
     fig.update_yaxes(title="Price", row=1, col=1)
     fig.update_yaxes(title="RSI", row=2, col=1)

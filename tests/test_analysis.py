@@ -8,7 +8,7 @@ from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.bollinger_bands import plot_bb
 from alphalib.analysis.ta.ichimoku import plot_ichimoku
-from alphalib.analysis.ta.rsi import plot_rsi, plot_rsi2
+from alphalib.analysis.ta.rsi import plot_rsi, plot_rsi_atr_ma
 from alphalib.analysis.yield_analysis import recommend_stocks
 from alphalib.utils.dateutils import month_from
 
@@ -57,9 +57,11 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_icho(self):
         plot_ichimoku("googl")
+        plot_ichimoku("amzn")
+        plot_ichimoku("msft")
 
     def test_rsi(self):
         plot_rsi("googl")
 
     def test_rsi2(self):
-        plot_rsi2("googl")
+        plot_rsi_atr_ma("googl")

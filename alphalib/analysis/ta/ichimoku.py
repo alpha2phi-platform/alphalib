@@ -114,6 +114,8 @@ def plot_ichimoku(symbol: str, period: str = "1y"):
     fig.add_trace(lagging)
     fig.add_trace(span_a)
     fig.add_trace(span_b)
-    fig.update_layout(height=1200, width=1800, showlegend=True)
+    fig.update_layout(
+        title_text=f"Ichimoku - {symbol}", height=1200, width=1800, showlegend=True
+    )
 
     fig.show()
