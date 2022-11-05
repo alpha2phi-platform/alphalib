@@ -2,36 +2,24 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import yfinance as yf
 
+from alphalib.analysis.ta import volatility_bollinger_bands
 
-def plot_bb(symbol: str, period: str = "1y"):
+
+def plot_bollinger_bands(symbol: str, period: str = "1y"):
     assert symbol
 
     stock = yf.Ticker(symbol)
-    data = stock.history(period=period)
-    df_close = data[["Close"]]
+    df = stock.history(period=period)
+    df_close = df[["Close"]]
 
-    sma = df_close.rolling(window=20).mean().dropna()
-    rstd = df_close.rolling(window=20).std().dropna()
+    sma, lower_band, upper_band, buyers, sellers = volatility_bollinger_bands(df_close)
 
-    upper_band = sma + 2 * rstd
-    lower_band = sma - 2 * rstd
-
-    upper_band = upper_band.rename(columns={"Close": "upper"})
-    lower_band = lower_band.rename(columns={"Close": "lower"})
-    bb = df_close.join(upper_band).join(lower_band)
-    bb = bb.dropna()
-
-    buyers = bb[bb["Close"] <= bb["lower"]]
-    sellers = bb[bb["Close"] >= bb["upper"]]
-
-    # Plotting
     pio.templates.default = "plotly_dark"
-
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
             x=lower_band.index,
-            y=lower_band["lower"],
+            y=lower_band["Lower"],
             name="Lower Band",
             line_color="rgba(173,204,255,0.2)",
         )
@@ -39,7 +27,7 @@ def plot_bb(symbol: str, period: str = "1y"):
     fig.add_trace(
         go.Scatter(
             x=upper_band.index,
-            y=upper_band["upper"],
+            y=upper_band["Upper"],
             name="Upper Band",
             fill="tonexty",
             fillcolor="rgba(173,204,255,0.2)",
@@ -48,7 +36,7 @@ def plot_bb(symbol: str, period: str = "1y"):
     )
     fig.add_trace(
         go.Scatter(
-            x=df_close.index, y=df_close["Close"], name="Close", line_color="#636EFA"
+            x=df_close.index, y=df_close["Close"], name="Price", line_color="#636EFA"
         )
     )
     fig.add_trace(
@@ -80,4 +68,10 @@ def plot_bb(symbol: str, period: str = "1y"):
     )
     fig.update_xaxes(title="Date", rangeslider_visible=True)
     fig.update_yaxes(title="Price")
+    fig.update_layout(
+        title_text=f"Bollinger Bands - {symbol}",
+        height=1200,
+        width=1800,
+        showlegend=True,
+    )
     fig.show()

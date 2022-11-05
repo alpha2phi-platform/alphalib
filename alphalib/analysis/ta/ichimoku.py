@@ -1,7 +1,10 @@
 # https://github.com/derekbanas/Python4Finance/blob/main/Ultimate%20Calc%20Stats.ipynb
 import numpy as np
 import plotly.graph_objects as go
+import plotly.io as pio
 import yfinance as yf
+
+from alphalib.analysis.ta import trend_ichimoku
 
 
 def get_fill_color(label):
@@ -11,33 +14,18 @@ def get_fill_color(label):
         return "rgba(250,0,0,0.4)"
 
 
-def add_ichimoku(df):
-    # Conversion
-    hi_val = df["High"].rolling(window=9).max()
-    low_val = df["Low"].rolling(window=9).min()
-    df["Conversion"] = (hi_val + low_val) / 2
-
-    # Baseline
-    hi_val2 = df["High"].rolling(window=26).max()
-    low_val2 = df["Low"].rolling(window=26).min()
-    df["Baseline"] = (hi_val2 + low_val2) / 2
-
-    # Spans
-    df["SpanA"] = ((df["Conversion"] + df["Baseline"]) / 2).shift(26)
-    hi_val3 = df["High"].rolling(window=52).max()
-    low_val3 = df["Low"].rolling(window=52).min()
-    df["SpanB"] = ((hi_val3 + low_val3) / 2).shift(26)
-    df["Lagging"] = df["Close"].shift(-26)
-
-    return df
-
-
 def plot_ichimoku(symbol: str, period: str = "1y"):
     assert symbol
 
     stock = yf.Ticker(symbol)
     df = stock.history(period=period)
-    df = add_ichimoku(df)
+    (
+        df["Conversion"],
+        df["Baseline"],
+        df["SpanA"],
+        df["SpanB"],
+        df["Lagging"],
+    ) = trend_ichimoku(df["High"], df["Low"], df["Close"])
 
     candle = go.Candlestick(
         x=df.index,
@@ -49,6 +37,7 @@ def plot_ichimoku(symbol: str, period: str = "1y"):
     )
 
     df1 = df.copy()
+    pio.templates.default = "plotly_dark"
     fig = go.Figure()
     df["label"] = np.where(df["SpanA"] > df["SpanB"], 1, 0)
     df["group"] = df["label"].ne(df["label"].shift()).cumsum()

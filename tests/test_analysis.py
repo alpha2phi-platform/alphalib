@@ -6,9 +6,10 @@ import pandas as pd
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
 from alphalib.analysis.sentiment import sentiment_analysis
-from alphalib.analysis.ta.bollinger_bands import plot_bb
+from alphalib.analysis.ta.bollinger_bands import plot_bollinger_bands
 from alphalib.analysis.ta.ichimoku import plot_ichimoku
-from alphalib.analysis.ta.rsi import plot_rsi, plot_rsi_atr_ma
+from alphalib.analysis.ta.rsi import plot_rsi
+from alphalib.analysis.ta.atr import plot_atr
 from alphalib.analysis.yield_analysis import recommend_stocks
 from alphalib.utils.dateutils import month_from
 
@@ -53,15 +54,13 @@ class TestAnalysis(unittest.TestCase):
         print(f"\n\nMean score - {mean_score}")
 
     def test_ta_bb(self):
-        plot_bb("googl")
+        plot_bollinger_bands("googl")
 
     def test_ta_icho(self):
         plot_ichimoku("googl")
-        plot_ichimoku("amzn")
-        plot_ichimoku("msft")
 
     def test_rsi(self):
         plot_rsi("googl")
 
-    def test_rsi2(self):
-        plot_rsi_atr_ma("googl")
+    def test_atr(self):
+        plot_atr("googl")
