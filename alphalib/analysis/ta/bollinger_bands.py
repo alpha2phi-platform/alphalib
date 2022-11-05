@@ -69,7 +69,7 @@ def plot_bollinger_bands(symbol: str, period: str = "1y"):
     fig.update_xaxes(title="Date", rangeslider_visible=True)
     fig.update_yaxes(title="Price")
     fig.update_layout(
-        title_text=f"Bollinger Bands - {symbol}",
+        title_text=f"Bollinger Bands - {symbol.upper()}",
         height=1200,
         width=1800,
         showlegend=True,
