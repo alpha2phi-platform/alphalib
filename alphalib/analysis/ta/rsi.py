@@ -3,14 +3,15 @@ import plotly.io as pio
 import yfinance as yf
 from plotly.subplots import make_subplots
 
-from alphalib.analysis.ta import momentum_rsi, volatility_atr
+from alphalib.analysis.ta import momentum_rsi
 
 
 def plot_rsi(symbol: str, period: str = "1y"):
     assert symbol
 
     df = yf.download(symbol, period=period)
-    df["RSI"] = momentum_rsi(df["Close"])
+    df["RSI"], buyers, sellers = momentum_rsi(df["Close"])
+    print(buyers)
 
     pio.templates.default = "plotly_dark"
     fig = make_subplots(
@@ -37,6 +38,34 @@ def plot_rsi(symbol: str, period: str = "1y"):
             y=df["RSI"],
             name="RSI",
             line_color="rgb(204,0,0)",
+        ),
+        row=2,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=buyers.index,
+            y=buyers["Close"],
+            name="Buyers",
+            mode="markers",
+            marker=dict(
+                color="#00CC96",
+                size=10,
+            ),
+        ),
+        row=2,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=sellers.index,
+            y=sellers["Close"],
+            name="Sellers",
+            mode="markers",
+            marker=dict(
+                color="#EF553B",
+                size=10,
+            ),
         ),
         row=2,
         col=1,

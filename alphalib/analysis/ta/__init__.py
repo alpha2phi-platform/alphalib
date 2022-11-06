@@ -63,7 +63,7 @@ def trend_ichimoku(high, low, close):
     return conversion, baseline, span_A, span_B, lagging
 
 
-def momentum_rsi(close, periods=14):
+def momentum_rsi(close, periods=14, upper=70, lower=30):
 
     close_delta = close.diff()
 
@@ -76,4 +76,8 @@ def momentum_rsi(close, periods=14):
 
     rsi = ma_up / ma_down
     rsi = 100 - (100 / (1 + rsi))
-    return rsi
+
+    buyers = rsi[rsi <= 30]
+    sellers = rsi[rsi >= 70]
+
+    return rsi, pd.DataFrame({"Close": buyers}), pd.DataFrame({"Close": sellers})
