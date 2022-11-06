@@ -172,7 +172,7 @@ class Downloader:
                             df_result = pd.concat(
                                 [df_result, result[fld_list]], ignore_index=True
                             )
-                        if len(df_result) == 5:
+                        if len(df_result) == 50:
                             console.log("[green]Saving fetched stocks...")
                             self.append_df_to_excel(df_result)
                             df_result = pd.DataFrame()
