@@ -77,7 +77,7 @@ def momentum_rsi(close, periods=14, upper=70, lower=30):
     rsi = ma_up / ma_down
     rsi = 100 - (100 / (1 + rsi))
 
-    buyers = rsi[rsi <= 30]
-    sellers = rsi[rsi >= 70]
+    buyers = rsi[rsi <= lower]
+    sellers = rsi[rsi >= upper]
 
     return rsi, pd.DataFrame({"Close": buyers}), pd.DataFrame({"Close": sellers})
