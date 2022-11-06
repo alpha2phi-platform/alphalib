@@ -131,6 +131,7 @@ class Downloader:
             counter = 0
             console = Console()
             has_error = False
+            df_result = pd.DataFrame()
             with console.status("[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
                 for stock in stocks.itertuples(index=False, name="Stock"):
@@ -168,22 +169,40 @@ class Downloader:
                                 fld_list.extend(result.columns.tolist())
                                 fld_list.sort()
                             self.create_missing_cols(result, fld_list)
-                            self.append_df_to_excel(result[fld_list])
+                            df_result = pd.concat(
+                                [df_result, result[fld_list]], ignore_index=True
+                            )
+                        if len(df_result) == 5:
+                            console.log("[green]Saving fetched stocks...")
+                            self.append_df_to_excel(df_result)
+                            df_result = pd.DataFrame()
 
                     except Exception as e:
                         has_error = True
-                        rprint(f"Unable to download data for {stock.symbol}-{stock.short_name}", e)  # type: ignore
+                        rprint(
+                            f"Unable to download data for {stock.symbol}-{stock.short_name}",
+                            e,
+                        )
                         traceback.print_exc()
                         # return # continue
                     finally:
                         if not skip:
                             if not has_error:
-                                console.log(f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.short_name}")  # type: ignore
+                                console.log(
+                                    f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.short_name}"
+                                )
                             else:
-                                console.log(f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}")  # type: ignore
+                                console.log(
+                                    f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}"
+                                )
 
                             if self.throttle > 0:
                                 time.sleep(self.throttle)
+
+            if len(df_result) > 0:
+                console.log("[green]Saving remaining fetched stocks...")
+                self.append_df_to_excel(df_result)
+                df_result = pd.DataFrame()
 
         return wrapper
 
