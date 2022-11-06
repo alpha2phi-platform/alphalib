@@ -29,11 +29,13 @@ class Downloader:
         start_pos: int = 0,
         primary_col: str = "symbol",
         throttle: int = 2,
+        batch_save_size: int = 50,
     ):
         self.continue_last_download = continue_last_download
         self.sheet_name = sheet_name
         self.primary_col = primary_col
         self.throttle = throttle
+        self.batch_save_size = batch_save_size
         self.start_pos = start_pos
         self.file_name = str(
             get_project_root()
@@ -172,7 +174,7 @@ class Downloader:
                             df_result = pd.concat(
                                 [df_result, result[fld_list]], ignore_index=True
                             )
-                        if len(df_result) == 50:
+                        if len(df_result) == self.batch_save_size:
                             console.log("[green]Saving fetched stocks...")
                             self.append_df_to_excel(df_result)
                             df_result = pd.DataFrame()
