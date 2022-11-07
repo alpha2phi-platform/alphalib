@@ -3,7 +3,7 @@ import plotly.io as pio
 import yfinance as yf
 from plotly.subplots import make_subplots
 
-from alphalib.analysis.ta import momentum_rsi
+from alphalib.analysis.ta import momentum_rsi, volatility_atr
 
 
 def plot_rsi(symbol: str, period: str = "1y"):
@@ -11,11 +11,13 @@ def plot_rsi(symbol: str, period: str = "1y"):
 
     df = yf.download(symbol, period=period)
     df["RSI"], buyers, sellers = momentum_rsi(df["Close"])
-    print(buyers)
+    df["ATR"] = volatility_atr(df["High"], df["Low"], df["Close"])
+    df["RSI_ATR"] = df["RSI"] / df["ATR"]
+    df["RSI_ATR"], _, _ = momentum_rsi(df["RSI_ATR"])
 
     pio.templates.default = "plotly_dark"
     fig = make_subplots(
-        rows=2,
+        rows=3,
         cols=1,
         shared_xaxes=True,
         subplot_titles=("Price", "RSI"),
@@ -42,6 +44,18 @@ def plot_rsi(symbol: str, period: str = "1y"):
         row=2,
         col=1,
     )
+
+    fig.add_trace(
+        go.Scatter(
+            x=df.index,
+            y=df["RSI_ATR"],
+            name="RSI ATR",
+            line_color="rgb(218,112,214)",
+        ),
+        row=3,
+        col=1,
+    )
+
     fig.add_trace(
         go.Scatter(
             x=buyers.index,
@@ -72,7 +86,8 @@ def plot_rsi(symbol: str, period: str = "1y"):
     )
 
     fig.update_layout(title_text=f"Momentum Indicator - RSI for {symbol.upper()}")
-    fig.update_xaxes(title="Date", rangeslider_visible=True, row=2, col=1)
+    fig.update_xaxes(title="Date", rangeslider_visible=True, row=3, col=1)
     fig.update_yaxes(title="Price", row=1, col=1)
     fig.update_yaxes(title="RSI", row=2, col=1)
+    fig.update_yaxes(title="RSI ATR", row=3, col=1)
     fig.show()
