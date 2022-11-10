@@ -6,10 +6,10 @@ import pandas as pd
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
 from alphalib.analysis.sentiment import sentiment_analysis
-from alphalib.analysis.ta.atr import plot_atr
 from alphalib.analysis.ta.bollinger_bands import plot_bollinger_bands
 from alphalib.analysis.ta.ichimoku import plot_ichimoku
-from alphalib.analysis.ta.rsi import plot_rsi
+from alphalib.analysis.ta.momentum.rsi import plot_rsi
+from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.yield_analysis import recommend_stocks
 from alphalib.utils.dateutils import month_from
 
@@ -56,7 +56,7 @@ class TestAnalysis(unittest.TestCase):
     def test_ta_bb(self):
         plot_bollinger_bands("googl")
 
-    def test_ta_icho(self):
+    def test_ta_ichimoku(self):
         plot_ichimoku("googl")
 
     def test_ta_rsi(self):

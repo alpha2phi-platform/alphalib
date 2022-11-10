@@ -7,6 +7,27 @@ import yfinance as yf
 from alphalib.analysis.ta import trend_ichimoku
 
 
+def calculate_ichimoku(high, low, close):
+    # Conversion
+    hi_val = high.rolling(window=9).max()
+    low_val = low.rolling(window=9).min()
+    conversion = (hi_val + low_val) / 2
+
+    # Baseline
+    hi_val2 = high.rolling(window=26).max()
+    low_val2 = low.rolling(window=26).min()
+    baseline = (hi_val2 + low_val2) / 2
+
+    # Spans
+    span_A = ((conversion + baseline) / 2).shift(26)
+    hi_val3 = high.rolling(window=52).max()
+    low_val3 = low.rolling(window=52).min()
+    span_B = ((hi_val3 + low_val3) / 2).shift(26)
+    lagging = close.shift(-26)
+
+    return conversion, baseline, span_A, span_B, lagging
+
+
 def get_fill_color(label):
     if label >= 1:
         return "rgba(0,250,0,0.4)"
