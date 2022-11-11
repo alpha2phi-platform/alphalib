@@ -4,7 +4,7 @@ import plotly.io as pio
 import yfinance as yf
 from plotly.subplots import make_subplots
 
-from alphalib.analysis.ta import volatility_atr
+from alphalib.analysis.ta.volatility.atr import calculate_atr
 
 
 def calculate_rsi(close, periods=14, upper=70, lower=30):
@@ -32,7 +32,7 @@ def plot_rsi(symbol: str, period: str = "1y"):
 
     df = yf.download(symbol, period=period)
     df["RSI"], buyers, sellers = calculate_rsi(df["Close"])
-    df["ATR"] = volatility_atr(df["High"], df["Low"], df["Close"])
+    df["ATR"] = calculate_atr(df["High"], df["Low"], df["Close"])
     df["RSI_ATR"] = df["RSI"] / df["ATR"]
     df["RSI_ATR"], _, _ = calculate_rsi(df["RSI_ATR"])
 

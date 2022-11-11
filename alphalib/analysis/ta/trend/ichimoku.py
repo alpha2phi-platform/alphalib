@@ -4,8 +4,6 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import yfinance as yf
 
-from alphalib.analysis.ta import trend_ichimoku
-
 
 def calculate_ichimoku(high, low, close):
     # Conversion
@@ -46,7 +44,7 @@ def plot_ichimoku(symbol: str, period: str = "1y"):
         df["SpanA"],
         df["SpanB"],
         df["Lagging"],
-    ) = trend_ichimoku(df["High"], df["Low"], df["Close"])
+    ) = calculate_ichimoku(df["High"], df["Low"], df["Close"])
 
     candle = go.Candlestick(
         x=df.index,
