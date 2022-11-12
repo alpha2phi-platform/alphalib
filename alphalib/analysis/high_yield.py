@@ -19,7 +19,7 @@ TARGET_YIELD = 10
 
 
 @dataclass
-class YieldAnalysis(YahooFinance, Nasdaq):
+class HighYield(YahooFinance, Nasdaq):
     sentiment_score: float = 0
     source: str = ""
     info_url: str = ""
@@ -38,7 +38,7 @@ def _3_month_sentiment(symbol: str) -> float:
 
 def recommend_stocks(
     by="sector", filter_earnings_dt=True, sentiment=True, target_yield=TARGET_YIELD
-) -> list[YieldAnalysis]:
+) -> list[HighYield]:
     stock_stats: pd.DataFrame = get_stock_stats()
     stock_stats["lastdividenddate"] = stock_stats["lastdividenddate"].apply(
         from_epoch_time
@@ -76,12 +76,12 @@ def recommend_stocks(
         ]
 
     # Check yield stocks and recommend stocks
-    rec_stocks: list[YieldAnalysis] = []
+    rec_stocks: list[HighYield] = []
     for symbol in yield_stocks["symbol"]:
         logger.info(f"Getting info for {symbol}")
         yf_stock_info = yahoo_finance(symbol)
         nasdaq_stock_info = nasdaq(symbol)
-        rec_stock = YieldAnalysis()
+        rec_stock = HighYield()
         rec_stock.source = "dataset"
         set_fields(yf_stock_info, rec_stock)
         set_fields(nasdaq_stock_info, rec_stock)
@@ -99,7 +99,7 @@ def recommend_stocks(
             logger.info(f"Getting info for {stock.symbol}")
             yf_stock_info = yahoo_finance(stock.symbol)
             nasdaq_stock_info = nasdaq(stock.symbol)
-            rec_stock = YieldAnalysis()
+            rec_stock = HighYield()
             rec_stock.source = "yahoo_finance"
             set_fields(yf_stock_info, rec_stock)
             set_fields(nasdaq_stock_info, rec_stock)

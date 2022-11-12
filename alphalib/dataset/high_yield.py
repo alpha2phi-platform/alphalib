@@ -13,7 +13,7 @@ URL = "https://finance.yahoo.com/u/yahoo-finance/watchlists/high-yield-dividend-
 
 
 @dataclass
-class HighYield(TypeConverter):
+class YieldStock(TypeConverter):
     symbol: str = ""
     company_name: str = ""
     last_price: float = 0
@@ -25,8 +25,8 @@ class HighYield(TypeConverter):
     market_cap: str = ""
 
 
-def get_high_yield_stocks() -> list[HighYield]:
-    result: list[HighYield] = []
+def get_high_yield_stocks() -> list[YieldStock]:
+    result: list[YieldStock] = []
 
     with closing(requests.Session()) as s:
         s.verify = False
@@ -46,7 +46,7 @@ def get_high_yield_stocks() -> list[HighYield]:
             rs_row = tbl.select("tr")
             for row in rs_row:
                 rs_col = row.select("td")
-                stock = HighYield()
+                stock = YieldStock()
                 stock.symbol = strip(rs_col[0].text)
                 stock.company_name = strip(rs_col[1].text)
                 stock.last_price = to_float(rs_col[2].text)
