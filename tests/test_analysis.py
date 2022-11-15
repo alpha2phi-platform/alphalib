@@ -9,6 +9,7 @@ from alphalib.analysis.high_yield import recommend_stocks
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
+from alphalib.analysis.ta.trend.sma import plot_sma
 from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
 from alphalib.analysis.technical import plot_technical
@@ -65,6 +66,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_atr(self):
         plot_atr("googl")
+
+    def test_ta_sma(self):
+        plot_sma("googl")
 
     def test_ta(self):
         plot_technical("googl")
