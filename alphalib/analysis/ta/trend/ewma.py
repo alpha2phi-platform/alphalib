@@ -1,4 +1,7 @@
 import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
+import yfinance as yf
 
 
 def calculate_ewma(data, ndays):
@@ -10,36 +13,36 @@ def calculate_ewma(data, ndays):
         A pandas data frame.
     """
     ema = pd.Series(
-        data["Close"].ewm(span=ndays, min_periods=ndays - 1).mean(),
-        name="EWMA_" + str(ndays),
+        data["Close"].ewm(span=ndays, min_periods=ndays - 1).mean(), name="EWMA"
     )
     data = data.join(ema)
     return data
 
 
-def plot_ewma(symbol: str, period: str = "1y"):
+def plot_ewma(symbol: str, period: str = "1y", ndays=200):
     assert symbol
 
-    # Compute the 200-day EWMA
-    ew = 200
-    ewma = calculate_ewma(data, ew)
+    stock = yf.Ticker(symbol)
+    df = stock.history(period=period)
+
+    ewma = calculate_ewma(df, ndays)
     ewma = ewma.dropna()
-    ewma = ewma["EWMA_200"]
+    ewma = ewma["EWMA"]
 
-    # Plotting the Google stock Price Series chart and Moving Averages below
-    plt.figure(figsize=(10, 7))
+    pio.templates.default = "plotly_dark"
+    fig = go.Figure()
 
-    # Set the title and axis labels
-    plt.title("Moving Average")
-    plt.xlabel("Date")
-    plt.ylabel("Price")
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Close"], name="Price", line_color="#636EFA")
+    )
+    fig.add_trace(go.Scatter(x=ewma.index, y=ewma, name="EWMA", line_color="#FECB52"))
 
-    # Plot close price and moving averages
-    plt.plot(data["Close"], lw=1, label="Close Price")
-    plt.plot(sma, "g", lw=1, label="50-day SMA")
-    plt.plot(ewma, "r", lw=1, label="200-day EMA")
-
-    # Add a legend to the axis
-    plt.legend()
-
-    plt.show()
+    fig.update_xaxes(title="Date", rangeslider_visible=True)
+    fig.update_yaxes(title="Price")
+    fig.update_layout(
+        title_text=f"Trend Indicator - Exponentially-weighted Moving Average for {symbol.upper()}",
+        height=1200,
+        width=1800,
+        showlegend=True,
+    )
+    fig.show()
