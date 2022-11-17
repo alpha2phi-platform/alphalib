@@ -8,9 +8,10 @@ from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
 from alphalib.analysis.high_yield import recommend_stocks
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
+from alphalib.analysis.ta.trend.ewma import plot_ewma
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 from alphalib.analysis.ta.trend.sma import plot_sma
-from alphalib.analysis.ta.trend.ewma import plot_ewma
+from alphalib.analysis.ta.volume.mfi import plot_mfi
 from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
 from alphalib.analysis.technical import plot_technical
@@ -73,6 +74,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_ewma(self):
         plot_ewma("googl")
+
+    def test_ta_mfi(self):
+        plot_mfi("googl")
 
     def test_ta(self):
         plot_technical("googl")
