@@ -1,5 +1,6 @@
 # import os
 import random
+import shutil
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
@@ -49,8 +50,15 @@ DEFAULT_HTTP_RETRY = 3
 
 # Chrome options
 chrome_options = webdriver.ChromeOptions()
-chrome_options.headless = True
-# chrome_options.add_argument("--incognito")
+
+# Use Brave browser if exist
+brave_path = shutil.which("which brave")
+if brave_path:
+    chrome_options.binary_location = brave_path
+
+chrome_options.headless = False
+chrome_options.binary_location = "/usr/bin/brave"  # Use brave
+chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("user-agent=" + random_user_agent())
 chrome_options.add_argument("--no-sandbox")
@@ -74,7 +82,7 @@ chrome_options.add_experimental_option("prefs", content_setting)
 # chrome_options.add_argument(f"--profile-directory={profile_dir}")
 
 
-# Web driver
+# Web driver - default Chrome
 web_driver = webdriver.Chrome(
     service=ChromeService(ChromeDriverManager().install()),
     chrome_options=chrome_options,

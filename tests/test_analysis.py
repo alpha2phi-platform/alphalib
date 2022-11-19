@@ -48,7 +48,7 @@ class TestAnalysis(unittest.TestCase):
         print(analysis.to_df().head().T)
 
     def test_high_yield(self):
-        recommend_stocks(by="sector")
+        recommend_stocks()
 
     def test_sentiment(self):
         df = sentiment_analysis("googl")
