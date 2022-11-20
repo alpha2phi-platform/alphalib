@@ -5,11 +5,13 @@ import shutil
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as BraveService
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
 
 # from pathlib import Path
 
@@ -83,11 +85,18 @@ chrome_options.add_experimental_option("prefs", content_setting)
 # chrome_options.add_argument(f"--user-data-dir={user_data}")
 # chrome_options.add_argument(f"--profile-directory={profile_dir}")
 
-
-driver = webdriver.Chrome(
-    service=ChromeService(ChromeDriverManager().install()),
-    chrome_options=chrome_options,
-)
+if brave_path:
+    driver = webdriver.Chrome(
+        service=BraveService(
+            ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()
+        ),
+        chrome_options=chrome_options,
+    )
+else:
+    driver = webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()),
+        chrome_options=chrome_options,
+    )
 
 
 def get_driver(url, condition=None):
