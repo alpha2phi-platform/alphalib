@@ -2,6 +2,7 @@ import unittest
 import unittest.mock
 
 import pandas as pd
+import shutil
 
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
@@ -11,9 +12,10 @@ from alphalib.analysis.ta.momentum.rsi import plot_rsi
 from alphalib.analysis.ta.trend.ewma import plot_ewma
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 from alphalib.analysis.ta.trend.sma import plot_sma
-from alphalib.analysis.ta.volume.mfi import plot_mfi
 from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
+from alphalib.analysis.ta.volume.emv import plot_emv
+from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.technical import plot_technical
 from alphalib.utils.dateutils import month_from
 
@@ -77,6 +79,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_mfi(self):
         plot_mfi("googl")
+
+    def test_ta_emv(self):
+        plot_emv("googl")
 
     def test_ta(self):
         plot_technical("googl")

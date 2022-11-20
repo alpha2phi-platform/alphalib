@@ -52,23 +52,21 @@ DEFAULT_HTTP_RETRY = 3
 chrome_options = webdriver.ChromeOptions()
 
 # Use Brave browser if exist
-brave_path = shutil.which("which brave")
+brave_path = shutil.which("brave")
 if brave_path:
     chrome_options.binary_location = brave_path
 
 chrome_options.headless = False
-chrome_options.binary_location = "/usr/bin/brave"  # Use brave
-chrome_options.add_argument("--incognito")
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("user-agent=" + random_user_agent())
-chrome_options.add_argument("--no-sandbox")
-# chrome_options.add_argument("window-sized1200,600")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--proxy-server='direct://'")
 chrome_options.add_argument("--proxy-bypass-list=*")
-chrome_options.add_argument("--blink-settings=imagesEnabled=false")
 chrome_options.add_argument("--enable-javascript")
+chrome_options.add_argument("--blink-settings=imagesEnabled=false")
+chrome_options.add_argument("--incognito")
+chrome_options.add_argument("--no-sandbox")
 content_setting = {
     "profile.managed_default_content_settings.images": 2,
     "profile.default_content_setting_values.cookies": 1,
@@ -76,6 +74,7 @@ content_setting = {
 }
 chrome_options.add_experimental_option("prefs", content_setting)
 
+# chrome_options.add_argument("window-sized1200,600")
 # user_data = os.path.join(Path.home(), ".config", "google-chrome")
 # profile_dir = "Default"
 # chrome_options.add_argument(f"--user-data-dir={user_data}")
@@ -87,5 +86,5 @@ web_driver = webdriver.Chrome(
     service=ChromeService(ChromeDriverManager().install()),
     chrome_options=chrome_options,
 )
-web_driver.implicitly_wait(DEFAULT_HTTP_TIMEOUT)
-action = ActionChains(web_driver)
+# web_driver.implicitly_wait(DEFAULT_HTTP_TIMEOUT)
+# action = ActionChains(web_driver)
