@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
-from alphalib.utils.httputils import web_driver
+from alphalib.utils.httputils import driver
 from alphalib.utils.logger import logger
 
 SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
@@ -28,9 +28,9 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
     seekingAlpha.symbol = symbol
     seekingAlpha.seeking_alpha_url = download_url
 
-    web_driver.get(download_url)
+    driver.get(download_url)
     try:
-        web_driver.find_element(
+        driver.find_element(
             By.CSS_SELECTOR, "div > table > tbody > tr:nth-child(n+2) > td:nth-child(2)"
         )
     except NoSuchElementException:
@@ -38,7 +38,7 @@ def get_stock_details(symbol: str) -> SeekingAlpha:
         return seekingAlpha
 
     time.sleep(5)
-    page_source = web_driver.page_source
+    page_source = driver.page_source
     soup = BeautifulSoup(page_source, "lxml")
 
     # Dividend history
