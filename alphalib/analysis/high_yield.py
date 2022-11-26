@@ -3,12 +3,12 @@ from datetime import datetime
 
 import pandas as pd
 
-from alphalib.analysis.fa import nasdaq, yahoo_finance
+from alphalib.analysis.fa import yahoo_finance
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.data_sources import get_stock_stats
-from alphalib.data_sources.nasdaq import Nasdaq
 from alphalib.data_sources.yahoo_finance import YahooFinance
 from alphalib.dataset.high_yield import get_high_yield_stocks
+from alphalib.data_sources.nasdaq import NASDAQ_URL
 from alphalib.utils.convertutils import set_fields
 from alphalib.utils.dateutils import from_epoch_time, month_from
 from alphalib.utils.logger import logger
@@ -19,10 +19,11 @@ TARGET_YIELD = 10
 
 
 @dataclass
-class HighYield(YahooFinance, Nasdaq):
+class HighYield(YahooFinance):
     sentiment_score: float = 0
     source: str = ""
-    info_url: str = ""
+    seeking_alpha_url: str = ""
+    nasdaq_url: str = ""
 
 
 def _3_month_sentiment(symbol: str) -> float:
@@ -80,12 +81,11 @@ def recommend_stocks(
     for symbol in yield_stocks["symbol"]:
         logger.info(f"Getting info for {symbol}")
         yf_stock_info = yahoo_finance(symbol)
-        nasdaq_stock_info = nasdaq(symbol)
         rec_stock = HighYield()
         rec_stock.source = "dataset"
         set_fields(yf_stock_info, rec_stock)
-        set_fields(nasdaq_stock_info, rec_stock)
-        rec_stock.info_url = SEEKING_ALPHA_URL.format(symbol)
+        rec_stock.seeking_alpha_url = SEEKING_ALPHA_URL.format(symbol)
+        rec_stock.nasdaq_url = NASDAQ_URL.format(symbol)
 
         if sentiment:
             rec_stock.sentiment_score = _3_month_sentiment(symbol)
@@ -98,12 +98,11 @@ def recommend_stocks(
         if stock.symbol not in yield_stocks["symbol"]:
             logger.info(f"Getting info for {stock.symbol}")
             yf_stock_info = yahoo_finance(stock.symbol)
-            nasdaq_stock_info = nasdaq(stock.symbol)
             rec_stock = HighYield()
             rec_stock.source = "yahoo_finance"
             set_fields(yf_stock_info, rec_stock)
-            set_fields(nasdaq_stock_info, rec_stock)
-            rec_stock.info_url = SEEKING_ALPHA_URL.format(stock.symbol)
+            rec_stock.seeking_alpha_url = SEEKING_ALPHA_URL.format(stock.symbol)
+            rec_stock.nasdaq_url = NASDAQ_URL.format(symbol)
 
             if sentiment:
                 rec_stock.sentiment_score = _3_month_sentiment(stock.symbol)

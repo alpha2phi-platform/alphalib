@@ -60,7 +60,7 @@ brave_path = shutil.which("brave")
 if brave_path:
     chrome_options.binary_location = brave_path
 
-chrome_options.headless = False
+chrome_options.headless = True
 chrome_options.add_argument("user-agent=" + random_user_agent())
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--proxy-server='direct://'")
@@ -85,21 +85,25 @@ chrome_options.add_experimental_option("prefs", content_setting)
 # chrome_options.add_argument(f"--user-data-dir={user_data}")
 # chrome_options.add_argument(f"--profile-directory={profile_dir}")
 
-if brave_path:
-    driver = webdriver.Chrome(
-        service=BraveService(
-            ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()
-        ),
-        chrome_options=chrome_options,
-    )
-else:
-    driver = webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()),
-        chrome_options=chrome_options,
-    )
+driver = None
 
 
 def get_driver(url, condition=None):
+    global driver
+
+    if not driver:
+        if brave_path:
+            driver = webdriver.Chrome(
+                service=BraveService(
+                    ChromeDriverManager(chrome_type=ChromeType.BRAVE).install()
+                ),
+                options=chrome_options,
+            )
+        else:
+            driver = webdriver.Chrome(
+                service=ChromeService(ChromeDriverManager().install()),
+                options=chrome_options,
+            )
     if not condition:
         driver.implicitly_wait(DEFAULT_HTTP_TIMEOUT)
         driver.get(url)

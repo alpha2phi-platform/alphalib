@@ -2,7 +2,6 @@ import unittest
 import unittest.mock
 
 import pandas as pd
-import shutil
 
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
@@ -14,7 +13,7 @@ from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 from alphalib.analysis.ta.trend.sma import plot_sma
 from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
-from alphalib.analysis.ta.volume.emv import plot_emv
+from alphalib.analysis.ta.volume.emv import plot_emv, plot_emv2
 from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.technical import plot_technical
 from alphalib.utils.dateutils import month_from
@@ -46,7 +45,7 @@ class TestAnalysis(unittest.TestCase):
         print(analysis)
 
     def test_yahoo_finance(self):
-        analysis = yahoo_finance("CLM")
+        analysis = yahoo_finance("GOGL")
         print(analysis.to_df().head().T)
 
     def test_high_yield(self):
@@ -82,6 +81,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_ta_emv(self):
         plot_emv("googl")
+
+    def test_ta_emv2(self):
+        plot_emv2("googl")
 
     def test_ta(self):
         plot_technical("googl")

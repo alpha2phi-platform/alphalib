@@ -45,6 +45,7 @@ class YahooFinance(TypeConverter):
     dividend_rate: float | None = 0
     trailing_annual_dividend_rate: float | None = 0
     trailing_annual_dividend_yield: float | None = 0
+    dividend_history: pd.Series | None = None
     yfinance_url: str = ""
 
 
@@ -56,7 +57,8 @@ def get_stock_details(symbol: str) -> YahooFinance:
     yahoo_finance.yfinance_url = YFINANCE_URL.format(symbol)
 
     ticker = yf.Ticker(symbol)
-    stats: dict = ticker.stats()  # type: ignore
+    stats: dict = ticker.stats()
+    yahoo_finance.dividend_history = ticker.dividends
     if not stats:
         return yahoo_finance
 
