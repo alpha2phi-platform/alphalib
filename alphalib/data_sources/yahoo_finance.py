@@ -57,6 +57,7 @@ def get_stock_details(symbol: str) -> YahooFinance:
     yahoo_finance.yfinance_url = YFINANCE_URL.format(symbol)
 
     ticker = yf.Ticker(symbol)
+    ticker.history(period="10y")
     stats: dict = ticker.stats()
     yahoo_finance.dividend_history = ticker.dividends
     if not stats:

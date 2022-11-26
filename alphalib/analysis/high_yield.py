@@ -15,7 +15,7 @@ from alphalib.utils.logger import logger
 
 SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}"
 
-TARGET_YIELD = 10
+TARGET_YIELD = 15
 
 
 @dataclass

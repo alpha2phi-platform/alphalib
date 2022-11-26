@@ -32,7 +32,8 @@ class TestDataset(unittest.TestCase):
         logger.info("Tear down")
 
     def test_yfinance_get_dividends(self):
-        ticker: Ticker = yf.Ticker("GM")
+        ticker: Ticker = yf.Ticker("GOGL")
+        ticker.history(period="10y")
         stock_dividends = ticker.dividends
         print(stock_dividends)
 
