@@ -10,7 +10,9 @@ from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import get_driver, get_tag_value
 from alphalib.utils.logger import logger
 
-NASDAQ_URL = "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
+NASDAQ_DIVIDEND_HISTORY_URL = (
+    "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
+)
 
 
 @dataclass
@@ -28,7 +30,7 @@ class Nasdaq(TypeConverter):
 def get_stock_details(symbol: str) -> Nasdaq:
     assert symbol
 
-    download_url = NASDAQ_URL.format(symbol.lower())
+    download_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol.lower())
     nasdaq = Nasdaq()
     nasdaq.symbol = symbol
     nasdaq.nasdaq_url = download_url

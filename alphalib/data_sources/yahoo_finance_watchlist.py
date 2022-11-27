@@ -9,11 +9,9 @@ from alphalib.utils.convertutils import TypeConverter, strip, to_float
 from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
                                       http_headers)
 
-URL = "https://finance.yahoo.com/u/yahoo-finance/watchlists/high-yield-dividend-stocks/"
-
 
 @dataclass
-class YieldStock(TypeConverter):
+class WatchedStock(TypeConverter):
     symbol: str = ""
     company_name: str = ""
     last_price: float = 0
@@ -25,14 +23,14 @@ class YieldStock(TypeConverter):
     market_cap: str = ""
 
 
-def get_high_yield_stocks() -> list[YieldStock]:
-    result: list[YieldStock] = []
+def get_watchlist(url: str) -> list[WatchedStock]:
+    watchlist: list[WatchedStock] = []
 
     with closing(requests.Session()) as s:
         s.verify = False
         s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
         r = s.get(
-            URL, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
+            url, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
         )
         if r.status_code != requests.status_codes.codes["ok"]:
             raise ConnectionError(
@@ -46,7 +44,7 @@ def get_high_yield_stocks() -> list[YieldStock]:
             rs_row = tbl.select("tr")
             for row in rs_row:
                 rs_col = row.select("td")
-                stock = YieldStock()
+                stock = WatchedStock()
                 stock.symbol = strip(rs_col[0].text)
                 stock.company_name = strip(rs_col[1].text)
                 stock.last_price = to_float(rs_col[2].text)
@@ -56,6 +54,6 @@ def get_high_yield_stocks() -> list[YieldStock]:
                 stock.volume = strip(rs_col[6].text)
                 stock.avg_volume_3_mths = strip(rs_col[7].text)
                 stock.market_cap = strip(rs_col[8].text)
-                result.append(stock)
+                watchlist.append(stock)
 
-    return result
+    return watchlist
