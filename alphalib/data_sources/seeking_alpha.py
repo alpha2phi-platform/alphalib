@@ -1,16 +1,20 @@
 import time
 from dataclasses import dataclass
+from sys import api_version
 
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
+from alphalib.analysis.fa import seeking_alpha
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import get_driver
 from alphalib.utils.logger import logger
 
 SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
+
+SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT = "https://seekingalpha.com/api/v3/symbols/{0}/dividend_history?group_by=quarterly&sort=-date"
 
 
 @dataclass
@@ -18,6 +22,17 @@ class SeekingAlpha(TypeConverter):
     symbol: str = ""
     seeking_alpha_url: str = ""
     dividend_history: pd.DataFrame = pd.DataFrame()
+
+
+def get_dividend_history(symbol: str) -> SeekingAlpha:
+    assert symbol
+
+    api_endpoint = SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
+    sa = SeekingAlpha()
+    sa.symbol = symbol
+    sa.seeking_alpha_url = api_endpoint
+
+    return sa
 
 
 def get_stock_details(symbol: str) -> SeekingAlpha:

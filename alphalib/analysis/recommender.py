@@ -23,29 +23,81 @@ TARGET_YIELD = 15
 
 
 @dataclass
-class RecommendedStock(YahooFinance):
-    sentiment_score: float = 0
+class RecommendedStock:
+    symbol: str = ""
     source: str = ""
+    sentiment_score: float = 0
+    yfinance: YahooFinance = None
     info_url: str = ""
     dividend_history_url: str = ""
 
 
-def _3_month_sentiment(symbol: str) -> float:
+def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
     try:
-        past_3_months = month_from(-2)
+        past_months = month_from(months_ago)
         sentiment_result = sentiment_analysis(symbol)
-        return sentiment_result[sentiment_result["date"] >= past_3_months][
+        return sentiment_result[sentiment_result["date"] >= past_months][
             "compound"
         ].mean()
     except Exception:
         return 0
 
 
-def recommend_stocks_by_source():
-    pass
+def _filter_next_earning_dt(stocks, nearest_earning_mth=1):
+    current_month = datetime.now()
+    next_month = month_from(nearest_earning_mth)
+    stocks = [
+        s
+        for s in stocks
+        if (
+            s.earnings_date.year == current_month.year
+            and s.earnings_date.month == current_month.month
+        )
+        or (
+            s.earnings_date.year == next_month.year
+            and s.earnings_date.month == next_month.month
+        )
+    ]
+    return stocks
 
 
-def recommend_stocks(
+def _get_stock_info(symbol: str, stock):
+    stock.symbol = symbol
+    stock.yfinance = yahoo_finance(symbol)
+    stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
+    stock.dividend_history_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol)
+    return stock
+
+
+def recommend_stocks_from_watchlist(
+    watchlist_url=YAHOO_FINANCE_HIGH_YIELD_STOCK_URL,
+    filter_earnings_dt=True,
+    sentiment=True,
+) -> list[RecommendedStock]:
+    # Stocks from Yahoo finance watchlist
+    watchlist = get_watchlist(watchlist_url)
+    rec_stocks: list[RecommendedStock] = []
+    for stock in watchlist:
+        logger.info(f"Getting info for {stock.symbol}")
+        rec_stock = RecommendedStock()
+        rec_stock.source = watchlist_url
+        _get_stock_info(stock.symbol, rec_stock)
+        if sentiment:
+            rec_stock.sentiment_score = _get_stock_sentiment(stock.symbol)
+
+        rec_stocks.append(rec_stock)
+
+    # Sort by dividend yield %
+    # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
+    rec_stocks.sort(key=lambda s: s.trailing_annual_dividend_yield, reverse=True)
+
+    # Only earnings date in current and next month
+    if filter_earnings_dt:
+        rec_stocks = _filter_next_earning_dt(rec_stocks)
+    return rec_stocks
+
+
+def recommend_stocks_from_dataset(
     by="sector", filter_earnings_dt=True, sentiment=True, target_yield=TARGET_YIELD
 ) -> list[RecommendedStock]:
     stock_stats: pd.DataFrame = get_stock_stats()
@@ -88,34 +140,14 @@ def recommend_stocks(
     rec_stocks: list[RecommendedStock] = []
     for symbol in yield_stocks["symbol"]:
         logger.info(f"Getting info for {symbol}")
-        yf_stock_info = yahoo_finance(symbol)
         rec_stock = RecommendedStock()
         rec_stock.source = "dataset"
-        set_fields(yf_stock_info, rec_stock)
-        rec_stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
-        rec_stock.dividend_history_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol)
+        _get_stock_info(symbol, rec_stock)
 
         if sentiment:
-            rec_stock.sentiment_score = _3_month_sentiment(symbol)
+            rec_stock.sentiment_score = _get_stock_sentiment(symbol)
 
         rec_stocks.append(rec_stock)
-
-    # Stocks from Yahoo finance list
-    yf_stocks = get_watchlist(YAHOO_FINANCE_HIGH_YIELD_STOCK_URL)
-    for stock in yf_stocks:
-        if stock.symbol not in yield_stocks["symbol"]:
-            logger.info(f"Getting info for {stock.symbol}")
-            yf_stock_info = yahoo_finance(stock.symbol)
-            rec_stock = RecommendedStock()
-            rec_stock.source = "yahoo_finance"
-            set_fields(yf_stock_info, rec_stock)
-            rec_stock.info_url = SEEKING_ALPHA_STOCK_URL.format(stock.symbol)
-            rec_stock.dividend_history_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol)
-
-            if sentiment:
-                rec_stock.sentiment_score = _3_month_sentiment(stock.symbol)
-
-            rec_stocks.append(rec_stock)
 
     # Sort by dividend yield %
     # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
@@ -123,19 +155,6 @@ def recommend_stocks(
 
     # Only earnings date in current and next month
     if filter_earnings_dt:
-        current_month = datetime.now()
-        next_month = month_from(1)
-        rec_stocks = [
-            s
-            for s in rec_stocks
-            if (
-                s.earnings_date.year == current_month.year
-                and s.earnings_date.month == current_month.month
-            )
-            or (
-                s.earnings_date.year == next_month.year
-                and s.earnings_date.month == next_month.month
-            )
-        ]
+        rec_stocks = _filter_next_earning_dt(rec_stocks)
 
     return rec_stocks

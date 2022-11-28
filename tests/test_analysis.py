@@ -5,8 +5,10 @@ import pandas as pd
 
 from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
                                   yahoo_finance)
-from alphalib.analysis.high_yield import recommend_stocks
+from alphalib.analysis.recommender import (recommend_stocks_from_dataset,
+                                           recommend_stocks_from_watchlist)
 from alphalib.analysis.sentiment import sentiment_analysis
+from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
 from alphalib.analysis.ta.trend.ewma import plot_ewma
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
@@ -14,7 +16,6 @@ from alphalib.analysis.ta.trend.sma import plot_sma
 from alphalib.analysis.ta.volatility.atr import plot_atr
 from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
 from alphalib.analysis.ta.volume.emv import plot_emv, plot_emv2
-from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.technical import plot_technical
 from alphalib.utils.dateutils import month_from
 
@@ -48,8 +49,8 @@ class TestAnalysis(unittest.TestCase):
         analysis = yahoo_finance("GOGL")
         print(analysis.to_df().head().T)
 
-    def test_high_yield(self):
-        recommend_stocks()
+    def test_recommend_stocks_watchlist(self):
+        print(recommend_stocks_from_watchlist())
 
     def test_sentiment(self):
         df = sentiment_analysis("googl")

@@ -14,6 +14,14 @@ NASDAQ_DIVIDEND_HISTORY_URL = (
     "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
 )
 
+NASAQ_DIVIDEND_HISTORY_API_ENDPOINT = (
+    "https://api.nasdaq.com/api/quote/{0}/dividends?assetclass=stocks"
+)
+
+NASAQ_STOCK_INFO_API_ENDPOINT = (
+    "https://api.nasdaq.com/api/quote/{0}/info?assetclass=stocks"
+)
+
 
 @dataclass
 class Nasdaq(TypeConverter):
@@ -132,3 +140,11 @@ def get_stock_details(symbol: str) -> Nasdaq:
         ],
     )
     return nasdaq
+
+
+def get_dividend_history():
+    pass
+
+
+def get_stock_info():
+    pass
