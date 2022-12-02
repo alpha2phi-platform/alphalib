@@ -32,6 +32,7 @@ plotly = "^5.10.0"
 cufflinks = "^0.17.3"
 matplotlib = "^3.6.1"
 requests-html = "^0.10.0"
+httpx = "^0.23.1"
 
 [tool.poetry.dev-dependencies]
 

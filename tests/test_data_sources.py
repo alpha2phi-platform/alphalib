@@ -4,12 +4,7 @@ import unittest.mock
 import pandas as pd
 import yfinance as yf
 
-from alphalib.data_sources.nasdaq import get_stock_details as get_nasdaq
-from alphalib.data_sources.seeking_alpha import \
-    get_stock_details as get_seeking_alpha
-from alphalib.data_sources.yahoo_finance import \
-    get_stock_details as get_yfinance
-from alphalib.dataset.high_yield import YieldStock, get_high_yield_stocks
+from alphalib.data_sources import nasdaq, seeking_alpha, yahoo_finance
 from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
@@ -40,18 +35,13 @@ class TestDataSources(unittest.TestCase):
         logger.info(stock_info.head(10).T)
 
     def test_nasdaq(self):
-        nasdaq = get_nasdaq("pmt")
-        print(nasdaq)
+        stock_info = nasdaq.get_stock_details("pmt")
+        print(stock_info)
 
     def test_seeking_alpha(self):
-        seeking_alpha = get_seeking_alpha("GOGL")
-        print(seeking_alpha)
+        stock_info = seeking_alpha.get_dividend_history("GOGL")
+        print(stock_info)
 
     def test_yfinance(self):
-        yahoo_finance = get_yfinance("pmt")
-        print(yahoo_finance)
-
-    def test_high_yield(self):
-        stocks: list[YieldStock] = get_high_yield_stocks()
-        print(stocks)
-        self.assertGreater(len(stocks), 0)
+        stock_info = yahoo_finance.get_stock_details("pmt")
+        print(stock_info)

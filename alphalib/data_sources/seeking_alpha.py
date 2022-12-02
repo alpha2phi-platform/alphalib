@@ -1,15 +1,18 @@
 import time
+from contextlib import closing
 from dataclasses import dataclass
-from sys import api_version
 
 import pandas as pd
+import requests
+import json
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from alphalib.analysis.fa import seeking_alpha
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
-from alphalib.utils.httputils import get_driver
+from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
+                                      get_driver, http_headers)
 from alphalib.utils.logger import logger
 
 SEEKING_ALPHA_URL = "https://seekingalpha.com/symbol/{0}/dividends/history"
@@ -28,6 +31,21 @@ def get_dividend_history(symbol: str) -> SeekingAlpha:
     assert symbol
 
     api_endpoint = SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
+    with closing(requests.Session()) as s:
+        s.verify = False
+        s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
+        r = s.get(
+            api_endpoint, verify=True, headers=http_headers(), timeout=DEFAULT_HTTP_TIMEOUT
+        )
+        if r.status_code != requests.status_codes.codes["ok"]:
+            raise ConnectionError(
+                "ERR: error " + str(r.status_code) + ", try again later."
+            )
+        # Parse the JSON output
+        print(r.text)
+        result = json.load(r.text)
+        print(result)
+
     sa = SeekingAlpha()
     sa.symbol = symbol
     sa.seeking_alpha_url = api_endpoint
@@ -35,7 +53,7 @@ def get_dividend_history(symbol: str) -> SeekingAlpha:
     return sa
 
 
-def get_stock_details(symbol: str) -> SeekingAlpha:
+def _get_stock_details(symbol: str) -> SeekingAlpha:
     assert symbol
 
     download_url = SEEKING_ALPHA_URL.format(symbol.upper())

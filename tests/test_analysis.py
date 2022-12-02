@@ -3,10 +3,7 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis.fa import (all_sources, nasdaq, seeking_alpha,
-                                  yahoo_finance)
-from alphalib.analysis.recommender import (recommend_stocks_from_dataset,
-                                           recommend_stocks_from_watchlist)
+from alphalib.analysis.recommender import recommend_stocks_from_watchlist
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
@@ -32,22 +29,6 @@ class TestAnalysis(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_stock_analysis(self):
-        stock_analysis = all_sources("orc")
-        print(stock_analysis)
-
-    def test_seeking_alpha(self):
-        analysis = seeking_alpha("MFA")
-        print(analysis)
-
-    def test_nasdaq(self):
-        analysis = nasdaq("gogl")
-        print(analysis)
-
-    def test_yahoo_finance(self):
-        analysis = yahoo_finance("GOGL")
-        print(analysis.to_df().head().T)
 
     def test_recommend_stocks_watchlist(self):
         print(recommend_stocks_from_watchlist())
