@@ -16,7 +16,9 @@ class TypeConverter(object):
                 asdict(
                     self,
                     dict_factory=lambda x: {
-                        k: v for (k, v) in x if type(v) is not pd.DataFrame
+                        k: v
+                        for (k, v) in x
+                        if (type(v) is not pd.DataFrame and type(v) is not pd.Series)
                     },
                 )
             ]

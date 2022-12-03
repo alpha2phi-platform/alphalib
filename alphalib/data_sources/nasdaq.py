@@ -9,8 +9,7 @@ from requests.adapters import HTTPAdapter
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from alphalib.utils.convertutils import (TypeConverter, none_if_not_avail,
-                                         strip, to_date, to_float)
+from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
 from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
                                       get_driver, get_tag_value, http_headers)
 from alphalib.utils.logger import logger
@@ -177,7 +176,3 @@ def get_stock_details(symbol: str) -> Nasdaq:
         ],
     )
     return nasdaq
-
-
-def get_dividend_history():
-    pass

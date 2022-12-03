@@ -49,7 +49,7 @@ class YahooFinance(TypeConverter):
     yfinance_url: str = ""
 
 
-def get_stock_details(symbol: str) -> YahooFinance:
+def get_stock_info(symbol: str) -> YahooFinance:
     assert symbol
 
     yahoo_finance = YahooFinance()

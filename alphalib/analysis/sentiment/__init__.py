@@ -14,7 +14,7 @@ from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
 FINWIZ_URL = "https://finviz.com/quote.ashx?t="
 
 # Download corpus
-nltk.download("vader_lexicon")
+nltk.download("vader_lexicon", quiet=True)
 
 
 def sentiment_analysis(symbol: str) -> pd.DataFrame:

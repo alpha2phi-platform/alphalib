@@ -3,13 +3,13 @@ from datetime import datetime
 
 import pandas as pd
 
-from alphalib.analysis.fa import yahoo_finance
 from alphalib.analysis.sentiment import sentiment_analysis
-from alphalib.data_sources import get_stock_stats
-from alphalib.data_sources.nasdaq import NASDAQ_DIVIDEND_HISTORY_URL
+from alphalib.data_sources import (get_stock_stats, nasdaq, seeking_alpha,
+                                   yahoo_finance)
+from alphalib.data_sources.nasdaq import Nasdaq
+from alphalib.data_sources.seeking_alpha import SeekingAlpha
 from alphalib.data_sources.yahoo_finance import YahooFinance
 from alphalib.data_sources.yahoo_finance_watchlist import get_watchlist
-from alphalib.utils.convertutils import set_fields
 from alphalib.utils.dateutils import from_epoch_time, month_from
 from alphalib.utils.logger import logger
 
@@ -27,9 +27,10 @@ class RecommendedStock:
     symbol: str = ""
     source: str = ""
     sentiment_score: float = 0
-    yfinance: YahooFinance = None
+    yf: YahooFinance = None
+    nas: Nasdaq = None
+    sa: SeekingAlpha = None
     info_url: str = ""
-    dividend_history_url: str = ""
 
 
 def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
@@ -43,29 +44,30 @@ def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
         return 0
 
 
-def _filter_next_earning_dt(stocks, nearest_earning_mth=1):
+def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=3):
     current_month = datetime.now()
     next_month = month_from(nearest_earning_mth)
     stocks = [
         s
         for s in stocks
         if (
-            s.earnings_date.year == current_month.year
-            and s.earnings_date.month == current_month.month
+            s.yf.earnings_date.year == current_month.year
+            and s.yf.earnings_date.month == current_month.month
         )
         or (
-            s.earnings_date.year == next_month.year
-            and s.earnings_date.month == next_month.month
+            s.yf.earnings_date.year == next_month.year
+            and s.yf.earnings_date.month == next_month.month
         )
     ]
     return stocks
 
 
-def _get_stock_info(symbol: str, stock):
+def _get_stock_info(symbol: str, stock: RecommendedStock):
     stock.symbol = symbol
-    stock.yfinance = yahoo_finance(symbol)
+    stock.yf = yahoo_finance.get_stock_info(symbol)
+    stock.nas = nasdaq.get_stock_info(symbol)
+    stock.sa = seeking_alpha.get_stock_info(symbol)
     stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
-    stock.dividend_history_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol)
     return stock
 
 
@@ -89,7 +91,7 @@ def recommend_stocks_from_watchlist(
 
     # Sort by dividend yield %
     # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
-    rec_stocks.sort(key=lambda s: s.trailing_annual_dividend_yield, reverse=True)
+    rec_stocks.sort(key=lambda s: s.yf.trailing_annual_dividend_yield, reverse=True)
 
     # Only earnings date in current and next month
     if filter_earnings_dt:
@@ -151,7 +153,7 @@ def recommend_stocks_from_dataset(
 
     # Sort by dividend yield %
     # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
-    rec_stocks.sort(key=lambda s: s.trailing_annual_dividend_yield, reverse=True)
+    rec_stocks.sort(key=lambda s: s.yf.trailing_annual_dividend_yield, reverse=True)
 
     # Only earnings date in current and next month
     if filter_earnings_dt:

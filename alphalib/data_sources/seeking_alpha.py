@@ -19,7 +19,7 @@ class SeekingAlpha(TypeConverter):
     dividend_history: pd.DataFrame = pd.DataFrame()
 
 
-def get_dividend_history(symbol: str) -> SeekingAlpha:
+def get_stock_info(symbol: str) -> SeekingAlpha:
     assert symbol
 
     api_endpoint = SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())

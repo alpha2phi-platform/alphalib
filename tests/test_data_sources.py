@@ -35,7 +35,7 @@ class TestDataSources(unittest.TestCase):
         logger.info(stock_info.head(10).T)
 
     def test_seeking_alpha(self):
-        stock_info = seeking_alpha.get_dividend_history("GOOGL")
+        stock_info = seeking_alpha.get_stock_info("GOOGL")
         print(stock_info)
 
     def test_yfinance(self):

@@ -1,3 +1,3 @@
 # alphalib
 
-A financial investment terminal and library
+A financial investment terminal and library.
