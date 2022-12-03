@@ -71,7 +71,7 @@ def get_stock_info(symbol: str) -> Nasdaq:
     return nasdaq
 
 
-def get_stock_details_browser(symbol: str) -> Nasdaq:
+def get_stock_details(symbol: str) -> Nasdaq:
     """Deprecated"""
     assert symbol
 

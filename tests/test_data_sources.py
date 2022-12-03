@@ -34,14 +34,18 @@ class TestDataSources(unittest.TestCase):
         stock_info = pd.DataFrame([stock.stats()])
         logger.info(stock_info.head(10).T)
 
-    def test_nasdaq(self):
-        stock_info = nasdaq.get_stock_info("GOGL")
-        print(stock_info)
-
     def test_seeking_alpha(self):
         stock_info = seeking_alpha.get_dividend_history("GOOGL")
         print(stock_info)
 
     def test_yfinance(self):
         stock_info = yahoo_finance.get_stock_details("pmt")
+        print(stock_info)
+
+    def test_nasdaq_api(self):
+        stock_info = nasdaq.get_stock_info("GOGL")
+        print(stock_info)
+
+    def test_nasdaq_browser(self):
+        stock_info = nasdaq.get_stock_details("GOGL")
         print(stock_info)

@@ -60,7 +60,7 @@ brave_path = shutil.which("brave")
 if brave_path:
     chrome_options.binary_location = brave_path
 
-chrome_options.headless = True
+chrome_options.headless = False
 chrome_options.add_argument("user-agent=" + random_user_agent())
 chrome_options.add_argument("--ignore-certificate-errors")
 chrome_options.add_argument("--proxy-server='direct://'")
