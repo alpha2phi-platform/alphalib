@@ -12,7 +12,9 @@
 - Requests
 - Scrapy
 - Selenium
+- Playwright
 - Urllib
+- selectolax
 
 ## Price, Company Info & Fundamental Data Import
 

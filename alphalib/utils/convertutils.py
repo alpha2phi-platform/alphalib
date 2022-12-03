@@ -74,3 +74,9 @@ def join_dicts(to_dict, from_dict, from_dict_key) -> dict:
 def set_fields(fr, to):
     for key, value in asdict(fr).items():
         setattr(to, key, value)
+
+
+def none_if_not_avail(val):
+    if val in ["N/A", "NA"]:
+        return None
+    return val
