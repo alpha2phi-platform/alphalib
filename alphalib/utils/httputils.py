@@ -25,6 +25,10 @@ USER_AGENTS = [
 ]
 
 
+def random_user_agent():
+    return str(random.choice(USER_AGENTS))
+
+
 def http_headers():
     return {
         "User-Agent": random_user_agent(),
@@ -33,10 +37,6 @@ def http_headers():
         "Accept-Encoding": "gzip, deflate, br",
         "Connection": "keep-alive",
     }
-
-
-def random_user_agent():
-    return str(random.choice(USER_AGENTS))
 
 
 def get_tag_value(soup: BeautifulSoup, selector: str, fn):

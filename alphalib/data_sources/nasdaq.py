@@ -1,17 +1,15 @@
-from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime
 
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
+from requests import Response
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
+from alphalib.data_sources import invoke_api
 from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
-from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
-                                      get_driver, get_tag_value, http_headers)
+from alphalib.utils.httputils import get_driver, get_tag_value
 from alphalib.utils.logger import logger
 
 NASDAQ_DIVIDEND_HISTORY_URL = (
@@ -34,39 +32,30 @@ class Nasdaq(TypeConverter):
     nasdaq_url: str = ""
 
 
+def process_stock_info(r: Response, symbol: str, api_endpoint: str) -> Nasdaq:
+    nasdaq = Nasdaq()
+    nasdaq.symbol = symbol
+    nasdaq.nasdaq_url = api_endpoint
+    results = []
+    json: dict = r.json()
+    nasdaq.ex_dividend_date = json["data"]["exDividendDate"]
+    nasdaq.dividend_yield_pct = json["data"]["yield"]
+    nasdaq.pe_ratio = json["data"]["payoutRatio"]
+    nasdaq.annual_dividend = json["data"]["annualizedDividend"]
+    dividends = json["data"]["dividends"]["rows"]
+    if dividends:
+        for row in dividends:
+            results.append(row)
+    if len(results) > 0:
+        nasdaq.dividend_history = pd.json_normalize(results)
+    return nasdaq
+
+
 def get_stock_info(symbol: str) -> Nasdaq:
     assert symbol
 
     api_endpoint = NASAQ_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
-    nasdaq = Nasdaq()
-    nasdaq.symbol = symbol
-    nasdaq.nasdaq_url = api_endpoint
-    with closing(requests.Session()) as s:
-        s.verify = False
-        s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
-        r = s.get(
-            api_endpoint,
-            verify=True,
-            headers=http_headers(),
-            timeout=DEFAULT_HTTP_TIMEOUT,
-        )
-        if r.status_code != requests.status_codes.codes["ok"]:
-            raise ConnectionError(
-                "ERR: error " + str(r.status_code) + ", try again later."
-            )
-        # Parse the JSON output
-        results = []
-        json: dict = r.json()
-        nasdaq.ex_dividend_date = json["data"]["exDividendDate"]
-        nasdaq.dividend_yield_pct = json["data"]["yield"]
-        nasdaq.pe_ratio = json["data"]["payoutRatio"]
-        nasdaq.annual_dividend = json["data"]["annualizedDividend"]
-        dividends = json["data"]["dividends"]["rows"]
-        if dividends:
-            for row in dividends:
-                results.append(row)
-        if len(results) > 0:
-            nasdaq.dividend_history = pd.json_normalize(results)
+    nasdaq = invoke_api(symbol, api_endpoint, process_stock_info)
     return nasdaq
 
 
