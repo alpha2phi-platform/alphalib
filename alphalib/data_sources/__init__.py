@@ -47,11 +47,11 @@ def invoke_api(symbol, api_endpoint, func):
             )
             if r.status_code != requests.status_codes.codes["ok"]:
                 if attempt == MAX_RETRIES - 1:
-                    sleep(3)
                     raise ConnectionError(
                         "ERR: error " + str(r.status_code) + ", try again later."
                     )
                 else:
+                    sleep(3)
                     continue
             return func(r, symbol, api_endpoint)
 
