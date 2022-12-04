@@ -41,10 +41,10 @@ def process_dividend_history(
 
 def process_estimated_earning_dt(r: Response, symbol: str, _: str):
     json: dict = r.json()
-    if json[f"{symbol.upper()}"]:
-        return json[f"{symbol.upper()}"]["release_date"]
+    if json and json[symbol.upper()]:
+        return json[symbol.upper()]["release_date"]
 
-    return datetime.min
+    return None
 
 
 def get_stock_info(symbol: str) -> SeekingAlpha:
@@ -57,8 +57,10 @@ def get_stock_info(symbol: str) -> SeekingAlpha:
     api_endpoint = SEEKING_ALPHA_ESTIMATED_EARNING_ANNOUNCES_API_ENDPOINT.format(
         symbol.upper()
     )
-    sa.estimated_earning_date = datetime.strptime(
-        invoke_api(symbol, api_endpoint, process_estimated_earning_dt),
-        "%Y-%m-%dT00:00:00.000Z",
-    )
+    dt = invoke_api(symbol, api_endpoint, process_estimated_earning_dt)
+    if dt:
+        sa.estimated_earning_date = datetime.strptime(
+            dt,
+            "%Y-%m-%dT00:00:00.000Z",
+        )
     return sa
