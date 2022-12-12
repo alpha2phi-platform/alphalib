@@ -46,33 +46,19 @@ def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
 
 def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=2):
     current_month = datetime.now()
-    next_month = month_from(nearest_earning_mth)
+    next_month = month_from(nearest_earning_mth + 1)
     stocks = [
         s
         for s in stocks
         if (
-            s.yf.earnings_date
-            and s.yf.earnings_date != datetime.min
-            and s.yf.earnings_date.year >= current_month.year
-            and s.yf.earnings_date.month >= current_month.month
+            s.yf.earnings_date != datetime.min
+            and s.yf.earnings_date > current_month
+            and s.yf.earnings_date < next_month
         )
         or (
-            s.yf.earnings_date
-            and s.yf.earnings_date != datetime.min
-            and s.yf.earnings_date.year <= next_month.year
-            and s.yf.earnings_date.month <= next_month.month
-        )
-        or (
-            s.sa.estimated_earning_date
-            and s.sa.estimated_earning_date != datetime.min
-            and s.sa.estimated_earning_date.year >= current_month.year
-            and s.sa.estimated_earning_date.month >= current_month.month
-        )
-        or (
-            s.sa.estimated_earning_date
-            and s.sa.estimated_earning_date != datetime.min
-            and s.sa.estimated_earning_date.year <= next_month.year
-            and s.estimated_earning_date.earnings_date.month >= next_month.month
+            s.sa.estimated_earning_date != datetime.min
+            and s.sa.estimated_earning_date > current_month
+            and s.sa.estimated_earning_date < next_month
         )
     ]
     return stocks

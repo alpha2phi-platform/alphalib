@@ -98,3 +98,7 @@ def month_from(mths_ago=-2, first_day=True) -> datetime:
     else:
         current_month = now
     return current_month + relativedelta(months=mths_ago)
+
+
+def trunc_datetime(dt):
+    return dt.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
