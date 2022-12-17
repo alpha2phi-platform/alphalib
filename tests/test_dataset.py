@@ -12,7 +12,7 @@ from alphalib.dataset import Dataset, Downloader
 from alphalib.utils.logger import logger
 
 COUNTRY = "United States"
-SYMBOL = "PBR-A"
+SYMBOL = "GOGL"
 
 
 # For testing
@@ -105,17 +105,17 @@ class TestDataset(unittest.TestCase):
             return result
 
     def test_get_stats(self):
-        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
-        stats = ticker.stats()  # type: ignore
+        ticker: Ticker = yf.Ticker(SYMBOL)
+        stats = ticker.stats()
         result: dict = {}
-        result = self.get_stats(stats, result, "defaultKeyStatistics")  # type: ignore
-        result = self.get_stats(stats, result, "financialData")  # type: ignore
-        result = self.get_stats(stats, result, "summaryDetail")  # type: ignore
+        result = self.get_stats(stats, result, "defaultKeyStatistics")
+        result = self.get_stats(stats, result, "financialData")
+        result = self.get_stats(stats, result, "summaryDetail")
         df = pd.DataFrame([result])
         print(df.head(1).T)
 
     def test_yfinance_get_earning_dates(self):
-        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
+        ticker: Ticker = yf.Ticker(SYMBOL)
         earning_dates = ticker.earnings_dates
         print(earning_dates)
 
