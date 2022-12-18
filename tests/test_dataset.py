@@ -89,16 +89,16 @@ class TestDataset(unittest.TestCase):
         print(ticker.info)
 
     def test_get_all_stats(self):
-        ticker: Ticker = yf.Ticker(SYMBOL)  # type: ignore
+        ticker: Ticker = yf.Ticker(SYMBOL)  
         stats = ticker.stats()
-        for k, v in stats.items():  # type: ignore
+        for k, v in stats.items():  
             if type(v) is dict:
                 df = pd.DataFrame([v])
                 print(f"---- {k} ----- ")
                 print(df.head(1).T)
 
     def get_stats(self, stats, result, stats_type):
-        if stats[stats_type]:  # type: ignore
+        if stats[stats_type]: 
             v = stats[stats_type]
             if type(v) is dict:
                 result = {**result, **v}

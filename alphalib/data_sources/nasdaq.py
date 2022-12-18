@@ -51,7 +51,7 @@ def process_stock_info(r: Response, symbol: str, api_endpoint: str) -> Nasdaq:
     return nasdaq
 
 
-def get_stock_info_api(symbol: str) -> Nasdaq:
+def get_stock_info(symbol: str) -> Nasdaq:
     assert symbol
 
     api_endpoint = NASAQ_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
@@ -59,7 +59,7 @@ def get_stock_info_api(symbol: str) -> Nasdaq:
     return nasdaq
 
 
-def get_stock_details_browser(symbol: str) -> Nasdaq:
+def get_stock_info_browser(symbol: str) -> Nasdaq:
     assert symbol
 
     download_url = NASDAQ_DIVIDEND_HISTORY_URL.format(symbol.lower())

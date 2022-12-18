@@ -5,7 +5,6 @@ import pandas as pd
 import yfinance as yf
 
 from alphalib.data_sources import nasdaq, seeking_alpha, yahoo_finance
-from alphalib.utils.httputils import random_user_agent
 from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
@@ -48,5 +47,5 @@ class TestDataSources(unittest.TestCase):
         print(stock_info)
 
     def test_nasdaq_browser(self):
-        stock_info = nasdaq.get_stock_info("GOGL")
+        stock_info = nasdaq.get_stock_info_browser("GOGL")
         print(stock_info)
