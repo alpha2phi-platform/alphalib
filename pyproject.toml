@@ -9,7 +9,6 @@ license = "MIT"
 python = "^3.9"
 rich = "^12.4.1"
 investpy = "^1.0.8"
-yfinance = "^0.1.70"
 backtrader = "^1.9.76"
 pydantic = "^1.9.1"
 openpyxl = "^3.0.10"
@@ -33,6 +32,7 @@ cufflinks = "^0.17.3"
 matplotlib = "^3.6.1"
 requests-html = "^0.10.0"
 httpx = "^0.23.1"
+yfinance = "^0.1.93"
 
 [tool.poetry.dev-dependencies]
 
