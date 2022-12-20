@@ -68,7 +68,7 @@ def _get_stock_info(symbol: str, stock: RecommendedStock):
     stock.symbol = symbol
     stock.yf = yahoo_finance.get_stock_info(symbol)
     stock.nas = nasdaq.get_stock_info(symbol)
-    # stock.sa = seeking_alpha.get_stock_info(symbol)
+    stock.sa = seeking_alpha.get_stock_info(symbol)
     stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
     return stock
 

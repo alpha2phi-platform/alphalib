@@ -45,7 +45,3 @@ class TestDataSources(unittest.TestCase):
     def test_nasdaq_api(self):
         stock_info = nasdaq.get_stock_info("GOGL")
         print(stock_info)
-
-    def test_nasdaq_browser(self):
-        stock_info = nasdaq.get_stock_info_browser("GOGL")
-        print(stock_info)
