@@ -124,8 +124,9 @@ def recommend_stocks_from_dataset(
         raise NotImplementedError(f"By {by} is not implemented.")
 
     yield_stocks = stock_stats[
-        (stock_stats["lastdividenddate"].dt.year == current_year)
-        & (stock_stats["fiveyearavgdividendyield"].notnull())
+        # (stock_stats["lastdividenddate"].dt.year.isin([current_year, current_year - 1]))
+        # &
+        (stock_stats["fiveyearavgdividendyield"].notnull())
     ]
 
     # Stocks from Excel dataset

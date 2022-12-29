@@ -3,7 +3,8 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis.recommender import recommend_stocks_from_watchlist
+from alphalib.analysis.recommender import (recommend_stocks_from_dataset,
+                                           recommend_stocks_from_watchlist)
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
@@ -32,6 +33,9 @@ class TestAnalysis(unittest.TestCase):
 
     def test_recommend_stocks_watchlist(self):
         print(recommend_stocks_from_watchlist())
+
+    def test_recommend_stocks_dataset(self):
+        print(recommend_stocks_from_dataset())
 
     def test_sentiment(self):
         df = sentiment_analysis("googl")

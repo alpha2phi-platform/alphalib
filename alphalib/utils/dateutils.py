@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -94,7 +94,7 @@ def from_epoch_time(value) -> datetime:
 def month_from(mths_ago=-2, first_day=True) -> datetime:
     now = datetime.now()
     if first_day:
-        current_month = date(now.year, now.month, 1)
+        current_month = datetime(now.year, now.month, 1)
     else:
         current_month = now
     return current_month + relativedelta(months=mths_ago)

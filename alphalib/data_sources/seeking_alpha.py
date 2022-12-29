@@ -50,17 +50,20 @@ def process_estimated_earning_dt(r: Response, symbol: str, _: str):
 def get_stock_info(symbol: str) -> SeekingAlpha:
     assert symbol
 
-    # Dividend history
-    api_endpoint = SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
-    sa = invoke_api(symbol, api_endpoint, process_dividend_history)
+    try:
+        # Dividend history
+        api_endpoint = SEEKING_ALPHA_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
+        sa = invoke_api(symbol, api_endpoint, process_dividend_history)
 
-    api_endpoint = SEEKING_ALPHA_ESTIMATED_EARNING_ANNOUNCES_API_ENDPOINT.format(
-        symbol.upper()
-    )
-    dt = invoke_api(symbol, api_endpoint, process_estimated_earning_dt)
-    if dt:
-        sa.estimated_earning_date = datetime.strptime(
-            dt,
-            "%Y-%m-%dT00:00:00.000Z",
+        api_endpoint = SEEKING_ALPHA_ESTIMATED_EARNING_ANNOUNCES_API_ENDPOINT.format(
+            symbol.upper()
         )
-    return sa
+        dt = invoke_api(symbol, api_endpoint, process_estimated_earning_dt)
+        if dt:
+            sa.estimated_earning_date = datetime.strptime(
+                dt,
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+            )
+        return sa
+    except Exception:
+        return SeekingAlpha()
