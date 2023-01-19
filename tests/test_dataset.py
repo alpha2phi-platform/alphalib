@@ -5,7 +5,6 @@ import investpy
 import pandas as pd
 import yfinance as yf
 from yfinance import Ticker
-from yfinance.utils import get_json
 
 from alphalib.data_sources import get_stocks
 from alphalib.dataset import Dataset, Downloader
