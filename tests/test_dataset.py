@@ -88,16 +88,16 @@ class TestDataset(unittest.TestCase):
         print(ticker.info)
 
     def test_get_all_stats(self):
-        ticker: Ticker = yf.Ticker(SYMBOL)  
+        ticker: Ticker = yf.Ticker(SYMBOL)
         stats = ticker.stats()
-        for k, v in stats.items():  
+        for k, v in stats.items():
             if type(v) is dict:
                 df = pd.DataFrame([v])
                 print(f"---- {k} ----- ")
                 print(df.head(1).T)
 
     def get_stats(self, stats, result, stats_type):
-        if stats[stats_type]: 
+        if stats[stats_type]:
             v = stats[stats_type]
             if type(v) is dict:
                 result = {**result, **v}
@@ -122,9 +122,3 @@ class TestDataset(unittest.TestCase):
         ticker: Ticker = yf.Ticker(SYMBOL)
         calendar = ticker.calendar
         print(calendar)
-
-    def test_yfinance_get_json(self):
-        stock_details = get_json("https://finance.yahoo.com/quote/" + SYMBOL)
-        print(stock_details["defaultKeyStatistics"])
-        # for k, v in stock_details.items():
-        #     print(k)
