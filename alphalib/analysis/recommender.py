@@ -37,7 +37,7 @@ def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
     try:
         past_months = month_from(months_ago)
         sentiment_result = sentiment_analysis(symbol)
-        return sentiment_result[sentiment_result["date"] >= past_months][
+        return sentiment_result[sentiment_result["date"] >= past_months.date()][
             "compound"
         ].mean()
     except Exception:

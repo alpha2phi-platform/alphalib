@@ -38,10 +38,10 @@ class TestAnalysis(unittest.TestCase):
         print(recommend_stocks_from_dataset())
 
     def test_sentiment(self):
-        df = sentiment_analysis("googl")
+        df = sentiment_analysis("clm")
         past_3_months = month_from(-2)
-        print(df[df["date"] >= past_3_months].head(1000))
-        mean_score = df[df["date"] >= past_3_months]["compound"].mean()
+        print(df[df["date"] >= past_3_months.date()].head(1000))
+        mean_score = df[df["date"] >= past_3_months.date()]["compound"].mean()
         print(f"\n\nMean score - {mean_score}")
 
     def test_ta_bb(self):
