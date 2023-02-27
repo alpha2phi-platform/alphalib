@@ -5,6 +5,7 @@ financedatabase
 fire
 fundamentalanalysis
 html5lib
+httpx
 investpy
 lxml
 matplotlib
@@ -24,5 +25,5 @@ rich
 scipy
 selenium
 webdriver-manager
+yahooquery
 yfinance
-httpx
