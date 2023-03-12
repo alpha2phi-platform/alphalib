@@ -64,12 +64,13 @@ def to_float(text: str) -> float:
     return 0
 
 
-def join_dicts(to_dict, from_dict, from_dict_key) -> dict:
-    if from_dict[from_dict_key]:
+def join_dicts(to_dict, from_dict, from_dict_key=None) -> dict:
+    v = from_dict
+    if from_dict_key in from_dict:
         v = from_dict[from_dict_key]
-        if type(v) is dict:
-            to_dict = {**to_dict, **v}
-        return to_dict
+
+    if type(v) is dict:
+        to_dict = {**to_dict, **v}
     return to_dict
 
 

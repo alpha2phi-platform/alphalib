@@ -4,8 +4,8 @@ from datetime import datetime
 import pandas as pd
 from yahooquery import Ticker
 
-from alphalib.utils.convertutils import (TypeConverter, dt_from_ts, join_dicts,
-                                         strip)
+from alphalib.utils.convertutils import TypeConverter, dt_from_ts, join_dicts, strip
+from alphalib.utils import dateutils
 
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", None)
@@ -43,25 +43,31 @@ class YahooQuery(TypeConverter):
     dividend_rate: float | None = 0
     trailing_annual_dividend_rate: float | None = 0
     trailing_annual_dividend_yield: float | None = 0
-    dividend_history: pd.Series | None = None
+    dividend_history: pd.DataFrame | None = None
 
 
 def get_stock_info(symbol: str) -> YahooQuery:
     assert symbol
 
     yq = YahooQuery()
-    yq.symbol = symbol
+    yq.symbol = symbol.upper()
 
     ticker = Ticker(symbol)
     ticker.history(period="10y")
-    print(ticker.dividend_history())
 
-    # stats: dict = ticker.stats()
-    # yq.dividend_history = ticker.dividends
-    # if not stats:
-    #     return yq
+    key_stats: dict = {}
 
-    # key_stats: dict = {}
+    # Dividend history
+    yq.dividend_history = ticker.dividend_history(start=dateutils.years_from_now(10))
+
+    key_stats = join_dicts(key_stats, ticker.key_stats, yq.symbol)
+    key_stats = join_dicts(key_stats, ticker.summary_profile, yq.symbol)
+    key_stats = join_dicts(key_stats, ticker.summary_detail, yq.symbol)
+
+    print(ticker.summary_detail)
+    # print(key_stats)
+
+    # key_stats = join_dicts(key_stats, stats, "defaultKeyStatistics")
     # key_stats = join_dicts(key_stats, stats, "defaultKeyStatistics")
     # key_stats = join_dicts(key_stats, stats, "financialData")
     # key_stats = join_dicts(key_stats, stats, "summaryDetail")

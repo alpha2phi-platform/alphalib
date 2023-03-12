@@ -27,3 +27,7 @@ selenium
 webdriver-manager
 yahooquery
 yfinance
+lux
+vaex
+hydra-core
+dynaconf

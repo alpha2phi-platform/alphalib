@@ -3,9 +3,8 @@ import unittest.mock
 
 import pandas as pd
 import yfinance as yf
-from yahooquery import Ticker
 
-from alphalib.data_sources import nasdaq, seeking_alpha, yahoo_finance
+from alphalib.data_sources import nasdaq, seeking_alpha, yahoo_finance, yahoo_query
 from alphalib.utils.logger import logger
 
 COUNTRY = "united states"
@@ -48,6 +47,4 @@ class TestDataSources(unittest.TestCase):
         print(stock_info)
 
     def test_yq_get_ticker(self):
-        stock = Ticker("AAPL")
-        print(stock.key_stats)
-        
+        stock_info = yahoo_query.get_stock_info("IVR")

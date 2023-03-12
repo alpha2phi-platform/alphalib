@@ -100,5 +100,9 @@ def month_from(mths_ago=-2, first_day=True) -> datetime:
     return current_month + relativedelta(months=mths_ago)
 
 
-def trunc_datetime(dt):
+def trunc_datetime(dt: datetime):
     return dt.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+
+def years_from_now(years: int) -> datetime:
+    return datetime.now() - relativedelta(years=years)
