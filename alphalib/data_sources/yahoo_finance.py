@@ -4,8 +4,7 @@ from datetime import datetime
 import pandas as pd
 import yfinance as yf
 
-from alphalib.utils.convertutils import (TypeConverter, dt_from_ts, join_dicts,
-                                         strip)
+from alphalib.utils.convertutils import TypeConverter, dt_from_ts, join_dicts, strip
 
 YFINANCE_URL = "https://finance.yahoo.com/quote/{0}/key-statistics?p={0}"
 
@@ -53,7 +52,7 @@ def get_stock_info(symbol: str) -> YahooFinance:
     assert symbol
 
     yahoo_finance = YahooFinance()
-    yahoo_finance.symbol = symbol
+    yahoo_finance.symbol = symbol.upper()
     yahoo_finance.yfinance_url = YFINANCE_URL.format(symbol)
 
     ticker = yf.Ticker(symbol)

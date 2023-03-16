@@ -47,4 +47,5 @@ class TestDataSources(unittest.TestCase):
         print(stock_info)
 
     def test_yq_get_ticker(self):
-        stock_info = yahoo_query.get_stock_info("IVR")
+        stock_info = yahoo_query.get_stock_info("WMC")
+        print(stock_info)

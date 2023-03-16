@@ -4,11 +4,10 @@ from datetime import datetime
 import pandas as pd
 
 from alphalib.analysis.sentiment import sentiment_analysis
-from alphalib.data_sources import (get_stock_stats, nasdaq, seeking_alpha,
-                                   yahoo_finance)
+from alphalib.data_sources import get_stock_stats, nasdaq, seeking_alpha, yahoo_finance
 from alphalib.data_sources.nasdaq import Nasdaq
 from alphalib.data_sources.seeking_alpha import SeekingAlpha
-from alphalib.data_sources.yahoo_finance import YahooFinance
+from alphalib.data_sources.yahoo_query import YahooQuery
 from alphalib.data_sources.yahoo_finance_watchlist import get_watchlist
 from alphalib.utils.dateutils import from_epoch_time, month_from
 from alphalib.utils.logger import logger
@@ -27,7 +26,7 @@ class RecommendedStock:
     symbol: str = ""
     source: str = ""
     sentiment_score: float = 0
-    yf: YahooFinance = None
+    yq: YahooQuery = None
     nas: Nasdaq = None
     sa: SeekingAlpha = None
     info_url: str = ""
@@ -51,9 +50,9 @@ def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=
         s
         for s in stocks
         if (
-            s.yf.earnings_date != datetime.min
-            and s.yf.earnings_date > current_month
-            and s.yf.earnings_date < next_month
+            s.yq.earnings_date != datetime.min
+            and s.yq.earnings_date > current_month
+            and s.yq.earnings_date < next_month
         )
         or (
             s.sa.estimated_earning_date != datetime.min
@@ -66,7 +65,7 @@ def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=
 
 def _get_stock_info(symbol: str, stock: RecommendedStock):
     stock.symbol = symbol
-    stock.yf = yahoo_finance.get_stock_info(symbol)
+    stock.yq = yahoo_finance.get_stock_info(symbol)
     stock.nas = nasdaq.get_stock_info(symbol)
     stock.sa = seeking_alpha.get_stock_info(symbol)
     stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
@@ -93,7 +92,7 @@ def recommend_stocks_from_watchlist(
 
     # Sort by dividend yield %
     # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
-    rec_stocks.sort(key=lambda s: s.yf.trailing_annual_dividend_yield, reverse=True)
+    rec_stocks.sort(key=lambda s: s.yq.trailing_annual_dividend_yield, reverse=True)
 
     # Only earnings date in current and next month
     if filter_earnings_dt:
@@ -156,7 +155,7 @@ def recommend_stocks_from_dataset(
 
     # Sort by dividend yield %
     # rec_stocks.sort(key=lambda s: s.dividend_yield_pct, reverse=True)
-    rec_stocks.sort(key=lambda s: s.yf.trailing_annual_dividend_yield, reverse=True)
+    rec_stocks.sort(key=lambda s: s.yq.trailing_annual_dividend_yield, reverse=True)
 
     # Only earnings date in current and next month
     if filter_earnings_dt:
