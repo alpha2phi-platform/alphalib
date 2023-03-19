@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 
 from alphalib.analysis.sentiment import sentiment_analysis
-from alphalib.data_sources import get_stock_stats, nasdaq, seeking_alpha, yahoo_finance
+from alphalib.data_sources import get_stock_stats, nasdaq, seeking_alpha, yahoo_query
 from alphalib.data_sources.nasdaq import Nasdaq
 from alphalib.data_sources.seeking_alpha import SeekingAlpha
 from alphalib.data_sources.yahoo_query import YahooQuery
@@ -65,7 +65,7 @@ def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=
 
 def _get_stock_info(symbol: str, stock: RecommendedStock):
     stock.symbol = symbol
-    stock.yq = yahoo_finance.get_stock_info(symbol)
+    stock.yq = yahoo_query.get_stock_info(symbol)
     stock.nas = nasdaq.get_stock_info(symbol)
     stock.sa = seeking_alpha.get_stock_info(symbol)
     stock.info_url = SEEKING_ALPHA_STOCK_URL.format(symbol)
@@ -108,7 +108,6 @@ def recommend_stocks_from_dataset(
         from_epoch_time
     )
     yield_stocks = pd.DataFrame()
-    current_year = datetime.now().year
     if by == "all":
         logger.info("Analyze all stocks...")
         stock_stats.sort_values(
@@ -122,11 +121,7 @@ def recommend_stocks_from_dataset(
     else:
         raise NotImplementedError(f"By {by} is not implemented.")
 
-    yield_stocks = stock_stats[
-        # (stock_stats["lastdividenddate"].dt.year.isin([current_year, current_year - 1]))
-        # &
-        (stock_stats["fiveyearavgdividendyield"].notnull())
-    ]
+    yield_stocks = stock_stats[(stock_stats["fiveyearavgdividendyield"].notnull())]
 
     # Stocks from Excel dataset
     if by == "sector":

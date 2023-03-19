@@ -7,8 +7,11 @@ from requests import Response
 from requests.adapters import HTTPAdapter
 
 from alphalib.utils import get_project_root
-from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
-                                      http_headers)
+from alphalib.utils.httputils import (
+    DEFAULT_HTTP_RETRY,
+    DEFAULT_HTTP_TIMEOUT,
+    http_headers,
+)
 
 
 def get_stocks() -> pd.DataFrame:
