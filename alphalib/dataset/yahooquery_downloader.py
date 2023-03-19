@@ -28,7 +28,7 @@ class Downloader:
         start_pos: int = 0,
         primary_col: str = "symbol",
         throttle: int = 2,
-        batch_save_size: int = 10,
+        batch_save_size: int = 100,
     ):
         self.continue_last_download = continue_last_download
         self.sheet_name = sheet_name
