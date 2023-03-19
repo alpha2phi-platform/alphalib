@@ -136,6 +136,7 @@ class Downloader:
             with console.status("[bold green]Downloading stock..."):
                 fld_list, lookup = self.check_last_download()
                 for stock in stocks.itertuples(index=False, name="Stock"):
+                    ticker = None
                     try:
                         skip = False
                         has_error = False
@@ -172,8 +173,6 @@ class Downloader:
                             self.append_df_to_excel(df_result)
                             df_result = pd.DataFrame()
 
-                        ticker.session.close()
-
                     except Exception as e:
                         has_error = True
                         rprint(
@@ -181,6 +180,8 @@ class Downloader:
                             e,
                         )
                     finally:
+                        if ticker:
+                            ticker.session.close()
                         if not skip:
                             if not has_error:
                                 console.log(
@@ -212,8 +213,12 @@ class Dataset:
 
         result: dict = {}
         symbol = ticker.symbols[0]
+        key_stats = ticker.key_stats
+        if not isinstance(key_stats[symbol], dict):
+            raise ValueError("Symbol {} is not found".format(symbol))
+
+        result = join_dicts(result, key_stats, symbol)
         result = join_dicts(result, ticker.quote_type, symbol)
-        result = join_dicts(result, ticker.key_stats, symbol)
         result = join_dicts(result, ticker.summary_detail, symbol)
         result = join_dicts(result, ticker.summary_profile, symbol)
         result = join_dicts(result, ticker.calendar_events, symbol)
