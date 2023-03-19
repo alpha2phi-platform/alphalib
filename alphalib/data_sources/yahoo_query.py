@@ -78,8 +78,10 @@ def get_stock_info(symbol: str) -> YahooQuery:
     key_stats = join_dicts(key_stats, ticker.calendar_events, yq.symbol)
     key_stats = join_dicts(key_stats, ticker.financial_data, yq.symbol)
     key_stats = join_dicts(key_stats, ticker.price, yq.symbol)
-    key_stats = join_dicts(key_stats, ticker.index_trend, yq.symbol)
+    # key_stats = join_dicts(key_stats, ticker.index_trend, yq.symbol)
     # key_stats = join_dicts(key_stats, ticker.cash_flow().tail(1).to_dict("records")[0])
+
+    ticker.session.close()
 
     yq.name = strip(key_stats.get("shortName"))
     yq.exchange = strip(key_stats.get("exchange"))
