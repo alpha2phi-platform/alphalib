@@ -49,16 +49,8 @@ def _filter_next_earning_dt(stocks: list[RecommendedStock], nearest_earning_mth=
     stocks = [
         s
         for s in stocks
-        if (
-            s.yq.earnings_date != datetime.min
-            and s.yq.earnings_date > current_month
-            and s.yq.earnings_date < next_month
-        )
-        or (
-            s.sa.estimated_earning_date != datetime.min
-            and s.sa.estimated_earning_date > current_month
-            and s.sa.estimated_earning_date < next_month
-        )
+        if (current_month < s.yq.earnings_date < next_month)
+        or (current_month < s.sa.estimated_earning_date < next_month)
     ]
     return stocks
 
