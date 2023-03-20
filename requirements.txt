@@ -1,3 +1,4 @@
+PyPortfolioOpt
 beautifulsoup4
 cssselect
 cufflinks
@@ -26,8 +27,8 @@ requests
 requests-html
 rich
 scipy
-selenium
 selectolax
+selenium
 vaex
 webdriver-manager
 yahooquery
