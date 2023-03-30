@@ -46,10 +46,19 @@ def strip_chars(text, chars=" $%\xa0") -> str:
     return ""
 
 
-def dt_from_ts(text) -> datetime:
+def dt_from_ts(val) -> datetime:
+    if val:
+        try:
+            return datetime.fromtimestamp(val)
+        except Exception:
+            return datetime.min
+    return datetime.min
+
+
+def dt_from_str(text, fmt="%Y-%m-%d %H:%M:%S") -> datetime:
     if text:
         try:
-            return datetime.fromtimestamp(text)
+            return datetime.strptime(text, fmt)
         except Exception:
             return datetime.min
     return datetime.min
