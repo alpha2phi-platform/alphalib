@@ -4,6 +4,8 @@ import numpy as np
 import scipy
 from scipy.optimize import LinearConstraint, minimize, minimize_scalar, rosen, rosen_der
 
+import requests
+
 
 def objective_function1(x):
     return 3 * x**4 - 2 * x + 1
@@ -55,3 +57,7 @@ class TestRecommender(unittest.TestCase):
         print(res)
         print("The total number of shares is:", sum(res.x))
         print("Leftover money for each buyer:", money_available - res.x * prices)
+
+    def test_requests(self):
+        response = requests.get("https://reqres.in/api/users?page=2")
+        print(response.text)

@@ -3,6 +3,7 @@ from time import sleep
 
 import pandas as pd
 import requests
+
 from requests import Response
 from requests.adapters import HTTPAdapter
 

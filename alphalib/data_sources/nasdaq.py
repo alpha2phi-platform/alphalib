@@ -2,19 +2,11 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import pandas as pd
-from bs4 import BeautifulSoup
+
 from requests import Response
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
 
 from alphalib.data_sources import invoke_api
-from alphalib.utils.convertutils import TypeConverter, strip, to_date, to_float
-from alphalib.utils.httputils import get_driver, get_tag_value
-from alphalib.utils.logger import logger
-
-NASDAQ_DIVIDEND_HISTORY_URL = (
-    "https://www.nasdaq.com/market-activity/stocks/{0}/dividend-history"
-)
+from alphalib.utils.convertutils import TypeConverter
 
 NASAQ_DIVIDEND_HISTORY_API_ENDPOINT = (
     "https://api.nasdaq.com/api/quote/{0}/dividends?assetclass=stocks"

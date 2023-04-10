@@ -1,5 +1,11 @@
 # ChatGPT Prompt
 
+## Scenario 1
+Given a time series data where the results are 5 different numbers ranging from 1 to 50, write a Python program to predict the numbers for the next 5 dates.
+
+
+## Scenario 2
+
 Given a list of stocks with the following attributes, write a Python script to generate a optimized stock portfolio with value stocks from all sectors.
 
 - currentPrice
