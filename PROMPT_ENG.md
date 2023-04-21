@@ -1,7 +1,25 @@
 # ChatGPT Prompt
 
 ## Scenario 1
-Given a time series data where the results are 5 different numbers ranging from 1 to 50, write a Python program to predict the numbers for the next 5 dates.
+Given a time series data below 
+
+DrawDate,DrawnNo1,DrawnNo2, DrawnNo3, DrawnNo4, DrawnNo5, DrawnNo6
+20230401,04,18,46,48,50,55
+20230402,11,13,15,28,34,37
+20230405,04,29,32,39,41,48
+20230408,16,23,27,38,39,49
+20230409,03,19,35,47,50,53
+20230412,05,10,24,32,50,54
+20230415,08,12,14,42,47,53
+20230416,05,10,12,15,30,49
+20230419,13,14,21,32,36,52
+
+- Column 1 is the date in YYYYMMDD format
+- Column 2 to 7 are numbers ranging from 1 to 55
+
+
+Write a Python program to predict the numbers for the next 5 dates.
+
 
 
 ## Scenario 2
