@@ -1,4 +1,4 @@
-# ChatGPT Prompt
+# Prompt Engineering
 
 ## Scenario 1
 Given a time series data below 
