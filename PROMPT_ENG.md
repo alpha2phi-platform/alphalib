@@ -18,6 +18,8 @@ DrawDate,DrawnNo1,DrawnNo2, DrawnNo3, DrawnNo4, DrawnNo5, DrawnNo6
 - Column 2 to 7 are numbers ranging from 1 to 55
 
 
+Use Python and feature engineering to generate more features for machine learning
+
 Write a Python program to predict the numbers for the next 5 dates.
 
 
