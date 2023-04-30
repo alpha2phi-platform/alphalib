@@ -8,8 +8,11 @@ from bs4.element import Tag
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from requests.adapters import HTTPAdapter
 
-from alphalib.utils.httputils import (DEFAULT_HTTP_RETRY, DEFAULT_HTTP_TIMEOUT,
-                                      http_headers)
+from alphalib.utils.httputils import (
+    DEFAULT_HTTP_RETRY,
+    DEFAULT_HTTP_TIMEOUT,
+    http_headers,
+)
 
 FINWIZ_URL = "https://finviz.com/quote.ashx?t="
 
@@ -53,6 +56,7 @@ def sentiment_analysis(symbol: str) -> pd.DataFrame:
         vader = SentimentIntensityAnalyzer()
         columns = ["ticker", "date", "time", "headline"]
         parsed_and_scored_news = pd.DataFrame(parsed_news, columns=columns)
+        # print(parsed_and_scored_news.T.head(1))
         scores = (
             parsed_and_scored_news["headline"].apply(vader.polarity_scores).tolist()
         )
@@ -61,7 +65,7 @@ def sentiment_analysis(symbol: str) -> pd.DataFrame:
             scores_df, rsuffix="_right"
         )
         parsed_and_scored_news["date"] = pd.to_datetime(
-            parsed_and_scored_news.date
+            parsed_and_scored_news.date, format="%b-%d-%y"
         ).dt.date
 
         return parsed_and_scored_news

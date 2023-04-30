@@ -3,8 +3,10 @@ import unittest.mock
 
 import pandas as pd
 
-from alphalib.analysis.recommender import (recommend_stocks_from_dataset,
-                                           recommend_stocks_from_watchlist)
+from alphalib.analysis.recommender import (
+    recommend_stocks_from_dataset,
+    recommend_stocks_from_watchlist,
+)
 from alphalib.analysis.sentiment import sentiment_analysis
 from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
@@ -38,8 +40,8 @@ class TestAnalysis(unittest.TestCase):
         print(recommend_stocks_from_dataset())
 
     def test_sentiment(self):
-        df = sentiment_analysis("clm")
-        past_3_months = month_from(-2)
+        df = sentiment_analysis("lnd")
+        past_3_months = month_from(-6)
         print(df[df["date"] >= past_3_months.date()].head(1000))
         mean_score = df[df["date"] >= past_3_months.date()]["compound"].mean()
         print(f"\n\nMean score - {mean_score}")

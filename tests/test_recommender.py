@@ -1,10 +1,8 @@
 import unittest
 
 import numpy as np
-import scipy
-from scipy.optimize import LinearConstraint, minimize, minimize_scalar, rosen, rosen_der
-
 import requests
+from scipy.optimize import LinearConstraint, minimize, minimize_scalar, rosen
 
 
 def objective_function1(x):

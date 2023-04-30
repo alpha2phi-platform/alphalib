@@ -1,11 +1,11 @@
+import os
+import time
 from dataclasses import dataclass
 from functools import wraps
-import os
 from pathlib import Path
-import time
 
-from openpyxl import load_workbook
 import pandas as pd
+from openpyxl import load_workbook
 from rich import print as rprint
 from rich.console import Console
 from yahooquery import Ticker
@@ -66,7 +66,7 @@ class Downloader:
             to_excel_kwargs.pop("engine")
 
         # try to open an existing workbook
-        work_book = load_workbook(self.file_name, read_only=True, keep_vba=False)  # type: ignore
+        work_book = load_workbook(self.file_name, read_only=True, keep_vba=False)
 
         # get the last row in the existing Excel sheet
         # if it was not specified explicitly
@@ -81,7 +81,9 @@ class Downloader:
             header = True
 
         # write out the new sheet
-        with pd.ExcelWriter(self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:  # type: ignore
+        with pd.ExcelWriter(
+            self.file_name, engine="openpyxl", mode="a", if_sheet_exists="overlay"
+        ) as writer:
             df.to_excel(
                 writer,
                 self.sheet_name,
@@ -138,12 +140,12 @@ class Downloader:
                         has_error = False
                         counter = counter + 1
                         if self.start_pos > 0 and counter < self.start_pos:
-                            console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            console.log(f"[blue]Skipping {stock.symbol}")
                             skip = True
                             continue
                         if self.continue_last_download:
-                            if stock.symbol in lookup:  # type: ignore
-                                console.log(f"[blue]Skipping {stock.symbol}")  # type: ignore
+                            if stock.symbol in lookup:
+                                console.log(f"[blue]Skipping {stock.symbol}")
                                 skip = True
                                 continue
 
