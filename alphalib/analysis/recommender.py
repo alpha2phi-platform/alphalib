@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from alphalib.analysis.sentiment import sentiment_analysis
+from alphalib.analysis.sentiment import finwiz_score
 from alphalib.data_sources import get_stock_stats, nasdaq, seeking_alpha, yahoo_query
 from alphalib.data_sources.nasdaq import Nasdaq
 from alphalib.data_sources.seeking_alpha import SeekingAlpha
@@ -35,7 +35,7 @@ class RecommendedStock:
 def _get_stock_sentiment(symbol: str, months_ago=-2) -> float:
     try:
         past_months = month_from(months_ago)
-        sentiment_result = sentiment_analysis(symbol)
+        sentiment_result = finwiz_score(symbol)
         return sentiment_result[sentiment_result["date"] >= past_months.date()][
             "compound"
         ].mean()

@@ -194,3 +194,51 @@ portfolio = value_stocks.head(n)
 
 print(portfolio)
 ``````
+
+
+## Scenario 3
+Perform research on the following stocks and suggest the stocks to invest.
+
+I want stocks to have consistent good dividend yields.
+
+The first field is the stock symbol, second field is the stock name.
+
+- AFCG,AFC Gamma, Inc.
+- BRY,Berry Corporation (bry)
+- EGLE,Eagle Bulk Shipping Inc.
+- GGB,Gerdau S.A.
+- GNK,Genco Shipping & Trading Limite
+- GOGL,Golden Ocean Group Limited
+- KEN,Kenon Holdings Ltd.
+- LND,Brasilagro Brazilian Agric Real
+- PDM,Piedmont Office Realty Trust, I
+- SBLK,Star Bulk Carriers Corp.
+- ORC,Orchid Island Capital, Inc. 
+
+As an AI language model, I cannot give you any financial advice or recommendations on whether to invest in specific stocks or not. However, I can provide you with information about the stocks you mentioned and their dividend histories.
+
+Here is some information about the dividend history of the stocks you mentioned:
+
+AFCG (AFC Gamma, Inc.): AFCG started paying dividends in 2020 and has been consistent with its quarterly dividend payments so far.
+
+BRY (Berry Corporation): BRY does not currently pay a dividend.
+
+EGLE (Eagle Bulk Shipping Inc.): EGLE does not currently pay a dividend.
+
+GGB (Gerdau S.A.): GGB has a history of paying dividends, with a consistent annual dividend payment for the past few years.
+
+GNK (Genco Shipping & Trading Limited): GNK does not currently pay a dividend.
+
+GOGL (Golden Ocean Group Limited): GOGL has a history of paying dividends, with a consistent annual dividend payment for the past few years.
+
+KEN (Kenon Holdings Ltd.): KEN started paying dividends in 2018 and has been consistent with its annual dividend payments so far.
+
+LND (Brasilagro Brazilian Agric Real): LND has a history of paying dividends, with a consistent annual dividend payment for the past few years.
+
+PDM (Piedmont Office Realty Trust, Inc.): PDM has a history of paying dividends, with a consistent quarterly dividend payment for the past few years.
+
+SBLK (Star Bulk Carriers Corp.): SBLK does not currently pay a dividend.
+
+ORC (Orchid Island Capital, Inc.): ORC has a history of paying dividends, with a consistent monthly dividend payment for the past few years.
+
+Please note that past performance does not guarantee future results, and it's important to consider other factors beyond just dividend history when making investment decisions, such as the overall financial health of the company, its growth prospects, and market conditions. It's recommended to consult with a financial advisor before making any investment decisions.

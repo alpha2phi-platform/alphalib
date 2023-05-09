@@ -2,9 +2,10 @@ import unittest
 import unittest.mock
 
 import pandas as pd
-
-from alphalib.dataset.yahooquery_downloader import Dataset, Downloader
 from yahooquery import Ticker
+import yahooquery as yq
+
+from alphalib.dataset.yahooquery_downloader import Dataset
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -36,3 +37,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
 
     def test_stock_stats(self):
         self.dataset.stock_stats()
+
+    def test_news(self):
+        result = yq.search("KEN")
+        print(f" result: {str(result)}")  # __AUTO_GENERATED_PRINT_VAR__

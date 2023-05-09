@@ -1,0 +1,17 @@
+Perform research on the following stocks and suggest the stocks to invest.
+
+I want stocks to have consistent good dividend yields.
+
+The first field is the stock symbol, second field is the stock name.
+
+- AFCG,AFC Gamma, Inc.
+- BRY,Berry Corporation (bry)
+- EGLE,Eagle Bulk Shipping Inc.
+- GGB,Gerdau S.A.
+- GNK,Genco Shipping & Trading Limite
+- GOGL,Golden Ocean Group Limited
+- KEN,Kenon Holdings Ltd.
+- LND,Brasilagro Brazilian Agric Real
+- PDM,Piedmont Office Realty Trust, I
+- SBLK,Star Bulk Carriers Corp.
+- ORC,Orchid Island Capital, Inc. 
