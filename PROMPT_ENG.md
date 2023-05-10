@@ -1,5 +1,14 @@
 # Prompt Engineering
 
+<!--toc:start-->
+- [Prompt Engineering](#prompt-engineering)
+  - [Scenario 1](#scenario-1)
+  - [Scenario 2](#scenario-2)
+  - [Scenario 3](#scenario-3)
+  - [Sceneario 4 - Stock Research](#sceneario-4-stock-research)
+<!--toc:end-->
+
+
 ## Scenario 1
 Given a time series data below 
 
@@ -242,3 +251,6 @@ SBLK (Star Bulk Carriers Corp.): SBLK does not currently pay a dividend.
 ORC (Orchid Island Capital, Inc.): ORC has a history of paying dividends, with a consistent monthly dividend payment for the past few years.
 
 Please note that past performance does not guarantee future results, and it's important to consider other factors beyond just dividend history when making investment decisions, such as the overall financial health of the company, its growth prospects, and market conditions. It's recommended to consult with a financial advisor before making any investment decisions.
+
+## Sceneario 4 - Stock Research
+Research the stock Star Bulk Carriers Corp. with symbol SBLK and suggest if it is a good value stock to invest
