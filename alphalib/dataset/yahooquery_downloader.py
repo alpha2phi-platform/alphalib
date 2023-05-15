@@ -174,7 +174,7 @@ class Downloader:
                     except Exception as e:
                         has_error = True
                         rprint(
-                            f"Unable to download data for {stock.symbol}-{stock.short_name}",
+                            f"Unable to download data for {stock.symbol}-{stock.name}",
                             e,
                         )
                     finally:
@@ -183,11 +183,11 @@ class Downloader:
                         if not skip:
                             if not has_error:
                                 console.log(
-                                    f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.short_name}"
+                                    f"[green]{counter}/{total_stocks} - Finish fetching data[/green] {stock.symbol}-{stock.name}"
                                 )
                             else:
                                 console.log(
-                                    f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.short_name}"
+                                    f"[red]{counter}/{total_stocks} - Error fetching data[/red] {stock.symbol}-{stock.name}"
                                 )
 
                             if self.throttle > 0:
