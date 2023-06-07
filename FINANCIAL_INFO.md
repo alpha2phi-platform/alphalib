@@ -185,11 +185,3 @@ Available fields
 ## Yahoo Finance Screener
 
 - [High Dividend Yield Stock](https://finance.yahoo.com/u/yahoo-finance/watchlists/high-yield-dividend-stocks/)
-
-
-
-eps = 3.50
-pe_ratio = 20
-target_price = eps * pe_ratio
-
-print(f"The target price is ${target_price:.2f}")

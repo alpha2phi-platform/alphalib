@@ -1,6 +1,12 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+from pathlib import Path
+import base64
 
 
-st.title("Alpha2phi - Investment")
+def main():
+    cs_sidebar()
+    cs_body()
+
+
+if __name__ == "__main__":
+    main()
