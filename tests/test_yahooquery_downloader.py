@@ -41,3 +41,10 @@ class TestYahooQueryDownloader(unittest.TestCase):
     def test_news(self):
         result = yq.search("KEN")
         print(f" result: {str(result)}")  # __AUTO_GENERATED_PRINT_VAR__
+
+    def test_multi_symbols(self):
+        symbols = ["EFC", "OXLC"]
+        for symbol in symbols:
+            ticker = Ticker(symbol)
+            key_stats = ticker.key_stats
+            print(key_stats)
