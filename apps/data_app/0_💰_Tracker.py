@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit.elements.data_editor import EditableData
 from streamlit.logger import get_logger
 
-from alpha import get_portfolio, save_portfolio, get_stocks
+from alpha import get_portfolio, save_portfolio
 
 
 st.set_page_config(
@@ -57,7 +57,6 @@ def save(df: pd.DataFrame):
 
 def refresh():
     st.experimental_rerun()
-    st.write("Refreshed!")
 
 
 def page_header():
@@ -66,9 +65,12 @@ def page_header():
 
 def load_portfolio() -> EditableData:
     portfolio = get_portfolio()
-    df = st.data_editor(portfolio, num_rows="dynamic", use_container_width=True)
-    symbols = df["symbol"].to_list()
-    df_stats = get_stocks(symbols)
+    df = st.data_editor(
+        portfolio,
+        num_rows="dynamic",
+        key="portfolio_editor",
+        use_container_width=True,
+    )
     return df
 
 
