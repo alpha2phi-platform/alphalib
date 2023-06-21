@@ -2,8 +2,8 @@ import unittest
 import unittest.mock
 
 import pandas as pd
-from yahooquery import Ticker
 import yahooquery as yq
+from yahooquery import Ticker
 
 from alphalib.dataset.yahooquery_downloader import Dataset
 
