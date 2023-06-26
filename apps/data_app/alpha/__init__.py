@@ -1,4 +1,3 @@
-import logging
 import numpy as np
 import pandas as pd
 import asyncio
@@ -60,20 +59,29 @@ async def get_symbols(symbols: list[str]) -> pd.DataFrame:
 
 
 def show_indicator(row: pd.Series) -> str:
-    if row["current_price"] >= row["target_sell_price"]:
+    if row["current_price"] >= row["target_sell_price"] and row["unit"] > 0:
         return "SELL"
-    if pd.isna(row["unit"]) or row["unit"] <= 1:
+    if pd.isna(row["unit"]) or row["unit"] == 0:
         return "MONITOR"
-    return "HOLD"
+    if row["current_price"] <= row["target_buy_price"]:
+        return "BUY"
+    return "MONITOR"
 
 
 def calculate_price_target(portfolio: pd.DataFrame, stats: pd.DataFrame):
+    portfolio["target_buy_price"] = np.where(
+        ~pd.isna(stats["targetLowPrice"]),
+        stats["targetLowPrice"],
+        portfolio["buy_price"],
+    )
     conditions = [
         (~pd.isna(portfolio["buy_price"]))
-        & (portfolio["buy_price"] < portfolio["current_price"])
+        & (portfolio["buy_price"] < portfolio["target_buy_price"])
     ]
-    values = [stats["targetLowPrice"]]
-    portfolio["target_buy_price"] = np.select(conditions, values)
+    values = [portfolio["buy_price"]]
+    portfolio["target_buy_price"] = np.select(
+        conditions, values, portfolio["target_buy_price"]
+    )
 
 
 def get_portfolio() -> pd.DataFrame:

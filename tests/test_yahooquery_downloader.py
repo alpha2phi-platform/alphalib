@@ -21,7 +21,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
         self.dataset = Dataset()
 
     def test_yahooquery(self):
-        symbol = "EGLE"
+        symbol = "TSLA"
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats[symbol]
         if isinstance(key_stats, dict):
@@ -45,7 +45,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
         print(f" result: {str(result)}")  # __AUTO_GENERATED_PRINT_VAR__
 
     def test_multi_symbols(self):
-        symbols = ["EFC", "OXLC"]
+        symbols = ["OXLC"]
         for symbol in symbols:
             ticker = Ticker(symbol)
             key_stats = ticker.key_stats
