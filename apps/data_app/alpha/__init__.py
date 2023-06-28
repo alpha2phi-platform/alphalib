@@ -85,9 +85,11 @@ def calculate_price_target(portfolio: pd.DataFrame, stats: pd.DataFrame):
 
 
 def get_portfolio() -> pd.DataFrame:
-    portfolio = pd.read_excel(PORTFOLIO_FILE)
-    symbols = portfolio["symbol"].to_list()
+    return pd.read_excel(PORTFOLIO_FILE)
 
+
+def refresh_porfolio(portfolio):
+    symbols = portfolio["symbol"].to_list()
     loop = asyncio.new_event_loop()
     stats = loop.run_until_complete(get_symbols(symbols))
     loop.close()
@@ -99,7 +101,6 @@ def get_portfolio() -> pd.DataFrame:
     portfolio["target_sell_price"] = (portfolio["buy_price"] * 1.15).round(decimals=2)
     calculate_price_target(portfolio, stats)
     portfolio["indicator"] = portfolio.apply(show_indicator, axis=1)
-    return portfolio
 
 
 def save_portfolio(df: pd.DataFrame, sheet_name=SHEET_NAME_US_MARKET):

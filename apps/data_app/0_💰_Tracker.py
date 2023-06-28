@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit.elements.data_editor import EditableData
 from streamlit.logger import get_logger
 
-from alpha import get_portfolio, save_portfolio
+from alpha import get_portfolio, save_portfolio, refresh_porfolio
 
 
 st.set_page_config(
@@ -12,7 +12,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon="💰",
 )
-
 
 LOGGER = get_logger(__name__)
 
@@ -27,7 +26,7 @@ def footer():
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
-def sidebar_header():
+def sidebar():
     st.markdown(
         """
         <style>
@@ -45,40 +44,33 @@ def sidebar_header():
     )
 
 
-def sidebar():
-    sidebar_header()
-
-
-def save(df: pd.DataFrame):
-    df.sort_values(by="symbol", inplace=True)
-    save_portfolio(df)
-    st.success(f"Saved {len(df)} records!")
+def save(portfolio: EditableData):
+    portfolio.sort_values(by="symbol", inplace=True)
+    save_portfolio(portfolio)
+    st.success(f"Saved {len(portfolio)} records!")
 
 
 def refresh():
+    st.info("Refreshing portfolio...")
+    refresh_porfolio(st.session_state.portfolio)
     st.experimental_rerun()
 
 
-def page_header():
-    st.title("Tracker")
-
-
-def load_portfolio() -> EditableData:
-    portfolio = get_portfolio()
-    df = st.data_editor(
-        portfolio,
-        num_rows="dynamic",
-        key="portfolio_editor",
-        use_container_width=True,
-    )
-    return df
-
-
 def content():
-    page_header()
-    df: EditableData = None
+    st.title("Tracker")
+    portfolio: EditableData | pd.DataFrame = None
+    if "portfolio" in st.session_state:
+        portfolio = st.session_state.portfolio
+    else:
+        portfolio = get_portfolio()
     with st.container():
-        df = load_portfolio()
+        data = st.data_editor(
+            portfolio,
+            num_rows="dynamic",
+            use_container_width=True,
+        )
+        if "portfolio" not in st.session_state:
+            st.session_state.portfolio = data
 
     with st.container():
         col1, col2, _, _ = st.columns([2, 2, 1, 4])
@@ -87,14 +79,14 @@ def content():
                 refresh()
         with col2:
             if st.button("Save", use_container_width=True):
-                save(df)
+                save(portfolio)
 
 
-def main():
+def app():
     sidebar()
     content()
     footer()
 
 
 if __name__ == "__main__":
-    main()
+    app()
