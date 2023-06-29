@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import pandas as pd
-from selenium.webdriver.common import keys
 from yahooquery import Ticker
 
 from alphalib.utils.convertutils import (
