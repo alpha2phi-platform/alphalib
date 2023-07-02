@@ -45,6 +45,9 @@ def get_stocks(symbols) -> pd.DataFrame:
         if len(df_symbol) > 0 and len(df_symbol.columns) > 0:
             if len(fld_list) == 0:
                 fld_list.extend(df_symbol.columns.tolist())
+                # Additional columns
+                if "fiveYearAvgDividendYield" not in fld_list:
+                    fld_list.extend(["fiveYearAvgDividendYield"])
                 fld_list.sort()
             create_missing_cols(df_symbol, fld_list)
             df_symbols = pd.concat([df_symbols, df_symbol[fld_list]], ignore_index=True)
@@ -64,7 +67,7 @@ def show_indicator(row: pd.Series) -> str:
     if pd.isna(row["unit"]) or row["unit"] == 0:
         return "MONITOR"
     if row["current_price"] <= row["target_buy_price"]:
-        if row["current_price"] <= (row["52_weeks_low"] * 1.01):
+        if row["current_price"] <= round(row["52_weeks_low"] * 1.01, 2):
             return "BUYBUY"
         else:
             return "BUY"
@@ -72,13 +75,15 @@ def show_indicator(row: pd.Series) -> str:
 
 
 def calculate_price_target(portfolio: pd.DataFrame, stats: pd.DataFrame):
-    portfolio["target_buy_price"] = np.where(
-        ~pd.isna(stats["targetLowPrice"]),
-        stats["targetLowPrice"],
-        portfolio["buy_price"],
-    )
+    # portfolio["target_buy_price"] = np.where(
+    #     ~pd.isna(portfolio["buy_price"]) & portfolio["buy_price"] > 0,
+    #     portfolio["buy_price"],
+    #     stats["fiftyTwoWeekLow"] * 1.01,
+    # )
+    portfolio["target_buy_price"] = round(stats["fiftyTwoWeekLow"] * 1.02, 2)
     conditions = [
         (~pd.isna(portfolio["buy_price"]))
+        & (portfolio["buy_price"] > 0)
         & (portfolio["buy_price"] < portfolio["target_buy_price"])
     ]
     values = [portfolio["buy_price"]]
@@ -101,6 +106,9 @@ def refresh_porfolio(portfolio):
     portfolio["buy_value"] = portfolio["unit"] * portfolio["buy_price"]
     portfolio["current_price"] = stats["currentPrice"]
     portfolio["dividend_yield"] = stats["dividendYield"]
+    portfolio["five_year_avg_dividend_yield"] = stats.get(
+        "fiveYearAvgDividendYield", None
+    )
     portfolio["52_weeks_low"] = stats["fiftyTwoWeekLow"]
     portfolio["52_weeks_high"] = stats["fiftyTwoWeekHigh"]
     portfolio["ex_dividend_date"] = stats["exDividendDate"]
