@@ -21,7 +21,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
         self.dataset = Dataset()
 
     def test_yahooquery(self):
-        symbol = "BRY"
+        symbol = "OXLC"
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats[symbol]
         if isinstance(key_stats, dict):
@@ -36,6 +36,11 @@ class TestYahooQueryDownloader(unittest.TestCase):
 
         ticker.session.close()
         self.assertGreater(len(key_stats), 0)
+
+    def test_sentiment_score(self):
+        symbol = "aapl"
+        ticker = Ticker(symbol)
+        print(ticker.news)
 
     def test_stock_stats(self):
         self.dataset.stock_stats()

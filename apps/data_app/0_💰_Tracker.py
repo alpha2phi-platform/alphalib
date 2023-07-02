@@ -44,7 +44,8 @@ def sidebar():
     )
 
 
-def save(portfolio: EditableData):
+def save():
+    portfolio = st.session_state.portfolio
     portfolio.sort_values(by="symbol", inplace=True)
     save_portfolio(portfolio)
     st.success(f"Saved {len(portfolio)} records!")
@@ -68,9 +69,12 @@ def content():
             portfolio,
             num_rows="dynamic",
             use_container_width=True,
+            column_config={
+                "nasdaq_url": st.column_config.LinkColumn(),
+                "yahoo_finance_url": st.column_config.LinkColumn(),
+            },
         )
-        if "portfolio" not in st.session_state:
-            st.session_state.portfolio = data
+        st.session_state.portfolio = data
 
     with st.container():
         col1, col2, _, _ = st.columns([2, 2, 1, 4])
@@ -79,7 +83,7 @@ def content():
                 refresh()
         with col2:
             if st.button("Save", use_container_width=True):
-                save(portfolio)
+                save()
 
 
 def app():

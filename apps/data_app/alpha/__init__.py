@@ -64,7 +64,10 @@ def show_indicator(row: pd.Series) -> str:
     if pd.isna(row["unit"]) or row["unit"] == 0:
         return "MONITOR"
     if row["current_price"] <= row["target_buy_price"]:
-        return "BUY"
+        if row["current_price"] <= (row["52_weeks_low"] * 1.01):
+            return "BUYBUY"
+        else:
+            return "BUY"
     return "MONITOR"
 
 
@@ -97,10 +100,20 @@ def refresh_porfolio(portfolio):
     portfolio["name"] = stats["shortName"]
     portfolio["buy_value"] = portfolio["unit"] * portfolio["buy_price"]
     portfolio["current_price"] = stats["currentPrice"]
+    portfolio["dividend_yield"] = stats["dividendYield"]
+    portfolio["52_weeks_low"] = stats["fiftyTwoWeekLow"]
+    portfolio["52_weeks_high"] = stats["fiftyTwoWeekHigh"]
+    portfolio["ex_dividend_date"] = stats["exDividendDate"]
     portfolio["current_value"] = stats["currentPrice"] * portfolio["unit"]
     portfolio["target_sell_price"] = (portfolio["buy_price"] * 1.15).round(decimals=2)
     calculate_price_target(portfolio, stats)
     portfolio["indicator"] = portfolio.apply(show_indicator, axis=1)
+    portfolio["nasdaq_url"] = portfolio["symbol"].apply(
+        lambda x: f"https://www.nasdaq.com/market-activity/stocks/{x.lower()}/dividend-history"
+    )
+    portfolio["yahoo_finance_url"] = portfolio["symbol"].apply(
+        lambda x: f"https://finance.yahoo.com/quote/{x}?p={x}"
+    )
 
 
 def save_portfolio(df: pd.DataFrame, sheet_name=SHEET_NAME_US_MARKET):
