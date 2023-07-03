@@ -122,6 +122,7 @@ def refresh_porfolio(portfolio):
     portfolio["yahoo_finance_url"] = portfolio["symbol"].apply(
         lambda x: f"https://finance.yahoo.com/quote/{x}?p={x}"
     )
+    portfolio["earnings_date"] = stats["earnings"]
 
 
 def save_portfolio(df: pd.DataFrame, sheet_name=SHEET_NAME_US_MARKET):

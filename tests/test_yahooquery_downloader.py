@@ -25,12 +25,13 @@ class TestYahooQueryDownloader(unittest.TestCase):
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats[symbol]
         if isinstance(key_stats, dict):
-            print(key_stats)
-            print(ticker.quote_type)
-            print(ticker.summary_detail)
-            print(ticker.summary_profile)
-            print(ticker.financial_data)
-            print(ticker.price)
+            # print(key_stats)
+            # print(ticker.quote_type)
+            # print(ticker.summary_detail)
+            # print(ticker.summary_profile)
+            print(ticker.calendar_events)
+            # print(ticker.financial_data)
+            # print(ticker.price)
         else:
             raise ValueError("Symbol {} is not found".format(symbol))
 

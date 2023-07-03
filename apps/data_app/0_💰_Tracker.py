@@ -57,6 +57,10 @@ def refresh():
     st.experimental_rerun()
 
 
+def on_editor_change():
+    pass
+
+
 def content():
     st.title("Tracker")
     portfolio: EditableData | pd.DataFrame = None
@@ -73,6 +77,8 @@ def content():
                 "nasdaq_url": st.column_config.LinkColumn(),
                 "yahoo_finance_url": st.column_config.LinkColumn(),
             },
+            key="portfolio_editor",
+            on_change=on_editor_change,
         )
         st.session_state.portfolio = data
 
