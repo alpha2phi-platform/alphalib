@@ -3,11 +3,23 @@ import pandas as pd
 import asyncio
 from yahooquery import Ticker
 from streamlit.logger import get_logger
+from datetime import datetime, timezone
 
 PORTFOLIO_FILE = "data/portfolio.xlsx"
 SHEET_NAME_US_MARKET = "us"
 
 LOGGER = get_logger(__name__)
+
+
+def from_isoformat(iso_time: str) -> datetime:
+    if str is None:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    return datetime.fromisoformat(iso_time)
+
+
+def days_interval(dt: datetime) -> int:
+    delta = datetime.now() - dt
+    return -delta.days
 
 
 def create_missing_cols(df, target_cols):
@@ -61,17 +73,27 @@ async def get_symbols(symbols: list[str]) -> pd.DataFrame:
     return data
 
 
+def derive_monitor_status(row: pd.Series) -> str:
+    if row["ex_dividend_date"] is not None:
+        delta = days_interval(from_isoformat(row["ex_dividend_date"]))
+        if delta >= 0 and delta <= 30:
+            return "MONITOR - PRE"
+        if delta < 0 and delta >= -30:
+            return "MONITOR - POST"
+    return "MONITOR"
+
+
 def show_indicator(row: pd.Series) -> str:
     if row["current_price"] >= row["target_sell_price"] and row["unit"] > 0:
         return "SELL"
     if pd.isna(row["unit"]) or row["unit"] == 0:
-        return "MONITOR"
+        return derive_monitor_status(row)
     if row["current_price"] <= row["target_buy_price"]:
         if row["current_price"] <= round(row["52_weeks_low"] * 1.01, 2):
             return "BUYBUY"
         else:
             return "BUY"
-    return "MONITOR"
+    return derive_monitor_status(row)
 
 
 def calculate_price_target(portfolio: pd.DataFrame, stats: pd.DataFrame):

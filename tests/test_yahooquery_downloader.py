@@ -6,6 +6,7 @@ import yahooquery as yq
 from yahooquery import Ticker
 
 from alphalib.dataset.yahooquery_downloader import Dataset
+from alphalib.utils.dateutils import days_interval, from_isoformat
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -56,3 +57,15 @@ class TestYahooQueryDownloader(unittest.TestCase):
             ticker = Ticker(symbol)
             key_stats = ticker.key_stats
             print(key_stats)
+
+    def test_calculate_dividend_dt_interval(self):
+        symbol = "OXLC"
+        ticker = Ticker(symbol)
+        exDividendDate = ticker.calendar_events[symbol].get("exDividendDate", None)
+        if exDividendDate is not None:
+            exDividendDate = from_isoformat(exDividendDate)
+            print(exDividendDate)
+            print(days_interval(exDividendDate))
+
+        ticker.session.close()
+        self.assertIsNotNone(exDividendDate)

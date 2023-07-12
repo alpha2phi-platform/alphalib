@@ -106,3 +106,8 @@ def trunc_datetime(dt: datetime):
 
 def years_from_now(years: int) -> datetime:
     return datetime.now() - relativedelta(years=years)
+
+
+def days_interval(dt: datetime) -> int:
+    delta = datetime.now() - dt
+    return -delta.days
