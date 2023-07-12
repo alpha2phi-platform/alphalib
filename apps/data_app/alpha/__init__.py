@@ -1,9 +1,10 @@
 import numpy as np
-import pandas as pd
 import asyncio
-from yahooquery import Ticker
-from streamlit.logger import get_logger
 from datetime import datetime, timezone
+
+import pandas as pd
+from streamlit.logger import get_logger
+from yahooquery import Ticker
 
 PORTFOLIO_FILE = "data/portfolio.xlsx"
 SHEET_NAME_US_MARKET = "us"
