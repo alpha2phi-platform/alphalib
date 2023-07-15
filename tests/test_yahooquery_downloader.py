@@ -22,18 +22,19 @@ class TestYahooQueryDownloader(unittest.TestCase):
         self.dataset = Dataset()
 
     def test_yahooquery(self):
-        symbol = "AFCG"
+        symbol = "OXLC"
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats[symbol]
         if isinstance(key_stats, dict):
-            # print(key_stats)
-            # print(ticker.quote_type)
-            # print(ticker.summary_detail)
-            # print(ticker.summary_profile)
+            print(key_stats)
+            print(ticker.quote_type)
+            print(ticker.summary_detail)
+            print(ticker.summary_profile)
             print(ticker.calendar_events)
-            # print(ticker.financial_data)
-            # print(ticker.price)
+            print(ticker.financial_data)
+            print(ticker.price)
         else:
+            print(key_stats)
             raise ValueError("Symbol {} is not found".format(symbol))
 
         ticker.session.close()
