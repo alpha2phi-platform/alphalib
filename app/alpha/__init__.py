@@ -13,9 +13,8 @@ LOGGER = get_logger(__name__)
 
 
 def from_isoformat(iso_time: str) -> datetime:
-    if iso_time is None:
+    if str is None:
         return datetime.min.replace(tzinfo=timezone.utc)
-    LOGGER.error("iso_time: %s", iso_time)
     return datetime.fromisoformat(iso_time)
 
 
@@ -76,7 +75,7 @@ async def get_symbols(symbols: list[str]) -> pd.DataFrame:
 
 
 def derive_monitor_status(row: pd.Series) -> str:
-    if row["ex_dividend_date"]:
+    if row["ex_dividend_date"] is not None:
         delta = days_interval_from_now(from_isoformat(row["ex_dividend_date"]))
         if delta >= 0 and delta <= 30:
             return "MONITOR - PRE"

@@ -61,7 +61,7 @@ def from_isoformat(iso_time: str) -> datetime:
     Returns:
             datetime: datetime object
     """
-    if str is None:
+    if iso_time is None:
         return datetime.min.replace(
             tzinfo=timezone.utc
         )  # https://bugs.python.org/issue31212
@@ -108,6 +108,6 @@ def years_from_now(years: int) -> datetime:
     return datetime.now() - relativedelta(years=years)
 
 
-def days_interval(dt: datetime) -> int:
+def days_interval_from_now(dt: datetime) -> int:
     delta = datetime.now() - dt
     return -delta.days

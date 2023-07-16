@@ -24,7 +24,7 @@ class Nasdaq(TypeConverter):
     nasdaq_url: str = ""
 
 
-def process_stock_info(r: Response, symbol: str, api_endpoint: str) -> Nasdaq:
+def process_dividend_history(r: Response, symbol: str, api_endpoint: str) -> Nasdaq:
     nasdaq = Nasdaq()
     nasdaq.symbol = symbol
     nasdaq.nasdaq_url = api_endpoint
@@ -43,9 +43,9 @@ def process_stock_info(r: Response, symbol: str, api_endpoint: str) -> Nasdaq:
     return nasdaq
 
 
-def get_stock_info(symbol: str) -> Nasdaq:
+def get_dividend_history(symbol: str) -> Nasdaq:
     assert symbol
 
     api_endpoint = NASAQ_DIVIDEND_HISTORY_API_ENDPOINT.format(symbol.upper())
-    nasdaq = invoke_api(symbol, api_endpoint, process_stock_info)
+    nasdaq = invoke_api(symbol, api_endpoint, process_dividend_history)
     return nasdaq
