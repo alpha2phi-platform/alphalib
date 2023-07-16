@@ -7,7 +7,7 @@ import yfinance as yf
 from yfinance import Ticker
 
 from alphalib.data_sources import get_stocks
-from alphalib.dataset import Dataset, Downloader
+from alphalib.dataset.yfinance_downloader import Dataset, Downloader
 from alphalib.utils.logger import logger
 
 COUNTRY = "United States"
