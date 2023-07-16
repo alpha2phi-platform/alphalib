@@ -6,21 +6,13 @@ import pandas as pd
 from streamlit.logger import get_logger
 from yahooquery import Ticker
 
+from alphalib.utils.convertutils import join_dicts
+from alphalib.utils.dateutils import days_interval_from_now, from_isoformat
+
 PORTFOLIO_FILE = "data/portfolio.xlsx"
 SHEET_NAME_US_MARKET = "us"
 
 LOGGER = get_logger(__name__)
-
-
-def from_isoformat(iso_time: str) -> datetime:
-    if iso_time is None:
-        return datetime.min.replace(tzinfo=timezone.utc)
-    return datetime.fromisoformat(iso_time)
-
-
-def days_interval_from_now(dt: datetime) -> int:
-    delta = datetime.now() - dt
-    return -delta.days
 
 
 def create_missing_cols(df, target_cols):
@@ -28,16 +20,6 @@ def create_missing_cols(df, target_cols):
     missing_cols = list(set(target_cols) - set(columns))
     if len(missing_cols) > 0:
         df[missing_cols] = None
-
-
-def join_dicts(to_dict, from_dict, from_dict_key=None) -> dict:
-    v = from_dict
-    if from_dict_key in from_dict:
-        v = from_dict[from_dict_key]
-
-    if type(v) is dict:
-        to_dict = {**to_dict, **v}
-    return to_dict
 
 
 def get_stocks(symbols) -> pd.DataFrame:
