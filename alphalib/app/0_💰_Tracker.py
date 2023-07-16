@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit.elements.data_editor import EditableData
 from streamlit.logger import get_logger
 
-from alpha import get_portfolio, save_portfolio, refresh_porfolio
+from alphalib.alpha import get_portfolio, save_portfolio, refresh_porfolio
 
 
 st.set_page_config(

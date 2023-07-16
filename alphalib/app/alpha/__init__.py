@@ -15,7 +15,6 @@ LOGGER = get_logger(__name__)
 def from_isoformat(iso_time: str) -> datetime:
     if iso_time is None:
         return datetime.min.replace(tzinfo=timezone.utc)
-    LOGGER.error("iso_time: %s", iso_time)
     return datetime.fromisoformat(iso_time)
 
 
