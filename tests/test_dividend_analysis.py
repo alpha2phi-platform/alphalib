@@ -1,9 +1,6 @@
 from unittest import TestCase
-from PIL.GifImagePlugin import getdata
 import pandas as pd
 
-
-from yahooquery import Ticker
 
 from alphalib.data_sources.nasdaq import get_dividend_info, Nasdaq
 from alphalib.analysis.dividend import dividend_analysis
@@ -12,14 +9,13 @@ from alphalib.analysis.dividend import dividend_analysis
 pd.set_option("display.max_rows", None)
 pd.set_option("display.max_columns", None)
 pd.set_option("display.width", None)
-# pd.set_option("display.max_colwidth", None)
 
 
 DIVIDEND_HISTORY_YEARS = 8
 
 
 class TestDividendAnalysis(TestCase):
-    symbol = "KEN"
+    symbol = "EFC"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)

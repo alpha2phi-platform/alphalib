@@ -1,12 +1,16 @@
 from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Literal
 
 import pandas as pd
+from pandas.core.arrays.interval import IntervalOrNA
+from yahooquery import Ticker
 
 from alphalib.data_sources.nasdaq import Nasdaq, get_dividend_info
-from yahooquery import Ticker
-from datetime import timedelta, datetime
-
 from alphalib.utils.logging import logger
+
+
+IntervalType = Literal["Monthly", "Quarterly", "Annually"]
 
 
 @dataclass(kw_only=True)
@@ -15,12 +19,12 @@ class DividendAnalysis(Nasdaq):
     result: pd.DataFrame = None
 
 
-def derive_dividend_interval(interval: float):
+def derive_dividend_interval(interval: float) -> IntervalType:
     if interval <= 45:
-        return "MONTHLY"
+        return "Monthly"
     if interval <= 110:
-        return "QUARTERLY"
-    return "YEARLY"
+        return "Quarterly"
+    return "Annually"
 
 
 def calculate_dividend_interval(
@@ -137,4 +141,4 @@ def dividend_analysis(symbol: str) -> DividendAnalysis:
     # Analyze the dividend history
     analysis.result = analyze_historical_prices(symbol, intervals)
 
-    print(analysis)
+    return analysis

@@ -7,7 +7,7 @@ from alphalib.tracker import get_portfolio, save_portfolio, refresh_porfolio
 
 
 st.set_page_config(
-    page_title="Alpha2phi - Investment",
+    page_title="Tracker",
     layout="wide",
     initial_sidebar_state="expanded",
     page_icon="💰",
@@ -31,7 +31,7 @@ def sidebar():
         """
         <style>
             [data-testid="stSidebarNav"]::before {
-                content: "MyInvestor";
+                content: "Alphalib";
                 margin-left: 20px;
                 margin-top: 20px;
                 font-size: 30px;
