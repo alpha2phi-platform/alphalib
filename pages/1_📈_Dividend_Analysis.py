@@ -1,3 +1,4 @@
+from os import wait
 import streamlit as st
 from streamlit.logger import get_logger
 
@@ -56,17 +57,21 @@ def content():
             analysis = dividend_analysis(symbol)
 
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
-            st.text(f"Dividiend Yield: {analysis.dividend_yield_pct}")
-            st.text(f"Annual Dividend: {analysis.annual_dividend}")
-            st.text(f"PE Ratio: {analysis.pe_ratio}")
-            st.text(f"Ex Dividend Date: {analysis.ex_dividend_date}")
-            st.text(f"URL: {analysis.nasdaq_url}")
+            col1, col2 = st.columns([2, 4])
+            with col1:
+                st.text(f"Dividiend Yield: {analysis.dividend_yield_pct}")
+                st.text(f"Annual Dividend: {analysis.annual_dividend}")
+                st.text(f"PE Ratio: {analysis.pe_ratio}")
+                st.text(f"Ex Dividend Date: {analysis.ex_dividend_date}")
 
-            st.subheader("Dividend vs Prices")
-            st.dataframe(analysis.result, use_container_width=True)
+            with col2:
+                st.subheader("Dividend vs Prices")
+                st.dataframe(analysis.result, use_container_width=True, hide_index=True)
 
             st.subheader("Dividend History")
-            st.dataframe(analysis.dividend_history, use_container_width=True)
+            st.dataframe(
+                analysis.dividend_history, use_container_width=True, hide_index=True
+            )
 
 
 def app():
