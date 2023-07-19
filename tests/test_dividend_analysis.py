@@ -19,18 +19,15 @@ DIVIDEND_HISTORY_YEARS = 8
 
 
 class TestDividendAnalysis(TestCase):
-    symbol = "OXLC"
+    symbol = "KEN"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
         stock.dividend_history.to_excel(f"data/{self.symbol}.xlsx", index=False)
 
-    def test_download_price_history(self):
-        ticker = Ticker(self.symbol)
-        ticker.session.close()
-
     def test_dividend_history_analysis(self):
         dividend_analysis(self.symbol)
 
     def test_news_sentiment_score(self):
+        # TODO:
         pass

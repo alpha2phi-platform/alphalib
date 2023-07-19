@@ -10,7 +10,7 @@ from alphalib.data_sources.seeking_alpha import SeekingAlpha
 from alphalib.data_sources.yahoo_finance_watchlist import get_watchlist
 from alphalib.data_sources.yahoo_query import YahooQuery
 from alphalib.utils.dateutils import from_epoch_time, month_from
-from alphalib.utils.logger import logger
+from alphalib.utils.logging import logger
 
 SEEKING_ALPHA_STOCK_URL = "https://seekingalpha.com/symbol/{0}"
 
