@@ -34,12 +34,12 @@ def calculate_dividend_interval(
     intervals = dividend_history.groupby(
         by=["exOrEffDate"], as_index=False, sort=False
     )["interval"].max()
-    return intervals, intervals.head(12)["interval"].mean()
+    return intervals, intervals.head(5)["interval"].mean()
 
 
 def cleanse_and_transform(dividend_history: pd.DataFrame):
     dividend_history["exOrEffDate"] = pd.to_datetime(
-        dividend_history["exOrEffDate"], format="%m/%d/%Y"
+        dividend_history["exOrEffDate"], format="%m/%d/%Y", errors="coerce"
     )
 
 
@@ -128,6 +128,9 @@ def dividend_analysis(symbol: str) -> DividendAnalysis:
 
     # Create analysis
     analysis: DividendAnalysis = DividendAnalysis(**vars(stock_dividend_info))
+
+    if analysis.dividend_history.empty:
+        return analysis
 
     # Transform the dividend history
     cleanse_and_transform(analysis.dividend_history)

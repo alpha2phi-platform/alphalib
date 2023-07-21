@@ -68,9 +68,9 @@ def derive_monitor_status(row: pd.Series) -> str:
 def show_indicator(row: pd.Series) -> str:
     if row["current_price"] >= row["target_sell_price"] and row["unit"] > 0:
         return "SELL"
-    if pd.isna(row["unit"]) or row["unit"] == 0:
-        return derive_monitor_status(row)
-    if row["current_price"] <= row["target_buy_price"]:
+    # if pd.isna(row["unit"]) or row["unit"] == 0:
+    #     return derive_monitor_status(row)
+    if row["current_price"] <= row["target_buy_price"] * 1.03:
         if row["current_price"] <= round(row["52_weeks_low"] * 1.01, 2):
             return "BUYBUY"
         else:
@@ -122,7 +122,7 @@ def refresh_porfolio(portfolio):
     portfolio["target_sell_price"] = (portfolio["buy_price"] * TARGET_SELL_PCT).round(
         decimals=2
     )
-    calculate_price_target(portfolio, stats)
+    # calculate_price_target(portfolio, stats)
     portfolio["indicator"] = portfolio.apply(show_indicator, axis=1)
     portfolio["nasdaq_url"] = portfolio["symbol"].apply(
         lambda x: f"https://www.nasdaq.com/market-activity/stocks/{x.lower()}/dividend-history"
