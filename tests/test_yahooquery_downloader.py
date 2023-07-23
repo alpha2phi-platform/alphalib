@@ -6,7 +6,7 @@ import yahooquery as yq
 from yahooquery import Ticker
 
 from alphalib.dataset.yahooquery_downloader import Dataset
-from alphalib.utils.dateutils import days_interval, from_isoformat
+from alphalib.utils.dateutils import days_interval_from_now, from_isoformat
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -22,7 +22,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
         self.dataset = Dataset()
 
     def test_yahooquery(self):
-        symbol = "OXLC"
+        symbol = "ACRE"
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats[symbol]
         if isinstance(key_stats, dict):
@@ -66,7 +66,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
         if exDividendDate is not None:
             exDividendDate = from_isoformat(exDividendDate)
             print(exDividendDate)
-            print(days_interval(exDividendDate))
+            print(days_interval_from_now(exDividendDate))
 
         ticker.session.close()
         self.assertIsNotNone(exDividendDate)

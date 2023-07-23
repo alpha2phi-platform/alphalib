@@ -1,10 +1,10 @@
-from os import wait
 import streamlit as st
 from streamlit.logger import get_logger
 
 from alphalib.tracker import get_portfolio
 from alphalib.analysis.dividend import dividend_analysis
-
+from alphalib.analysis.sentiment import finwiz_score
+from alphalib.utils.dateutils import month_from
 
 st.set_page_config(
     page_title="Dividend Analysis",
@@ -44,6 +44,13 @@ def sidebar():
     )
 
 
+def sentiment_score(symbol: str) -> float:
+    df = finwiz_score(symbol)
+    past_x_months = month_from(-4)
+    mean_score = df[df["date"] >= past_x_months.date()]["compound"].mean()
+    return round(mean_score, 4)
+
+
 def content():
     st.title("Dividend Analysis")
     portfolio = get_portfolio()
@@ -63,6 +70,7 @@ def content():
                 st.text(f"Annual Dividend: {analysis.annual_dividend}")
                 st.text(f"PE Ratio: {analysis.pe_ratio}")
                 st.text(f"Ex Dividend Date: {analysis.ex_dividend_date}")
+                st.text(f"Sentiment Score: {sentiment_score(symbol)}")
 
             with col2:
                 st.subheader("Dividend vs Prices")

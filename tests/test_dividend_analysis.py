@@ -23,7 +23,3 @@ class TestDividendAnalysis(TestCase):
 
     def test_dividend_history_analysis(self):
         dividend_analysis(self.symbol)
-
-    def test_news_sentiment_score(self):
-        # TODO:
-        pass

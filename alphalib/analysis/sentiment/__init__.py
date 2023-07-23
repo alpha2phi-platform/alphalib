@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from requests.adapters import HTTPAdapter
-from yahooquery import Ticker
+import yfinance as yf
 
 from alphalib.utils.httputils import (
     DEFAULT_HTTP_RETRY,
@@ -23,8 +23,8 @@ nltk.download("vader_lexicon", quiet=True)
 
 def yahoo_finance_score(symbol: str) -> pd.DataFrame:
     assert symbol
-    # TODO: use yahooquery news
-    pass
+    ticker = yf.Ticker(symbol)
+    print(ticker.news)
 
 
 def finwiz_score(symbol: str) -> pd.DataFrame:

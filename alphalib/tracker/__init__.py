@@ -111,6 +111,7 @@ def refresh_porfolio(portfolio):
     portfolio["name"] = stats["shortName"]
     portfolio["buy_value"] = portfolio["unit"] * portfolio["buy_price"]
     portfolio["current_price"] = stats["currentPrice"]
+    portfolio["beta"] = stats["beta"]
     portfolio["dividend_yield"] = stats["dividendYield"]
     portfolio["five_year_avg_dividend_yield"] = stats.get(
         "fiveYearAvgDividendYield", None
