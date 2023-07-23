@@ -47,6 +47,7 @@ class TestAnalysis(unittest.TestCase):
         print(f"\n\nMean score - {mean_score}")
 
     def test_sentiment_yahoo_finance_score(self):
+        # TODO:
         df = yahoo_finance_score("sblk")
 
     def test_ta_bb(self):

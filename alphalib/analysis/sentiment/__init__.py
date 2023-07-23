@@ -22,6 +22,7 @@ nltk.download("vader_lexicon", quiet=True)
 
 
 def yahoo_finance_score(symbol: str) -> pd.DataFrame:
+    # TODO:
     assert symbol
     ticker = yf.Ticker(symbol)
     print(ticker.news)
