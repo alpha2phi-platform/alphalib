@@ -54,7 +54,7 @@ class TestAnalysis(unittest.TestCase):
         plot_bollinger_bands("googl")
 
     def test_ta_ichimoku(self):
-        plot_ichimoku("googl")
+        plot_ichimoku("ken")
 
     def test_ta_rsi(self):
         plot_rsi("googl")

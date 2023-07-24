@@ -22,4 +22,5 @@ class TestDividendAnalysis(TestCase):
         stock.dividend_history.to_excel(f"data/{self.symbol}.xlsx", index=False)
 
     def test_dividend_history_analysis(self):
-        dividend_analysis(self.symbol)
+        analysis = dividend_analysis(self.symbol)
+        print(analysis)

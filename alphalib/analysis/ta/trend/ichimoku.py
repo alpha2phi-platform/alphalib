@@ -33,7 +33,7 @@ def get_fill_color(label):
         return "rgba(250,0,0,0.4)"
 
 
-def plot_ichimoku(symbol: str, period: str = "1y"):
+def plot_ichimoku(symbol: str, show: bool = True, period: str = "1y"):
     assert symbol
 
     stock = yf.Ticker(symbol)
@@ -129,4 +129,7 @@ def plot_ichimoku(symbol: str, period: str = "1y"):
         showlegend=True,
     )
 
-    fig.show()
+    if show:
+        fig.show()
+    else:
+        return fig

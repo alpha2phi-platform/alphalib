@@ -1,10 +1,12 @@
+import pandas as pd
 import streamlit as st
 from streamlit.logger import get_logger
 
-from alphalib.tracker import get_portfolio
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
+from alphalib.tracker import get_portfolio
 from alphalib.utils.dateutils import month_from
+from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
 st.set_page_config(
     page_title="Dividend Analysis",
@@ -44,11 +46,11 @@ def sidebar():
     )
 
 
-def sentiment_score(symbol: str) -> float:
-    df = finwiz_score(symbol)
+def sentiment_score(symbol: str) -> (pd.DataFrame, float):
+    df_score = finwiz_score(symbol)
     past_x_months = month_from(-4)
-    mean_score = df[df["date"] >= past_x_months.date()]["compound"].mean()
-    return round(mean_score, 4)
+    mean_score = df_score[df_score["date"] >= past_x_months.date()]["compound"].mean()
+    return df_score, round(mean_score, 4)
 
 
 def content():
@@ -64,22 +66,43 @@ def content():
             analysis = dividend_analysis(symbol)
 
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
-            col1, col2 = st.columns([2, 4])
-            with col1:
-                st.text(f"Dividiend Yield: {analysis.dividend_yield_pct}")
-                st.text(f"Annual Dividend: {analysis.annual_dividend}")
-                st.text(f"PE Ratio: {analysis.pe_ratio}")
-                st.text(f"Ex Dividend Date: {analysis.ex_dividend_date}")
-                st.text(f"Sentiment Score: {sentiment_score(symbol)}")
+            sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
 
-            with col2:
-                st.subheader("Dividend vs Prices")
-                st.dataframe(analysis.result, use_container_width=True, hide_index=True)
-
-            st.subheader("Dividend History")
-            st.dataframe(
-                analysis.dividend_history, use_container_width=True, hide_index=True
+            tab1, tab2, tab3 = st.tabs(
+                ["Dividend Analysis", "Sentiment Analysis", "Technical Analysis"]
             )
+            with tab1:
+                col1, col2 = st.columns([2, 4])
+                with col1:
+                    st.text(f"Dividiend Yield: {analysis.dividend_yield_pct}")
+                    st.text(f"Annual Dividend: {analysis.annual_dividend}")
+                    st.text(f"PE Ratio: {analysis.pe_ratio}")
+                    st.text(f"Ex Dividend Date: {analysis.ex_dividend_date}")
+
+                with col2:
+                    st.subheader("Dividend vs Prices")
+                    st.dataframe(
+                        analysis.result, use_container_width=True, hide_index=True
+                    )
+
+                st.subheader("Dividend History")
+                st.dataframe(
+                    analysis.dividend_history, use_container_width=True, hide_index=True
+                )
+
+            with tab2:
+                st.subheader("Sentiment Score")
+                st.text(f"Sentiment Score: {sentiment_mean_score}")
+                st.dataframe(
+                    sentiment_analysis, use_container_width=True, hide_index=True
+                )
+
+            with tab3:
+                st.subheader("Technical Analysis - Ichimoku")
+                st.plotly_chart(
+                    plot_ichimoku(symbol, show=False).to_dict(),
+                    use_container_width=True,
+                )
 
 
 def app():
