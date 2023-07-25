@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Literal
 
 import pandas as pd
-from pandas.core.arrays.interval import IntervalOrNA
 from yahooquery import Ticker
 
 from alphalib.data_sources.nasdaq import Nasdaq, get_dividend_info
@@ -15,7 +14,7 @@ IntervalType = Literal["Monthly", "Quarterly", "Annually"]
 
 @dataclass(kw_only=True)
 class DividendAnalysis(Nasdaq):
-    interval: str = ""  # MONTHLY, QUARTERLY, YEARLY
+    interval: IntervalType = ""
     result: pd.DataFrame = None
 
 
