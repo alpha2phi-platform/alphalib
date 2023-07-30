@@ -1,8 +1,10 @@
 # alphalib
 
-A financial investment terminal and library.
+A financial investment app and library.
 
 ## Features
 
-- [ ] Sentiment score with news sources.
-- [ ] Technical analysis charts.
+- [x] Sentiment score with news sources.
+- [x] Technical analysis charts.
+- [ ] Balance sheet analysis.
+- [ ] Automated stock tracker.
