@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Literal
+from typing import Literal, Tuple
 
 import pandas as pd
 from yahooquery import Ticker
@@ -14,7 +14,7 @@ IntervalType = Literal["Monthly", "Quarterly", "Annually"]
 
 @dataclass(kw_only=True)
 class DividendAnalysis(Nasdaq):
-    interval: IntervalType = ""
+    interval: IntervalType = "Quarterly"
     result: pd.DataFrame = None
 
 
@@ -28,7 +28,7 @@ def derive_dividend_interval(interval: float) -> IntervalType:
 
 def calculate_dividend_interval(
     dividend_history: pd.DataFrame,
-) -> (pd.DataFrame, float):
+) -> Tuple[pd.DataFrame, float]:
     dividend_history["interval"] = abs(dividend_history["exOrEffDate"].diff().dt.days)
     intervals = dividend_history.groupby(
         by=["exOrEffDate"], as_index=False, sort=False
