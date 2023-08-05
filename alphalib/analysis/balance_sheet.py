@@ -15,7 +15,7 @@ def balance_sheet_analysis(symbol: str) -> BalanceSheetAnalysis:
     try:
         balance_sheet = ticker.balance_sheet(frequency="q")
         if not balance_sheet.empty:
-            print(balance_sheet.T.head(1000))
+            print(balance_sheet.T.head(1000000))
             return BalanceSheetAnalysis()
     except Exception:
         logger.error(f"Unable to retrieve balance sheet for {symbol}")

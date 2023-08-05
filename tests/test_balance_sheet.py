@@ -11,7 +11,7 @@ pd.set_option("display.width", None)
 
 
 class TestBalanceSheet(TestCase):
-    symbol = "KEN"
+    symbol = "OCCI"
 
     def test_balance_sheet_analysis(self):
         analysis = balance_sheet_analysis(self.symbol)
