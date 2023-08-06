@@ -47,10 +47,15 @@ def sidebar():
 
 
 def sentiment_score(symbol: str) -> (pd.DataFrame, float):
-    df_score = finwiz_score(symbol)
-    past_x_months = month_from(-4)
-    mean_score = df_score[df_score["date"] >= past_x_months.date()]["compound"].mean()
-    return df_score, round(mean_score, 4)
+    try:
+        df_score = finwiz_score(symbol)
+        past_x_months = month_from(-4)
+        mean_score = df_score[df_score["date"] >= past_x_months.date()][
+            "compound"
+        ].mean()
+        return df_score, round(mean_score, 4)
+    except:
+        return pd.DataFrame(), 0
 
 
 def content():

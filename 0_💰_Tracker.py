@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import streamlit as st
 from streamlit.elements.data_editor import EditableData
@@ -47,6 +48,7 @@ def sidebar():
 def save():
     portfolio = st.session_state.portfolio
     portfolio.sort_values(by="symbol", inplace=True)
+    portfolio.replace("{}", np.nan, inplace=True)
     save_portfolio(portfolio)
     st.success(f"Saved {len(portfolio)} records!")
 

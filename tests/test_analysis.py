@@ -18,6 +18,7 @@ from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
 from alphalib.analysis.ta.volume.emv import plot_emv, plot_emv2
 from alphalib.analysis.technical import plot_technical
 from alphalib.utils.dateutils import month_from
+from alphalib.analysis.piotroski import get_piotroski_score
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -40,7 +41,7 @@ class TestAnalysis(unittest.TestCase):
         print(recommend_stocks_from_dataset())
 
     def test_sentiment_finwiz_score(self):
-        df = finwiz_score("bry")
+        df = finwiz_score("afsia")
         past_x_months = month_from(-4)
         print(df[df["date"] >= past_x_months.date()].head(1000))
         mean_score = df[df["date"] >= past_x_months.date()]["compound"].mean()
@@ -49,6 +50,9 @@ class TestAnalysis(unittest.TestCase):
     def test_sentiment_yahoo_finance_score(self):
         # TODO:
         df = yahoo_finance_score("sblk")
+
+    def test_piostroski_score(self):
+        print(get_piotroski_score("oxlc"))
 
     def test_ta_bb(self):
         plot_bollinger_bands("googl")

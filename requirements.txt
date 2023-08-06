@@ -33,3 +33,4 @@ vaex
 webdriver-manager
 yahooquery
 yfinance
+alpha-vantage
