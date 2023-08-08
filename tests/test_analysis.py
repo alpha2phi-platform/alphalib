@@ -52,7 +52,7 @@ class TestAnalysis(unittest.TestCase):
         df = yahoo_finance_score("sblk")
 
     def test_piostroski_score(self):
-        print(get_piotroski_score("oxlc"))
+        print(get_piotroski_score("aapl"))
 
     def test_ta_bb(self):
         plot_bollinger_bands("googl")
