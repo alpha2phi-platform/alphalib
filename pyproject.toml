@@ -38,8 +38,8 @@ scipy = "^1.10.1"
 selenium = "^4.8.2"
 selectolax = "^0.3.12"
 webdriver-manager = "^3.8.5"
-yahooquery = "^2.3.0"
-yfinance = "^0.2.12"
+yahooquery = "^2.3.2"
+yfinance = "^0.2.27"
 alpha-vantage = "^2.3.1"
 
 [tool.poetry.dev-dependencies]
