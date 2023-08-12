@@ -59,34 +59,38 @@ def refresh():
     st.experimental_rerun()
 
 
+def load_portfolio() -> EditableData | pd.DataFrame:
+    if "portfolio" in st.session_state:
+        return st.session_state.portfolio
+    else:
+        return get_portfolio()
+
+
 def content():
     st.title("Tracker")
-    portfolio: EditableData | pd.DataFrame = None
-    if "portfolio" in st.session_state:
-        portfolio = st.session_state.portfolio
-    else:
-        portfolio = get_portfolio()
-    with st.container():
-        data = st.data_editor(
-            portfolio,
-            num_rows="dynamic",
-            use_container_width=True,
-            column_config={
-                "nasdaq_url": st.column_config.LinkColumn(),
-                "yahoo_finance_url": st.column_config.LinkColumn(),
-            },
-            key="portfolio_editor",
-        )
-        st.session_state.portfolio = data
-
-    with st.container():
-        col1, col2, _, _ = st.columns([2, 2, 1, 4])
-        with col1:
-            if st.button("Refresh", use_container_width=True):
-                refresh()
-        with col2:
-            if st.button("Save", use_container_width=True):
-                save()
+    portfolio = load_portfolio()
+    with st.form("portfolio_form"):
+        with st.container():
+            col1, col2, _, _ = st.columns([2, 2, 1, 4])
+            with col1:
+                if st.form_submit_button("Refresh", use_container_width=True):
+                    refresh()
+            with col2:
+                if st.form_submit_button("Save", use_container_width=True):
+                    save()
+        with st.container():
+            data = st.data_editor(
+                portfolio,
+                num_rows="dynamic",
+                use_container_width=True,
+                column_config={
+                    "nasdaq_url": st.column_config.LinkColumn(),
+                    "yahoo_finance_url": st.column_config.LinkColumn(),
+                },
+                height=600,
+                key="portfolio_editor",
+            )
+            st.session_state.portfolio = data
 
 
 def app():
