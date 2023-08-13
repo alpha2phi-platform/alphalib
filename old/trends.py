@@ -68,7 +68,7 @@ class KeywordsGenerator:
         )[:top]
 
 
-if __name__ == "1__main__":
+if __name__ == "__main__":
     from pytrends.request import TrendReq
 
     nltk.download("punkt")
