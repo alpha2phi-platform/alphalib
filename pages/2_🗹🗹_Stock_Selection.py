@@ -9,10 +9,10 @@ from alphalib.utils.dateutils import month_from
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
 st.set_page_config(
-    page_title="Balance Sheet",
+    page_title="Stock Selection",
     layout="wide",
     initial_sidebar_state="expanded",
-    page_icon="💰",
+    page_icon="🗹🗹",
 )
 
 LOGGER = get_logger(__name__)
@@ -47,9 +47,9 @@ def sidebar():
 
 
 def content():
-    st.title("Balance Sheet")
+    st.title("Stock Selection")
     with st.container():
-        st.write("Balance sheet analysis")
+        st.write("Stock Selection")
 
 
 def app():
