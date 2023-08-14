@@ -1,20 +1,12 @@
-import pandas as pd
 import streamlit as st
 from streamlit.logger import get_logger
 
-from alphalib.analysis.dividend import dividend_analysis
-from alphalib.analysis.sentiment import finwiz_score
-from alphalib.tracker import get_portfolio
-from alphalib.utils.dateutils import month_from
-from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
-
 st.set_page_config(
-    page_title="Stock Selection",
+    page_title="Selection",
     layout="wide",
     initial_sidebar_state="expanded",
-    page_icon="🗹🗹",
+    page_icon="🗸",
 )
-
 LOGGER = get_logger(__name__)
 
 

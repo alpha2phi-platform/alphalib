@@ -54,7 +54,8 @@ def sentiment_score(symbol: str) -> (pd.DataFrame, float):
             "compound"
         ].mean()
         return df_score, round(mean_score, 4)
-    except:
+    except Exception:
+        LOGGER.info("Unable to retrieve sentiment score")
         return pd.DataFrame(), 0
 
 
