@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 import requests
 from scipy.optimize import LinearConstraint, minimize, minimize_scalar, rosen
+from alphalib.analysis.recommender import select_stocks
 
 
 def objective_function1(x):
@@ -59,3 +60,7 @@ class TestRecommender(unittest.TestCase):
     def test_requests(self):
         response = requests.get("https://reqres.in/api/users?page=2")
         print(response.text)
+
+    def test_select_stocks(self):
+        df_stocks = select_stocks()
+        print(df_stocks[df_stocks["symbol"].isin(["KEN", "OXLC"])].head(10).T)

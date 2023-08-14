@@ -37,14 +37,14 @@ def get_stock_stats() -> pd.DataFrame:
     return df.rename(columns=str.lower)
 
 
-def invoke_api(symbol, api_endpoint, func):
+def invoke_api(symbol, endpoint, func):
     MAX_RETRIES = 3
     for attempt in range(0, MAX_RETRIES):
         with closing(requests.Session()) as s:
             s.verify = False
             s.mount("https://", HTTPAdapter(max_retries=DEFAULT_HTTP_RETRY))
             r: Response = s.get(
-                api_endpoint,
+                endpoint,
                 verify=True,
                 headers=http_headers(),
                 timeout=DEFAULT_HTTP_TIMEOUT,
@@ -57,6 +57,6 @@ def invoke_api(symbol, api_endpoint, func):
                 else:
                     sleep(3)
                     continue
-            return func(r, symbol, api_endpoint)
+            return func(r, symbol, endpoint)
 
     return None
