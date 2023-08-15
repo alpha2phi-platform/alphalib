@@ -64,3 +64,11 @@ class TestRecommender(unittest.TestCase):
     def test_select_stocks(self):
         df_stocks = select_stocks()
         print(df_stocks[df_stocks["symbol"].isin(["KEN", "OXLC"])].head(10).T)
+
+    def test_ellipsis(self):
+        def foo(x=...):
+            return x
+
+        value = foo()
+        if value is Ellipsis:
+            print("yes")

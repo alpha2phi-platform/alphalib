@@ -72,7 +72,7 @@ def show_indicator(row: pd.Series) -> str:
     #     return derive_monitor_status(row)
     if row["current_price"] <= row["target_buy_price"] * 1.03:
         if row["current_price"] <= round(row["52_weeks_low"] * 1.01, 2):
-            return "BUYBUY"
+            return "BUY BUY"
         else:
             return "BUY"
     return derive_monitor_status(row)
