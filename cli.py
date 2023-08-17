@@ -8,7 +8,7 @@ from alphalib.dataset.finance_database import prepare_stock_dataset
 
 class AlphaLib:
     def stock_database(self) -> pd.DataFrame:
-        dataset = prepare_stock_dataset(save_to_excel=True)
+        dataset = prepare_stock_dataset(save=True)
         return dataset
 
     def stock_stats(self):
