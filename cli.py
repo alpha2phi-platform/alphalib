@@ -16,7 +16,7 @@ class AlphaLib:
         dataset.stock_stats()
 
     def stock_selection(self):
-        pass
+        ...
 
 
 if __name__ == "__main__":
