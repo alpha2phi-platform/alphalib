@@ -6,7 +6,10 @@ A financial investment app and library.
 
 - [x] Sentiment score with news sources.
 - [x] Technical analysis charts.
+- [ ] Generate stock dataset.
 - [ ] Automated stock selection
+- [ ] Algorithm for target buy price.
+- [ ] Screen to update target buy price.
 - [ ] Automated stock tracker.
 
 ## Financial Information

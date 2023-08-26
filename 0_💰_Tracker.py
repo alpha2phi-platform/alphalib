@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-from streamlit.elements.data_editor import EditableData
+from streamlit.elements.widgets.data_editor import EditableData
 from streamlit.logger import get_logger
 
 from alphalib.tracker import get_portfolio, save_portfolio, refresh_porfolio
@@ -78,19 +78,19 @@ def content():
             with col2:
                 if st.form_submit_button("Save", use_container_width=True):
                     save()
-        with st.container():
-            data = st.data_editor(
-                portfolio,
-                num_rows="dynamic",
-                use_container_width=True,
-                column_config={
-                    "nasdaq_url": st.column_config.LinkColumn(),
-                    "yahoo_finance_url": st.column_config.LinkColumn(),
-                },
-                height=600,
-                key="portfolio_editor",
-            )
-            st.session_state.portfolio = data
+    with st.container():
+        data = st.data_editor(
+            portfolio,
+            num_rows="dynamic",
+            use_container_width=True,
+            column_config={
+                "nasdaq_url": st.column_config.LinkColumn(),
+                "yahoo_finance_url": st.column_config.LinkColumn(),
+            },
+            height=600,
+            key="portfolio_editor",
+        )
+        st.session_state.portfolio = data
 
 
 def app():
