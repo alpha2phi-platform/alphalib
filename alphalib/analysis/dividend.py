@@ -45,9 +45,6 @@ def cleanse_and_transform(dividend_history: pd.DataFrame):
 def get_historical_prices(
     symbol: str, start_date: datetime, end_date: datetime
 ) -> pd.DataFrame:
-    logger.info(
-        f"Retrieving historical prices from {start_date} to {end_date} for {symbol}"
-    )
     ticker = Ticker(symbol)
     try:
         hist_prices = ticker.history(start=start_date, end=end_date)

@@ -3,10 +3,12 @@ alpha-vantage
 beautifulsoup4
 cssselect
 cufflinks
+featuretools[complete]
 ffn
 financedatabase
 fire
 fundamentalanalysis
+graphviz
 html5lib
 httpx
 hydra-core

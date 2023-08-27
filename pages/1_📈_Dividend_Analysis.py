@@ -59,6 +59,10 @@ def sentiment_score(symbol: str) -> (pd.DataFrame, float):
         return pd.DataFrame(), 0
 
 
+def update_porfolio(symbol: str) -> bool:
+    ...
+
+
 def content():
     st.title("Dividend Analysis")
     portfolio = get_portfolio()
@@ -68,8 +72,27 @@ def content():
             "Stock", portfolio["long_name"], label_visibility="hidden"
         )
         if option:
-            symbol = option.split("-")[0]
+            symbol: str = option.split("-")[0]
             analysis = dividend_analysis(symbol)
+
+            with st.form("dividend_form"):
+                col1, col2 = st.columns([2, 2])
+                with col1:
+                    current_fifty_two_week_low = portfolio[
+                        portfolio["symbol"].isin([symbol])
+                    ]["52_weeks_low"].iloc[0]
+                    st.text(f"Fifty Two Week Low: {current_fifty_two_week_low}")
+                    if st.form_submit_button("Update", use_container_width=True):
+                        update_porfolio(symbol)
+                with col2:
+                    current_target_buy_price = portfolio[
+                        portfolio["symbol"].isin([symbol])
+                    ]["target_buy_price"].iloc[0]
+                    input_target_buy_price = st.text_input(
+                        "Target Buy Price",
+                        placeholder="Enter Target Buy Price",
+                        value=current_target_buy_price,
+                    )
 
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
@@ -93,7 +116,9 @@ def content():
 
                 st.subheader("Dividend History")
                 st.dataframe(
-                    analysis.dividend_history, use_container_width=True, hide_index=True
+                    analysis.dividend_history,
+                    use_container_width=True,
+                    hide_index=True,
                 )
 
             with tab2:
