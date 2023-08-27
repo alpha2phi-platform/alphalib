@@ -7,7 +7,7 @@ from alphalib.analysis.recommender import (
     recommend_stocks_from_dataset,
     recommend_stocks_from_watchlist,
 )
-from alphalib.analysis.sentiment import sentiment_analysis
+from alphalib.analysis.sentiment import finwiz_score, yahoo_finance_score
 from alphalib.analysis.ta.momentum.mfi import plot_mfi
 from alphalib.analysis.ta.momentum.rsi import plot_rsi
 from alphalib.analysis.ta.trend.ewma import plot_ewma
@@ -18,6 +18,7 @@ from alphalib.analysis.ta.volatility.bb import plot_bollinger_bands
 from alphalib.analysis.ta.volume.emv import plot_emv, plot_emv2
 from alphalib.analysis.technical import plot_technical
 from alphalib.utils.dateutils import month_from
+from alphalib.analysis.piotroski import get_piotroski_score
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -39,18 +40,25 @@ class TestAnalysis(unittest.TestCase):
     def test_recommend_stocks_dataset(self):
         print(recommend_stocks_from_dataset())
 
-    def test_sentiment(self):
-        df = sentiment_analysis("lnd")
-        past_3_months = month_from(-6)
-        print(df[df["date"] >= past_3_months.date()].head(1000))
-        mean_score = df[df["date"] >= past_3_months.date()]["compound"].mean()
+    def test_sentiment_finwiz_score(self):
+        df = finwiz_score("afsia")
+        past_x_months = month_from(-4)
+        print(df[df["date"] >= past_x_months.date()].head(1000))
+        mean_score = df[df["date"] >= past_x_months.date()]["compound"].mean()
         print(f"\n\nMean score - {mean_score}")
+
+    def test_sentiment_yahoo_finance_score(self):
+        # TODO:
+        df = yahoo_finance_score("sblk")
+
+    def test_piostroski_score(self):
+        print(get_piotroski_score("aapl"))
 
     def test_ta_bb(self):
         plot_bollinger_bands("googl")
 
     def test_ta_ichimoku(self):
-        plot_ichimoku("googl")
+        plot_ichimoku("ken")
 
     def test_ta_rsi(self):
         plot_rsi("googl")

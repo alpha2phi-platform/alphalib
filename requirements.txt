@@ -1,4 +1,5 @@
 PyPortfolioOpt
+alpha-vantage
 beautifulsoup4
 cssselect
 cufflinks
