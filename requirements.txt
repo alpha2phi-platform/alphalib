@@ -32,6 +32,7 @@ rich
 scipy
 selectolax
 selenium
+tsfresh
 vaex
 webdriver-manager
 yahooquery

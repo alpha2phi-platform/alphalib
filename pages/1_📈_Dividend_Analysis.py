@@ -74,25 +74,35 @@ def content():
         if option:
             symbol: str = option.split("-")[0]
             analysis = dividend_analysis(symbol)
-
+            selected_stock = portfolio[portfolio["symbol"].isin([symbol])]
             with st.form("dividend_form"):
                 col1, col2 = st.columns([2, 2])
                 with col1:
-                    current_fifty_two_week_low = portfolio[
-                        portfolio["symbol"].isin([symbol])
-                    ]["52_weeks_low"].iloc[0]
-                    st.text(f"Fifty Two Week Low: {current_fifty_two_week_low}")
-                    if st.form_submit_button("Update", use_container_width=True):
-                        update_porfolio(symbol)
-                with col2:
-                    current_target_buy_price = portfolio[
-                        portfolio["symbol"].isin([symbol])
-                    ]["target_buy_price"].iloc[0]
+                    unit = selected_stock["unit"].iloc[0]
+                    input_unit = st.text_input(
+                        "Unit",
+                        placeholder="Enter Unit",
+                        value=unit,
+                    )
+                    target_buy_price = selected_stock["target_buy_price"].iloc[0]
                     input_target_buy_price = st.text_input(
                         "Target Buy Price",
                         placeholder="Enter Target Buy Price",
-                        value=current_target_buy_price,
+                        value=target_buy_price,
                     )
+                    if st.form_submit_button("Update", use_container_width=True):
+                        update_porfolio(symbol)
+                with col2:
+                    buy_price = selected_stock["buy_price"].iloc[0]
+                    input_buy_price = st.text_input(
+                        "Buy Price",
+                        placeholder="Enter Buy Price",
+                        value=buy_price,
+                    )
+                    current_price = selected_stock["current_price"].iloc[0]
+                    st.text(f"Current Price: {current_price}")
+                    current_fifty_two_week_low = selected_stock["52_weeks_low"].iloc[0]
+                    st.text(f"Fifty Two Week Low: {current_fifty_two_week_low}")
 
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
