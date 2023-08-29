@@ -4,7 +4,7 @@ from streamlit.logger import get_logger
 
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
-from alphalib.tracker import load_portfolio
+from alphalib.tracker import load_portfolio, save_portfolio
 from alphalib.utils.dateutils import month_from
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
@@ -59,8 +59,23 @@ def sentiment_score(symbol: str) -> (pd.DataFrame, float):
         return pd.DataFrame(), 0
 
 
-def update_porfolio(symbol: str) -> bool:
-    ...
+def update_porfolio(
+    portfolio: pd.DataFrame,
+    symbol: str,
+    input_unit: str,
+    input_target_buy_price: str,
+    input_buy_price: str,
+) -> bool:
+    try:
+        portfolio.loc[portfolio["symbol"] == symbol, "unit"] = input_unit
+        portfolio.loc[
+            portfolio["symbol"] == symbol, "target_buy_price"
+        ] = input_target_buy_price
+        portfolio.loc[portfolio["symbol"] == symbol, "buy_price"] = input_buy_price
+        save_portfolio(portfolio)
+        return True
+    except Exception:
+        return False
 
 
 def content():
@@ -90,19 +105,28 @@ def content():
                         placeholder="Enter Target Buy Price",
                         value=target_buy_price,
                     )
-                    if st.form_submit_button("Update", use_container_width=True):
-                        update_porfolio(symbol)
-                with col2:
                     buy_price = selected_stock["buy_price"].iloc[0]
                     input_buy_price = st.text_input(
                         "Buy Price",
                         placeholder="Enter Buy Price",
                         value=buy_price,
                     )
+                with col2:
                     current_price = selected_stock["current_price"].iloc[0]
                     st.text(f"Current Price: {current_price}")
                     current_fifty_two_week_low = selected_stock["52_weeks_low"].iloc[0]
                     st.text(f"Fifty Two Week Low: {current_fifty_two_week_low}")
+                    if st.form_submit_button("Update", use_container_width=True):
+                        if update_porfolio(
+                            portfolio,
+                            symbol,
+                            input_unit,
+                            input_target_buy_price,
+                            input_buy_price,
+                        ):
+                            st.write(f"Updated the portfolio for {symbol}")
+                        else:
+                            st.write(f"Unable to update the portfolio for {symbol}")
 
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
