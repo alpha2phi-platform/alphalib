@@ -4,7 +4,7 @@ from streamlit.logger import get_logger
 
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
-from alphalib.tracker import get_portfolio
+from alphalib.tracker import load_portfolio
 from alphalib.utils.dateutils import month_from
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
@@ -65,7 +65,7 @@ def update_porfolio(symbol: str) -> bool:
 
 def content():
     st.title("Dividend Analysis")
-    portfolio = get_portfolio()
+    portfolio = load_portfolio()
     portfolio["long_name"] = portfolio["symbol"] + "-" + portfolio["name"]
     with st.container():
         option = st.selectbox(

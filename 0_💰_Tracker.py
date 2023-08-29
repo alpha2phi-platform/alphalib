@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-from streamlit.elements.widgets.data_editor import EditableData
 from streamlit.logger import get_logger
 
-from alphalib.tracker import get_portfolio, save_portfolio, refresh_porfolio
+from alphalib.tracker import load_portfolio, save_portfolio, refresh_porfolio
 
 
 st.set_page_config(
@@ -57,13 +56,6 @@ def refresh():
     st.info("Refreshing portfolio...")
     refresh_porfolio(st.session_state.portfolio)
     st.experimental_rerun()
-
-
-def load_portfolio() -> EditableData | pd.DataFrame:
-    if "portfolio" in st.session_state:
-        return st.session_state.portfolio
-    else:
-        return get_portfolio()
 
 
 def content():

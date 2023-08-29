@@ -2,6 +2,8 @@ import asyncio
 
 import numpy as np
 import pandas as pd
+import streamlit as st
+from streamlit.elements.widgets.data_editor import EditableData
 from streamlit.logger import get_logger
 from yahooquery import Ticker
 
@@ -96,8 +98,11 @@ def calculate_price_target(portfolio: pd.DataFrame, stats: pd.DataFrame):
     )
 
 
-def get_portfolio() -> pd.DataFrame:
-    return pd.read_excel(PORTFOLIO_FILE)
+def load_portfolio() -> EditableData | pd.DataFrame:
+    if "portfolio" in st.session_state:
+        return st.session_state.portfolio
+    else:
+        return pd.read_excel(PORTFOLIO_FILE)
 
 
 def refresh_porfolio(portfolio):
