@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 import numpy as np
 import pandas as pd
@@ -26,8 +27,11 @@ def create_missing_cols(df, target_cols):
 def get_stocks(symbols) -> pd.DataFrame:
     df_symbols = pd.DataFrame()
     fld_list = []
+    counter = 0
     for symbol in symbols:
+        LOGGER.info(f"Processing {symbol}")
         result: dict = {}
+        counter = counter + 1
         ticker = Ticker(symbol)
         key_stats = ticker.key_stats
         result = join_dicts(result, key_stats, symbol)
@@ -48,6 +52,9 @@ def get_stocks(symbols) -> pd.DataFrame:
             create_missing_cols(df_symbol, fld_list)
             df_symbols = pd.concat([df_symbols, df_symbol[fld_list]], ignore_index=True)
         ticker.session.close()
+        if counter % 40 == 0:
+            LOGGER.info("Processed {} stocks".format(counter))
+            time.sleep(5)
     return df_symbols
 
 
