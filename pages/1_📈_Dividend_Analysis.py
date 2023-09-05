@@ -83,38 +83,41 @@ def content():
     portfolio = load_portfolio()
     portfolio["long_name"] = portfolio["symbol"] + "-" + portfolio["name"]
     with st.container():
-        option = st.selectbox(
+        option_stock = st.selectbox(
             "Stock", portfolio["long_name"], label_visibility="hidden"
         )
-        if option:
-            symbol: str = option.split("-")[0]
+        if option_stock:
+            symbol: str = option_stock.split("-")[0]
             analysis = dividend_analysis(symbol)
-            selected_stock = portfolio[portfolio["symbol"].isin([symbol])]
+            stock_details = portfolio[portfolio["symbol"].isin([symbol])]
+
+            # TODO: calculate target buy price from analysis result
+
             with st.form("dividend_form"):
                 col1, col2 = st.columns([2, 2])
                 with col1:
-                    unit = selected_stock["unit"].iloc[0]
+                    unit = stock_details["unit"].iloc[0]
                     input_unit = st.text_input(
                         "Unit",
                         placeholder="Enter Unit",
                         value=unit,
                     )
-                    target_buy_price = selected_stock["target_buy_price"].iloc[0]
+                    target_buy_price = stock_details["target_buy_price"].iloc[0]
                     input_target_buy_price = st.text_input(
                         "Target Buy Price",
                         placeholder="Enter Target Buy Price",
                         value=target_buy_price,
                     )
-                    buy_price = selected_stock["buy_price"].iloc[0]
+                    buy_price = stock_details["buy_price"].iloc[0]
                     input_buy_price = st.text_input(
                         "Buy Price",
                         placeholder="Enter Buy Price",
                         value=buy_price,
                     )
                 with col2:
-                    current_price = selected_stock["current_price"].iloc[0]
+                    current_price = stock_details["current_price"].iloc[0]
                     st.text(f"Current Price: {current_price}")
-                    current_fifty_two_week_low = selected_stock["52_weeks_low"].iloc[0]
+                    current_fifty_two_week_low = stock_details["52_weeks_low"].iloc[0]
                     st.text(f"Fifty Two Week Low: {current_fifty_two_week_low}")
                     if st.form_submit_button("Update", use_container_width=True):
                         if update_porfolio(
