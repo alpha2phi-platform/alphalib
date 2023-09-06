@@ -73,7 +73,7 @@ def finwiz_score(symbol: str) -> pd.DataFrame:
             scores_df, rsuffix="_right"
         )
         parsed_and_scored_news["date"] = pd.to_datetime(
-            parsed_and_scored_news.date, format="%b-%d-%y"
+            parsed_and_scored_news.date, format="%b-%d-%y", errors="coerce"
         ).dt.date
 
         return parsed_and_scored_news
