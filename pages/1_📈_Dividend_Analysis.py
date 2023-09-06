@@ -138,7 +138,7 @@ def content():
                 ["Dividend Analysis", "Sentiment Analysis", "Technical Analysis"]
             )
             with tab1:
-                col1, col2 = st.columns([2, 4])
+                col1, col2 = st.columns([3, 7])
                 with col1:
                     st.text(f"Dividiend Yield: {analysis.dividend_yield_pct}")
                     st.text(f"Annual Dividend: {analysis.annual_dividend}")

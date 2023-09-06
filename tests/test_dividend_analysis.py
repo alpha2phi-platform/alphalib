@@ -15,7 +15,7 @@ DIVIDEND_HISTORY_YEARS = 8
 
 
 class TestDividendAnalysis(TestCase):
-    symbol = "EFC"
+    symbol = "LEG"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
