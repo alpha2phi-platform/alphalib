@@ -15,7 +15,7 @@ DIVIDEND_HISTORY_YEARS = 8
 
 
 class TestDividendAnalysis(TestCase):
-    symbol = "LEG"
+    symbol = "oxlc"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
@@ -24,3 +24,4 @@ class TestDividendAnalysis(TestCase):
     def test_dividend_history_analysis(self):
         analysis = dividend_analysis(self.symbol)
         print(analysis)
+        print(analysis.target_buy_price)

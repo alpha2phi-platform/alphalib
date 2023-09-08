@@ -17,6 +17,10 @@ class DividendAnalysis(Nasdaq):
     interval: IntervalType = "Quarterly"
     result: pd.DataFrame = None
 
+    @property
+    def target_buy_price(self):
+        return self.result["min"].head(3).min()
+
 
 def derive_dividend_interval(interval: float) -> IntervalType:
     if interval <= 45:

@@ -1,6 +1,8 @@
 import streamlit as st
 from streamlit.logger import get_logger
 
+from alphalib.tracker import load_portfolio
+
 st.set_page_config(
     page_title="Selection",
     layout="wide",
@@ -40,6 +42,8 @@ def sidebar():
 
 def content():
     st.title("Stock Selection")
+    portfolio = load_portfolio()
+    portfolio["long_name"] = portfolio["symbol"] + "-" + portfolio["name"]
     with st.container():
         st.write("Stock Selection")
 

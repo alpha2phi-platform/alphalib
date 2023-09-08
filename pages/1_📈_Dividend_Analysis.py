@@ -90,9 +90,6 @@ def content():
             symbol: str = option_stock.split("-")[0]
             analysis = dividend_analysis(symbol)
             stock_details = portfolio[portfolio["symbol"].isin([symbol])]
-
-            # TODO: calculate target buy price from analysis result
-
             with st.form("dividend_form"):
                 col1, col2 = st.columns([2, 2])
                 with col1:

@@ -303,3 +303,11 @@ Available fields
 - Pyalgotrade
 - QuantRocket
 - Tradelogics
+
+## Months
+
+May - ?
+June - Buy?
+July - Sell
+August - Buy
+Sept - ?
