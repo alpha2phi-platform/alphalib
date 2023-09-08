@@ -15,7 +15,7 @@ DIVIDEND_HISTORY_YEARS = 8
 
 
 class TestDividendAnalysis(TestCase):
-    symbol = "oxlc"
+    symbol = "GOGL"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
@@ -25,3 +25,19 @@ class TestDividendAnalysis(TestCase):
         analysis = dividend_analysis(self.symbol)
         print(analysis)
         print(analysis.target_buy_price)
+
+    def test_dividend_analysis(self):
+        symbols = ["amzn", "goog"]
+        new_target_prices = [100, 200]
+        df = pd.DataFrame.from_dict(
+            {"symbol": symbols, "target_buy_price": new_target_prices}
+        )
+        # print(df.head())
+
+        stocks = [
+            {"symbol": "ABBV", "target_buy_price": 132.51},
+            {"symbol": "GOGL", "target_buy_price": 6.9},
+            {"symbol": "ORC", "target_buy_price": 9.22},
+        ]
+        df = pd.DataFrame(stocks)
+        print(df.head())

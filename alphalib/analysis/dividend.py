@@ -18,8 +18,11 @@ class DividendAnalysis(Nasdaq):
     result: pd.DataFrame = None
 
     @property
-    def target_buy_price(self):
-        return self.result["min"].head(3).min()
+    def target_buy_price(self) -> float:
+        if self.result is None:
+            return -1
+        else:
+            return self.result["min"].head(4).min()
 
 
 def derive_dividend_interval(interval: float) -> IntervalType:
@@ -127,25 +130,31 @@ def analyze_historical_prices(symbol: str, intervals: pd.DataFrame) -> pd.DataFr
 
 
 def dividend_analysis(symbol: str) -> DividendAnalysis:
-    # Get dividend history
-    stock_dividend_info: Nasdaq = get_dividend_info(symbol)
+    try:
+        # Get dividend history
+        stock_dividend_info: Nasdaq = get_dividend_info(symbol)
 
-    # Create analysis
-    analysis: DividendAnalysis = DividendAnalysis(**vars(stock_dividend_info))
+        # Create analysis
+        analysis: DividendAnalysis = DividendAnalysis(**vars(stock_dividend_info))
 
-    if analysis.dividend_history.empty:
+        if analysis.dividend_history.empty:
+            return analysis
+
+        # Transform the dividend history
+        cleanse_and_transform(analysis.dividend_history)
+
+        # Calclucate the dividend intervals
+        intervals, mean_interval = calculate_dividend_interval(
+            analysis.dividend_history
+        )
+
+        # Derive the interval
+        analysis.interval = derive_dividend_interval(mean_interval)
+
+        # Analyze the dividend history
+        analysis.result = analyze_historical_prices(symbol, intervals)
+
         return analysis
-
-    # Transform the dividend history
-    cleanse_and_transform(analysis.dividend_history)
-
-    # Calclucate the dividend intervals
-    intervals, mean_interval = calculate_dividend_interval(analysis.dividend_history)
-
-    # Derive the interval
-    analysis.interval = derive_dividend_interval(mean_interval)
-
-    # Analyze the dividend history
-    analysis.result = analyze_historical_prices(symbol, intervals)
-
-    return analysis
+    except Exception as e:
+        logger.error(f"Unable to analyze dividend history for {symbol}", e)
+        return None
