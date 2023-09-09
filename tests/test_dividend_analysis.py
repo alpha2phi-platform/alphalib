@@ -1,5 +1,6 @@
 from unittest import TestCase
 import pandas as pd
+import numpy as np
 
 
 from alphalib.data_sources.nasdaq import get_dividend_info, Nasdaq
@@ -27,11 +28,11 @@ class TestDividendAnalysis(TestCase):
         print(analysis.target_buy_price)
 
     def test_dividend_analysis(self):
-        symbols = ["amzn", "goog"]
-        new_target_prices = [100, 200]
-        df = pd.DataFrame.from_dict(
-            {"symbol": symbols, "target_buy_price": new_target_prices}
-        )
+        # symbols = ["amzn", "goog"]
+        # new_target_prices = [100, 200]
+        # df = pd.DataFrame.from_dict(
+        #     {"symbol": symbols, "target_buy_price": new_target_prices}
+        # )
         # print(df.head())
 
         stocks = [
@@ -40,4 +41,19 @@ class TestDividendAnalysis(TestCase):
             {"symbol": "ORC", "target_buy_price": 9.22},
         ]
         df = pd.DataFrame(stocks)
+        print(df.head())
+
+        new_stocks = [
+            {"symbol": "ABBV", "target_buy_price": 1},
+            {"symbol": "GOGL", "target_buy_price": -1},
+            {"symbol": "ORC", "target_buy_price": 100},
+        ]
+        df_new = pd.DataFrame(new_stocks)
+        print(df_new.head())
+
+        df["target_buy_price"] = np.where(
+            df_new["target_buy_price"] > 0,
+            df_new["target_buy_price"],
+            df["target_buy_price"],
+        )
         print(df.head())
