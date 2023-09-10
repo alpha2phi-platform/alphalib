@@ -9,7 +9,7 @@ from alphalib.utils.dateutils import month_from
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
 st.set_page_config(
-    page_title="Dividend Analysis",
+    page_title="Stock Analysis",
     layout="wide",
     initial_sidebar_state="expanded",
     page_icon="📈",
@@ -79,7 +79,7 @@ def update_porfolio(
 
 
 def content():
-    st.title("Dividend Analysis")
+    st.title("Stock Analysis")
     portfolio = load_portfolio()
     portfolio["long_name"] = portfolio["symbol"] + "-" + portfolio["name"]
     with st.container():
@@ -131,8 +131,8 @@ def content():
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
 
-            tab1, tab2, tab3 = st.tabs(
-                ["Dividend Analysis", "Sentiment Analysis", "Technical Analysis"]
+            tab1, tab2, tab3, tab4 = st.tabs(
+                ["Dividend", "Sentiment", "Technical", "Machine Learning"]
             )
             with tab1:
                 col1, col2 = st.columns([3, 7])
@@ -167,6 +167,11 @@ def content():
                 st.plotly_chart(
                     plot_ichimoku(symbol, show=False).to_dict(),
                     use_container_width=True,
+                )
+
+            with tab4:
+                st.text(
+                    "Machine learning - timeseries using Poetry with seasonality - TODO"
                 )
 
 

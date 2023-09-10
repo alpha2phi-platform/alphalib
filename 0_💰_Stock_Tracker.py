@@ -1,13 +1,11 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+from alphalib.tracker import load_portfolio, refresh_porfolio, save_portfolio
 from streamlit.logger import get_logger
 
-from alphalib.tracker import load_portfolio, save_portfolio, refresh_porfolio
-
-
 st.set_page_config(
-    page_title="Tracker",
+    page_title="Stock Tracker",
     layout="wide",
     initial_sidebar_state="expanded",
     page_icon="💰",
@@ -59,7 +57,7 @@ def refresh():
 
 
 def content():
-    st.title("Tracker")
+    st.title("Stock Tracker")
     portfolio = load_portfolio()
     with st.form("portfolio_form"):
         with st.container():
