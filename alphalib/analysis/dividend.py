@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from typing import Literal, Tuple
 
 import pandas as pd
-from yahooquery import Ticker
 
 from alphalib.data_sources.nasdaq import Nasdaq, get_dividend_info
 from alphalib.utils.logging import logger
+from alphalib.analysis import get_historical_prices
 
 
 IntervalType = Literal["Monthly", "Quarterly", "Annually"]
@@ -47,26 +47,6 @@ def cleanse_and_transform(dividend_history: pd.DataFrame):
     dividend_history["exOrEffDate"] = pd.to_datetime(
         dividend_history["exOrEffDate"], format="%m/%d/%Y", errors="coerce"
     )
-
-
-def get_historical_prices(
-    symbol: str, start_date: datetime, end_date: datetime
-) -> pd.DataFrame:
-    ticker = Ticker(symbol)
-    try:
-        hist_prices = ticker.history(start=start_date, end=end_date)
-        if hist_prices.empty:
-            logger.error(f"Unable to retrieve historical prices for {symbol}")
-            return pd.DataFrame()
-        hist_prices.reset_index(inplace=True)
-        hist_prices["date"] = pd.to_datetime(
-            hist_prices["date"], format="%Y-%m-%d", utc=True
-        )
-        return hist_prices
-    except Exception:
-        return pd.DataFrame()
-    finally:
-        ticker.session.close()
 
 
 def analyze_prices_over_dividend_periods(

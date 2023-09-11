@@ -1,10 +1,12 @@
+from datetime import datetime, timedelta
 from unittest import TestCase
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
-
-from alphalib.data_sources.nasdaq import get_dividend_info, Nasdaq
+from alphalib.analysis import get_historical_prices
 from alphalib.analysis.dividend import dividend_analysis
+from alphalib.data_sources.nasdaq import Nasdaq, get_dividend_info
 
 # For testing
 pd.set_option("display.max_rows", None)
@@ -15,8 +17,8 @@ pd.set_option("display.width", None)
 DIVIDEND_HISTORY_YEARS = 8
 
 
-class TestDividendAnalysis(TestCase):
-    symbol = "GOGL"
+class TestStockAnalysis(TestCase):
+    symbol = "leg"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
@@ -57,3 +59,11 @@ class TestDividendAnalysis(TestCase):
             df["target_buy_price"],
         )
         print(df.head())
+
+    def test_get_historical_prices(self):
+        df_prices = get_historical_prices(
+            self.symbol, datetime.now() - timedelta(days=365 * 3), datetime.now()
+        )
+        df_prices["date"] = df_prices["date"].dt.tz_localize(None)
+        print(df_prices.tail(10))
+        df_prices.to_excel(f"data/{self.symbol}_historical_prices.xlsx", index=False)

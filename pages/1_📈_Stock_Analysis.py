@@ -171,7 +171,7 @@ def content():
 
             with tab4:
                 st.text(
-                    "Machine learning - timeseries using Poetry with seasonality - TODO"
+                    "Machine learning - timeseries using Prophet with seasonality - TODO"
                 )
 
 

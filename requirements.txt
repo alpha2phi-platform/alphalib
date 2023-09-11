@@ -22,6 +22,7 @@ openpyxl
 pandas
 pandas-datareader
 plotly
+prophet
 prompt_toolkit
 pydantic
 python-dateutil
