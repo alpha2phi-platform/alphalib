@@ -62,7 +62,7 @@ class TestStockAnalysis(TestCase):
             self.symbol, datetime.now() - timedelta(days=365 * 3), datetime.now()
         )
         df_prices.to_excel(f"data/{self.symbol}_historical_prices.xlsx", index=False)
-        print(df_prices.tail(10))
+        print(df_prices.tail(3))
 
     def test_time_seris_analysis(self):
         df_prices, _ = predict_time_series(self.symbol)
