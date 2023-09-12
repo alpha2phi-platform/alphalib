@@ -1,12 +1,15 @@
+from datetime import datetime, timedelta
+
 import pandas as pd
 import streamlit as st
 from streamlit.logger import get_logger
 
+from alphalib.analysis import get_historical_prices
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
+from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 from alphalib.tracker import load_portfolio, save_portfolio
 from alphalib.utils.dateutils import month_from
-from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
 
 st.set_page_config(
     page_title="Stock Analysis",
@@ -78,6 +81,13 @@ def update_porfolio(
         return False
 
 
+def get_recent_prices(symbol) -> pd.DataFrame:
+    df_prices = get_historical_prices(
+        symbol, datetime.now() - timedelta(days=30), datetime.now()
+    )
+    return df_prices
+
+
 def content():
     st.title("Stock Analysis")
     portfolio = load_portfolio()
@@ -131,8 +141,14 @@ def content():
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
 
-            tab1, tab2, tab3, tab4 = st.tabs(
-                ["Dividend", "Sentiment", "Technical", "Machine Learning"]
+            tab1, tab2, tab3, tab4, tab5 = st.tabs(
+                [
+                    "Dividend",
+                    "Historical Prices",
+                    "Sentiment",
+                    "Technical",
+                    "Machine Learning",
+                ]
             )
             with tab1:
                 col1, col2 = st.columns([3, 7])
@@ -156,20 +172,26 @@ def content():
                 )
 
             with tab2:
+                st.subheader("Historical Prices")
+                st.dataframe(
+                    get_recent_prices(symbol), use_container_width=True, hide_index=True
+                )
+
+            with tab3:
                 st.subheader("Sentiment Score")
                 st.text(f"Sentiment Score: {sentiment_mean_score}")
                 st.dataframe(
                     sentiment_analysis, use_container_width=True, hide_index=True
                 )
 
-            with tab3:
+            with tab4:
                 st.subheader("Technical Analysis - Ichimoku")
                 st.plotly_chart(
                     plot_ichimoku(symbol, show=False).to_dict(),
                     use_container_width=True,
                 )
 
-            with tab4:
+            with tab5:
                 st.text(
                     "Machine learning - timeseries using Prophet with seasonality - TODO"
                 )

@@ -16,9 +16,7 @@ def get_historical_prices(
             logger.error(f"Unable to retrieve historical prices for {symbol}")
             return pd.DataFrame()
         hist_prices.reset_index(inplace=True)
-        hist_prices["date"] = pd.to_datetime(
-            hist_prices["date"], format="%Y-%m-%d", utc=True
-        )
+        hist_prices["date"] = pd.to_datetime(hist_prices["date"], format="%Y-%m-%d")
         return hist_prices
     except Exception:
         return pd.DataFrame()

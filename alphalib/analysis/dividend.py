@@ -58,8 +58,8 @@ def analyze_prices_over_dividend_periods(
     results = []
     for interval in date_intervals:
         if len(interval) == 2:
-            end_date = pd.to_datetime(interval[0] - timedelta(days=1), utc=True)
-            start_date = pd.to_datetime(interval[1], utc=True)
+            end_date = pd.to_datetime(interval[0] - timedelta(days=1))
+            start_date = pd.to_datetime(interval[1])
             prices_between_dividend_dates = hist_prices[
                 hist_prices["date"].between(start_date, end_date)
             ]
