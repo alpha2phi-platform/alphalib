@@ -85,6 +85,7 @@ def get_recent_prices(symbol) -> pd.DataFrame:
     df_prices = get_historical_prices(
         symbol, datetime.now() - timedelta(days=30), datetime.now()
     )
+    df_prices["date"] = df_prices["date"].dt.date
     return df_prices
 
 
@@ -192,9 +193,10 @@ def content():
                 )
 
             with tab5:
-                st.text(
-                    "Machine learning - timeseries using Prophet with seasonality - TODO"
-                )
+                st.subheader("Predicted Next 30 Days Prices")
+                with st.form("prediction_form"):
+                    if st.form_submit_button("Predict", use_container_width=False):
+                        ...
 
 
 def app():

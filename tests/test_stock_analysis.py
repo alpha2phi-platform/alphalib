@@ -61,6 +61,7 @@ class TestStockAnalysis(TestCase):
         df_prices = get_historical_prices(
             self.symbol, datetime.now() - timedelta(days=365 * 3), datetime.now()
         )
+        df_prices["date"] = df_prices["date"].dt.date
         df_prices.to_excel(f"data/{self.symbol}_historical_prices.xlsx", index=False)
         print(df_prices.tail(3))
 
