@@ -5,6 +5,7 @@ import streamlit as st
 from streamlit.logger import get_logger
 
 from alphalib.analysis import get_historical_prices
+from alphalib.analysis.ml.time_series import prophet_predict
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
@@ -145,10 +146,10 @@ def content():
             tab1, tab2, tab3, tab4, tab5 = st.tabs(
                 [
                     "Dividend",
-                    "Historical Prices",
+                    "Historical",
                     "Sentiment",
                     "Technical",
-                    "Machine Learning",
+                    "Prediction",
                 ]
             )
             with tab1:
@@ -193,10 +194,17 @@ def content():
                 )
 
             with tab5:
-                st.subheader("Predicted Next 30 Days Prices")
+                st.subheader("Predict Next 30 Days Prices")
                 with st.form("prediction_form"):
                     if st.form_submit_button("Predict", use_container_width=False):
-                        ...
+                        df_prices, _ = prophet_predict(symbol)
+                        st.dataframe(
+                            df_prices[["ds", "yhat", "yhat_lower", "yhat_upper"]].tail(
+                                50
+                            ),
+                            use_container_width=True,
+                            hide_index=True,
+                        )
 
 
 def app():

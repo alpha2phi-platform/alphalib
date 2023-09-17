@@ -15,7 +15,7 @@ pd.set_option("display.width", None)
 
 
 class TestStockAnalysis(TestCase):
-    symbol = "leg"
+    symbol = "abbv"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
@@ -63,8 +63,8 @@ class TestStockAnalysis(TestCase):
         )
         df_prices["date"] = df_prices["date"].dt.date
         df_prices.to_excel(f"data/{self.symbol}_historical_prices.xlsx", index=False)
-        print(df_prices.tail(3))
+        print(df_prices.tail(50))
 
     def test_time_seris_analysis(self):
         df_prices, _ = predict_time_series(self.symbol)
-        print(df_prices[["ds", "yhat", "yhat_lower", "yhat_upper"]].tail(30))
+        print(df_prices[["ds", "trend", "yhat", "yhat_lower", "yhat_upper"]].tail(50))

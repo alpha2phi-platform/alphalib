@@ -306,8 +306,8 @@ Available fields
 
 ## Months
 
-May - ?
+May - Buy/Sell
 June - Buy?
 July - Sell
 August - Buy
-Sept - ?
+Sept - Buy
