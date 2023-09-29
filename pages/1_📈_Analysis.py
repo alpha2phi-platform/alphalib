@@ -4,7 +4,13 @@ import pandas as pd
 import streamlit as st
 from streamlit.logger import get_logger
 
-from alphalib.analysis import get_historical_prices
+from alphalib.analysis import (
+    get_historical_prices,
+    get_earning_history,
+    get_institution_ownership,
+    get_fund_ownership,
+    get_recommendation_trend,
+)
 from alphalib.analysis.ml.time_series import prophet_predict
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
@@ -149,7 +155,7 @@ def content():
                     "Historical",
                     "Sentiment",
                     "Technical",
-                    "Prediction",
+                    "Holders",
                 ]
             )
             with tab1:
@@ -178,6 +184,12 @@ def content():
                 st.dataframe(
                     get_recent_prices(symbol), use_container_width=True, hide_index=True
                 )
+                st.subheader("Earning History")
+                st.dataframe(
+                    get_earning_history(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
             with tab3:
                 st.subheader("Sentiment Score")
@@ -194,17 +206,24 @@ def content():
                 )
 
             with tab5:
-                st.subheader("Predict Next 30 Days Prices")
-                with st.form("prediction_form"):
-                    if st.form_submit_button("Predict", use_container_width=False):
-                        df_prices, _ = prophet_predict(symbol)
-                        st.dataframe(
-                            df_prices[["ds", "yhat", "yhat_lower", "yhat_upper"]].tail(
-                                50
-                            ),
-                            use_container_width=True,
-                            hide_index=True,
-                        )
+                st.subheader("Fund Ownership")
+                st.dataframe(
+                    get_fund_ownership(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.subheader("Institution Ownership")
+                st.dataframe(
+                    get_institution_ownership(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.subheader("Recommendation Trend")
+                st.dataframe(
+                    get_recommendation_trend(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
 
 def app():

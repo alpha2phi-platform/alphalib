@@ -30,16 +30,17 @@ def process_dividend_info(r: Response, symbol: str, api_endpoint: str) -> Nasdaq
     nasdaq.nasdaq_url = api_endpoint
     results = []
     json: dict = r.json()
-    nasdaq.ex_dividend_date = json["data"]["exDividendDate"]
-    nasdaq.dividend_yield_pct = json["data"]["yield"]
-    nasdaq.pe_ratio = json["data"]["payoutRatio"]
-    nasdaq.annual_dividend = json["data"]["annualizedDividend"]
-    dividends = json["data"]["dividends"]["rows"]
-    if dividends:
-        for row in dividends:
-            results.append(row)
-    if len(results) > 0:
-        nasdaq.dividend_history = pd.json_normalize(results)
+    if json["data"]:
+        nasdaq.ex_dividend_date = json["data"]["exDividendDate"]
+        nasdaq.dividend_yield_pct = json["data"]["yield"]
+        nasdaq.pe_ratio = json["data"]["payoutRatio"]
+        nasdaq.annual_dividend = json["data"]["annualizedDividend"]
+        dividends = json["data"]["dividends"]["rows"]
+        if dividends:
+            for row in dividends:
+                results.append(row)
+        if len(results) > 0:
+            nasdaq.dividend_history = pd.json_normalize(results)
     return nasdaq
 
 

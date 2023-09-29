@@ -25,3 +25,51 @@ def get_historical_prices(
         return pd.DataFrame()
     finally:
         ticker.session.close()
+
+
+def get_earning_history(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        earning_history = ticker.earning_history
+        return earning_history
+    except Exception as e:
+        logger.error(f"Unable to retrieve earning history for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_fund_ownership(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        fund_ownership = ticker.fund_ownership
+        return fund_ownership
+    except Exception as e:
+        logger.error(f"Unable to retrieve ownership for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_institution_ownership(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        institution_ownership = ticker.institution_ownership
+        return institution_ownership
+    except Exception as e:
+        logger.error(f"Unable to retrieve institution ownership for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_recommendation_trend(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        recommendation_trend = ticker.recommendation_trend
+        return recommendation_trend
+    except Exception as e:
+        logger.error(f"Unable to retrieve recommendation trend for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()

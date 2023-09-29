@@ -306,8 +306,20 @@ Available fields
 
 ## Months
 
-May - Buy/Sell
-June - Buy?
+May - Buy
+June - Sell
 July - Sell
 August - Buy
-Sept - Buy
+Sept - Buy (worst month)
+
+## Lotto
+
+For a time series dataset with the following fields
+
+- date
+- lucky_no
+
+Write a python script that
+
+- generate more features from the dataset
+- predict the future lucky number

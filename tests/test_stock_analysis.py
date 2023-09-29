@@ -3,9 +3,13 @@ from unittest import TestCase
 
 import numpy as np
 import pandas as pd
-from alphalib.analysis import get_historical_prices
+from alphalib.analysis import (
+    get_historical_prices,
+    get_earning_history,
+    get_fund_ownership,
+)
 from alphalib.analysis.dividend import dividend_analysis
-from alphalib.analysis.ml.time_series import predict_time_series
+from alphalib.analysis.ml.time_series import prophet_predict
 from alphalib.data_sources.nasdaq import Nasdaq, get_dividend_info
 
 # For testing
@@ -15,7 +19,7 @@ pd.set_option("display.width", None)
 
 
 class TestStockAnalysis(TestCase):
-    symbol = "abbv"
+    symbol = "orc"
 
     def test_download_dividend_history(self):
         stock: Nasdaq = get_dividend_info(self.symbol)
@@ -66,5 +70,13 @@ class TestStockAnalysis(TestCase):
         print(df_prices.tail(50))
 
     def test_time_seris_analysis(self):
-        df_prices, _ = predict_time_series(self.symbol)
+        df_prices, _ = prophet_predict(self.symbol)
         print(df_prices[["ds", "trend", "yhat", "yhat_lower", "yhat_upper"]].tail(50))
+
+    def test_get_earning_history(self):
+        df_earning_history = get_earning_history(self.symbol)
+        print(df_earning_history.head(10))
+
+    def test_get_holders(self):
+        df_holders = get_fund_ownership(self.symbol)
+        print(df_holders.head(10))

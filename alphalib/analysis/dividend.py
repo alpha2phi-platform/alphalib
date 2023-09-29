@@ -95,8 +95,8 @@ def analyze_prices_over_dividend_periods(
 
 
 def analyze_historical_prices(symbol: str, intervals: pd.DataFrame) -> pd.DataFrame:
-    # Get historical dates for the first 12 rows
-    dividend_dates = intervals["exOrEffDate"].head(12).to_list()
+    # Get historical dates for the first 16 rows
+    dividend_dates = intervals["exOrEffDate"].head(16).to_list()
     start_date = dividend_dates[-1]
     end_date = dividend_dates[0]
     if end_date < datetime.now():
