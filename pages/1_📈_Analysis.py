@@ -5,6 +5,7 @@ import streamlit as st
 from streamlit.logger import get_logger
 
 from alphalib.analysis import (
+    get_fund_top_holdings,
     get_grading_history,
     get_historical_prices,
     get_earning_history,
@@ -249,6 +250,12 @@ def content():
                     use_container_width=True,
                     hide_index=True,
                 )
+                # st.subheader("Fund Top Holdings")
+                # st.dataframe(
+                #     get_fund_top_holdings(symbol),
+                #     use_container_width=True,
+                #     hide_index=True,
+                # )
                 st.subheader("Institution Ownership")
                 st.dataframe(
                     get_institution_ownership(symbol),

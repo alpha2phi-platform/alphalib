@@ -51,6 +51,18 @@ def get_fund_ownership(symbol: str) -> pd.DataFrame:
         ticker.session.close()
 
 
+def get_fund_top_holdings(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        fund_top_holdings = ticker.fund_top_holdings
+        return fund_top_holdings
+    except Exception as e:
+        logger.error(f"Unable to retrieve holdings for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
 def get_institution_ownership(symbol: str) -> pd.DataFrame:
     ticker = Ticker(symbol)
     try:
