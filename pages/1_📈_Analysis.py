@@ -5,11 +5,17 @@ import streamlit as st
 from streamlit.logger import get_logger
 
 from alphalib.analysis import (
+    get_grading_history,
     get_historical_prices,
     get_earning_history,
+    get_insider_holders,
+    get_insider_transactions,
     get_institution_ownership,
     get_fund_ownership,
+    get_major_holders,
+    get_page_views,
     get_recommendation_trend,
+    get_share_purchase_activity,
 )
 from alphalib.analysis.ml.time_series import prophet_predict
 from alphalib.analysis.dividend import dividend_analysis
@@ -149,14 +155,8 @@ def content():
             st.header(f"{analysis.symbol} - {analysis.interval} Dividend")
             sentiment_analysis, sentiment_mean_score = sentiment_score(symbol)
 
-            tab1, tab2, tab3, tab4, tab5 = st.tabs(
-                [
-                    "Dividend",
-                    "Historical",
-                    "Sentiment",
-                    "Technical",
-                    "Holders",
-                ]
+            tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+                ["Dividend", "Historical", "Sentiment", "Technical", "Trend", "Holders"]
             )
             with tab1:
                 col1, col2 = st.columns([3, 7])
@@ -206,6 +206,43 @@ def content():
                 )
 
             with tab5:
+                st.subheader("Page Views")
+                st.dataframe(
+                    get_page_views(symbol),
+                    use_container_width=False,
+                    hide_index=False,
+                )
+                st.subheader("Recommendation Trend")
+                st.dataframe(
+                    get_recommendation_trend(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.subheader("Grading History")
+                st.dataframe(
+                    get_grading_history(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.subheader("Insider Transactions")
+                st.dataframe(
+                    get_insider_transactions(symbol),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+                st.subheader("Purchase Activity")
+                st.dataframe(
+                    get_share_purchase_activity(symbol),
+                    use_container_width=False,
+                    hide_index=False,
+                )
+            with tab6:
+                st.subheader("Major Holders")
+                st.dataframe(
+                    get_major_holders(symbol),
+                    use_container_width=False,
+                    hide_index=False,
+                )
                 st.subheader("Fund Ownership")
                 st.dataframe(
                     get_fund_ownership(symbol),
@@ -218,9 +255,9 @@ def content():
                     use_container_width=True,
                     hide_index=True,
                 )
-                st.subheader("Recommendation Trend")
+                st.subheader("Insider Holders")
                 st.dataframe(
-                    get_recommendation_trend(symbol),
+                    get_insider_holders(symbol),
                     use_container_width=True,
                     hide_index=True,
                 )

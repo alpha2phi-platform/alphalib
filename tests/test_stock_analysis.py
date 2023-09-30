@@ -7,6 +7,7 @@ from alphalib.analysis import (
     get_historical_prices,
     get_earning_history,
     get_fund_ownership,
+    get_major_holders,
 )
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.ml.time_series import prophet_predict
@@ -78,5 +79,5 @@ class TestStockAnalysis(TestCase):
         print(df_earning_history.head(10))
 
     def test_get_holders(self):
-        df_holders = get_fund_ownership(self.symbol)
+        df_holders = get_major_holders(self.symbol)
         print(df_holders.head(10))

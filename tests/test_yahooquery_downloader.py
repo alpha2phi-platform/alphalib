@@ -43,7 +43,7 @@ class TestYahooQueryDownloader(unittest.TestCase):
     def test_sentiment_score(self):
         symbol = "afsia"
         ticker = Ticker(symbol)
-        print(ticker.news)
+        print(ticker.news())
 
     def test_stock_stats(self):
         self.dataset.stock_stats()

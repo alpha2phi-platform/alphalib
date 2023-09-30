@@ -73,3 +73,75 @@ def get_recommendation_trend(symbol: str) -> pd.DataFrame:
         return pd.DataFrame()
     finally:
         ticker.session.close()
+
+
+def get_grading_history(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        grading_history = ticker.grading_history
+        return grading_history
+    except Exception as e:
+        logger.error(f"Unable to retrieve grading history for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_insider_holders(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        insider_holders = ticker.insider_holders
+        return insider_holders
+    except Exception as e:
+        logger.error(f"Unable to retrieve insider holders for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_insider_transactions(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        insider_transactions = ticker.insider_transactions
+        return insider_transactions
+    except Exception as e:
+        logger.error(f"Unable to retrieve insider transactions for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_major_holders(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        major_holders = ticker.major_holders
+        return pd.DataFrame.from_dict(major_holders, dtype=str)
+    except Exception as e:
+        logger.error(f"Unable to retrieve major holders for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_page_views(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        page_views = ticker.page_views
+        return pd.DataFrame.from_dict(page_views, dtype=str)
+    except Exception as e:
+        logger.error(f"Unable to retrieve page views for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
+
+
+def get_share_purchase_activity(symbol: str) -> pd.DataFrame:
+    ticker = Ticker(symbol)
+    try:
+        share_purchase_activity = ticker.share_purchase_activity
+        return pd.DataFrame.from_dict(share_purchase_activity, dtype=str)
+    except Exception as e:
+        logger.error(f"Unable to retrieve share purchase activity for {symbol}", e)
+        return pd.DataFrame()
+    finally:
+        ticker.session.close()
