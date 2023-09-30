@@ -5,20 +5,18 @@ import streamlit as st
 from streamlit.logger import get_logger
 
 from alphalib.analysis import (
-    get_fund_top_holdings,
+    get_earning_history,
+    get_fund_ownership,
     get_grading_history,
     get_historical_prices,
-    get_earning_history,
     get_insider_holders,
     get_insider_transactions,
     get_institution_ownership,
-    get_fund_ownership,
     get_major_holders,
     get_page_views,
     get_recommendation_trend,
     get_share_purchase_activity,
 )
-from alphalib.analysis.ml.time_series import prophet_predict
 from alphalib.analysis.dividend import dividend_analysis
 from alphalib.analysis.sentiment import finwiz_score
 from alphalib.analysis.ta.trend.ichimoku import plot_ichimoku
