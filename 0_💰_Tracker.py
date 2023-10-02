@@ -53,7 +53,7 @@ def save():
 def refresh():
     st.info("Refreshing portfolio...")
     refresh_porfolio(st.session_state.portfolio)
-    st.experimental_rerun()
+    st.rerun()
 
 
 def content():
