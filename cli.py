@@ -1,9 +1,8 @@
-import pandas as pd
 import fire
-
-from alphalib.dataset.yahooquery_downloader import Dataset
+import pandas as pd
 
 from alphalib.dataset.finance_database import prepare_stock_dataset
+from alphalib.dataset.yahooquery_downloader import Dataset
 
 
 class AlphaLib:

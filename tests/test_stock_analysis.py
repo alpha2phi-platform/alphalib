@@ -3,10 +3,10 @@ from unittest import TestCase
 
 import numpy as np
 import pandas as pd
+
 from alphalib.analysis import (
-    get_historical_prices,
     get_earning_history,
-    get_fund_ownership,
+    get_historical_prices,
     get_major_holders,
 )
 from alphalib.analysis.dividend import dividend_analysis
