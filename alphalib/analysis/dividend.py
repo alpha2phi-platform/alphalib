@@ -74,19 +74,19 @@ def analyze_prices_over_dividend_periods(
                     prices_between_dividend_dates["close"].idxmin(), "date"
                 ].date()
                 dividend_analysis["min"] = (
-                    prices_between_dividend_dates["close"].min().round(4)
+                    prices_between_dividend_dates["close"].round(4).min()
                 )
                 dividend_analysis["max_date"] = prices_between_dividend_dates.loc[
                     prices_between_dividend_dates["close"].idxmax(), "date"
                 ].date()
                 dividend_analysis["max"] = (
-                    prices_between_dividend_dates["close"].max().round(4)
+                    prices_between_dividend_dates["close"].round(4).max()
                 )
                 pre_ex_dividend = prices_between_dividend_dates.iloc[-1]
                 dividend_analysis["pre_ex_date"] = pre_ex_dividend["date"].date()
                 dividend_analysis["pre_ex_price"] = pre_ex_dividend["close"].round(4)
                 dividend_analysis["mean"] = (
-                    prices_between_dividend_dates["close"].mean().round(4)
+                    prices_between_dividend_dates["close"].round(4).mean()
                 )
 
                 results.append(dividend_analysis)

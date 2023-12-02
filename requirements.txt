@@ -33,7 +33,7 @@ rich
 scipy
 selectolax
 selenium
-sklearn
+scikit-learn
 tsfresh
 vaex
 webdriver-manager
