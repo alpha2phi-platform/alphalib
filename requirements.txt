@@ -3,7 +3,6 @@ alpha-vantage
 beautifulsoup4
 cssselect
 cufflinks
-featuretools[complete]
 ffn
 financedatabase
 fire
@@ -34,8 +33,7 @@ scipy
 selectolax
 selenium
 scikit-learn
-tsfresh
-vaex
+streamlit
 webdriver-manager
 yahooquery
 yfinance

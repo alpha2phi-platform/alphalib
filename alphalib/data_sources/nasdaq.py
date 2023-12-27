@@ -20,7 +20,7 @@ class Nasdaq(TypeConverter):
     dividend_yield_pct: float = 0
     annual_dividend: float = 0
     pe_ratio: float = 0
-    dividend_history: pd.DataFrame = pd.DataFrame()
+    dividend_history: pd.DataFrame = None
     nasdaq_url: str = ""
 
 
