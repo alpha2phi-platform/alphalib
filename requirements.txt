@@ -33,6 +33,7 @@ scipy
 selectolax
 selenium
 scikit-learn
+sqlalchemy
 streamlit
 webdriver-manager
 yahooquery
