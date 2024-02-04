@@ -6,7 +6,7 @@ cufflinks
 ffn
 financedatabase
 fire
-fundamentalanalysis
+financetoolkit
 graphviz
 html5lib
 httpx
